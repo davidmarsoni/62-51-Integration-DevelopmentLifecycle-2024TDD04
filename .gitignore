@@ -1,6 +1,9 @@
 ~/.git
 ~/.github
-~/2024TDD04/.vs
-~/2024TDD04/WebApi/obj
+2024TDD04/WebApi/obj/
 *.vsidx
 *.bin
+2024TDD04/.vs/
+2024TDD04/DAL/obj/
+2024TDD04/DTO/obj/
+2024TDD04/MVC/obj/
