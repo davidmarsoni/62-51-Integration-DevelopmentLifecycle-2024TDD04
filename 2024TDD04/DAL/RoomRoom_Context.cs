@@ -22,11 +22,17 @@ namespace DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure many-to-many
+            // Configure many-to-many for User-UserGroups-Group
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Groups)
                 .WithMany(e => e.Users)
                 .UsingEntity<UserGroup>();
+
+            // Configure composed primary key for Access and UserGroup
+            modelBuilder.Entity<Access>()
+                .HasKey(e => new { e.RoomId, e.GroupId });
+            modelBuilder.Entity<UserGroup>()
+                .HasKey(e => new { e.UserId, e.GroupId });
         }
     }
 }
