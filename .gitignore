@@ -7,3 +7,9 @@
 2024TDD04/DAL/obj/
 2024TDD04/DTO/obj/
 2024TDD04/MVC/obj/
+/2024TDD04/Tests/bin/Debug/net8.0
+/2024TDD04/MVC/bin/Debug/net8.0
+/2024TDD04/DTO/bin/Debug/net8.0
+/2024TDD04/Tests/obj
+/2024TDD04/WebAPI/bin/Debug/net8.0
+/2024TDD04/DAL/bin/Debug/net8.0

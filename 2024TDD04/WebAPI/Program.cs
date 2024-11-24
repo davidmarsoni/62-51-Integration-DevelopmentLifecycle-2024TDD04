@@ -13,7 +13,7 @@ namespace WebAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<RoomRoom_Context>(options =>
+            builder.Services.AddDbContext<RoomAccessContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                     providerOptions => providerOptions.EnableRetryOnFailure());
@@ -27,7 +27,7 @@ namespace WebAPI
 
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<RoomRoom_Context>();
+                var dbContext = scope.ServiceProvider.GetRequiredService<RoomAccessContext>();
                 //this lines are commented because we are using migrations to create the database 
                 //and we don't need to create the database here
 

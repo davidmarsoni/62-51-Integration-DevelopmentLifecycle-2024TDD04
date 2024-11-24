@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL
 {
-    public class RoomRoom_Context : DbContext
+    public class RoomAccessContext : DbContext
     {
         public DbSet<Room> Rooms { get; set; }
         public DbSet<User> Users { get; set; }
@@ -11,7 +11,7 @@ namespace DAL
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Access> Accesses { get; set; }
 
-        public RoomRoom_Context(DbContextOptions<RoomRoom_Context> options) : base(options)
+        public RoomAccessContext(DbContextOptions<RoomAccessContext> options) : base(options)
         {
         }
 

@@ -16,9 +16,9 @@ namespace WebApi.Controllers
     [ApiController]
     public class GroupsController : ControllerBase
     {
-        private readonly RoomRoom_Context _context;
+        private readonly RoomAccessContext _context;
 
-        public GroupsController(RoomRoom_Context context)
+        public GroupsController(RoomAccessContext context)
         {
             _context = context;
         }

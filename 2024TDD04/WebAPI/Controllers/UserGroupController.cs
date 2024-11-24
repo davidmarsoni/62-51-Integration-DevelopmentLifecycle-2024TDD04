@@ -17,9 +17,9 @@ namespace WebApi.Controllers
     [ApiController]
     public class UserGroupController : ControllerBase
     {
-        private readonly RoomRoom_Context _context;
+        private readonly RoomAccessContext _context;
 
-        public UserGroupController(RoomRoom_Context context)
+        public UserGroupController(RoomAccessContext context)
         {
             _context = context;
         }

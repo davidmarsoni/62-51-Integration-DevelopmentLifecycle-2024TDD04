@@ -14,9 +14,9 @@ namespace WebAPI.Controllers
     [ApiController]
     public class RoomController : ControllerBase
     {
-        private readonly RoomRoom_Context _context;
+        private readonly RoomAccessContext _context;
 
-        public RoomController(RoomRoom_Context context)
+        public RoomController(RoomAccessContext context)
         {
             _context = context;
         }
