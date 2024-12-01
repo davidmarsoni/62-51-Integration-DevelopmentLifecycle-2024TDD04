@@ -9,7 +9,7 @@ namespace WebApi.Mapper
         {
             UserDTO userDTO = new UserDTO
             {
-                UserId = user.Id,
+                Id = user.Id,
                 Username = user.Username,
                 IsDeleted = user.IsDeleted
             };
@@ -20,7 +20,7 @@ namespace WebApi.Mapper
         {
             User user = new User
             {
-                Id = userDTO.UserId,
+                Id = userDTO.Id,
                 Username = userDTO.Username,
                 IsDeleted = userDTO.IsDeleted
             };

@@ -15,11 +15,11 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserGroupController : ControllerBase
+    public class UserGroupsController : ControllerBase
     {
         private readonly RoomAccessContext _context;
 
-        public UserGroupController(RoomAccessContext context)
+        public UserGroupsController(RoomAccessContext context)
         {
             _context = context;
         }

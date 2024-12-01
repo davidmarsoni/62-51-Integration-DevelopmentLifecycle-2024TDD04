@@ -10,6 +10,7 @@ namespace DAL
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Access> Accesses { get; set; }
+        public DbSet<RoomAccessLog> RoomAccessLogs { get; set; }
 
         public RoomAccessContext(DbContextOptions<RoomAccessContext> options) : base(options)
         {
@@ -27,12 +28,6 @@ namespace DAL
                 .HasMany(e => e.Groups)
                 .WithMany(e => e.Users)
                 .UsingEntity<UserGroup>();
-
-            // Configure composed primary key for Access and UserGroup
-            modelBuilder.Entity<Access>()
-                .HasKey(e => new { e.RoomId, e.GroupId });
-            modelBuilder.Entity<UserGroup>()
-                .HasKey(e => new { e.UserId, e.GroupId });
         }
     }
 }

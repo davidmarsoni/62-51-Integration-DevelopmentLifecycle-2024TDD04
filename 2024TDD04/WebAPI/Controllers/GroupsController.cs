@@ -94,7 +94,7 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGroup(int id, GroupDTO groupDTO)
         {
-            if (id != groupDTO.GroupId)
+            if (id != groupDTO.Id)
             {
                 return BadRequest();
             }

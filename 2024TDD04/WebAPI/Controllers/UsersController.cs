@@ -92,7 +92,7 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, UserDTO userDTO)
         {
-            if (id != userDTO.UserId)
+            if (id != userDTO.Id)
             {
                 return BadRequest();
             }

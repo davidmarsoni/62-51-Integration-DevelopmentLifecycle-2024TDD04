@@ -4,7 +4,7 @@ namespace DTO
 {
     public class UserDTO
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
 
         [Required (ErrorMessage = "Username is required")]
         [StringLength(50, ErrorMessage = "Username cannot exceed 50 characters")]

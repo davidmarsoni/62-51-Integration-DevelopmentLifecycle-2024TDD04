@@ -9,7 +9,7 @@ namespace WebApi.Mapper
         {
             GroupDTO groupDTO = new GroupDTO
             {
-                GroupId = group.Id,
+                Id = group.Id,
                 Name = group.Name,
                 Acronym = group.Acronym,
                 IsDeleted = group.IsDeleted
@@ -21,7 +21,7 @@ namespace WebApi.Mapper
         {
             Group group = new Group 
             {
-                Id = groupDTO.GroupId,
+                Id = groupDTO.Id,
                 Name = groupDTO.Name,
                 Acronym = groupDTO.Acronym,
                 IsDeleted = groupDTO.IsDeleted

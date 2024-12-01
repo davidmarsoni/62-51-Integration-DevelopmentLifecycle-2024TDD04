@@ -12,11 +12,11 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomController : ControllerBase
+    public class RoomsController : ControllerBase
     {
         private readonly RoomAccessContext _context;
 
-        public RoomController(RoomAccessContext context)
+        public RoomsController(RoomAccessContext context)
         {
             _context = context;
         }

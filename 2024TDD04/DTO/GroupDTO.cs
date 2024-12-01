@@ -4,7 +4,7 @@ namespace DTO
 {
     public class GroupDTO
     {
-        public int GroupId { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100, ErrorMessage = "Name must be between 1 and 100 characters", MinimumLength = 1)]
