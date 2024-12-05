@@ -33,6 +33,27 @@ namespace WebApi.Controllers
             return result;
         }
 
+        // GET: api/Users/Username
+        [HttpGet("Username/{username}")]
+        public async Task<ActionResult<Boolean>> GetUsernameExist(string username)
+        {
+            IEnumerable<User> users = await _context.Users.ToListAsync();
+            List<UserDTO> result = new List<UserDTO>();
+            Boolean usernameExist = false;
+            if (users != null && users.Count() > 0)
+            {
+                foreach (User user in users)
+                {
+                    if (user.Username == username)
+                    {
+                        usernameExist = true;
+                        break;
+                    }
+                }
+            }
+            return usernameExist;
+        }
+
         // GET: api/Users/Active
         [HttpGet("Active")]
         public async Task<ActionResult<List<UserDTO>>> GetUsersActive()

@@ -89,6 +89,22 @@ namespace WebApi.Controllers
             return result;
         }
 
+        // GET: api/Groups/Name/{name}
+        [HttpGet("Name/{name}")]
+        public async Task<ActionResult<bool>> GroupNameExists(string name)
+        {
+            bool exists = await _context.Groups.AnyAsync(g => g.Name == name);
+            return exists;
+        }
+
+        // GET: api/Groups/Acronym/{acronym}
+        [HttpGet("Acronym/{acronym}")]
+        public async Task<ActionResult<bool>> GroupAcronymExists(string acronym)
+        {
+            bool exists = await _context.Groups.AnyAsync(g => g.Acronym == acronym);
+            return exists;
+        }
+
         // PUT: api/Groups/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
