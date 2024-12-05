@@ -27,7 +27,7 @@ namespace MVC.Services
 
         public async Task<IEnumerable<UserDTO>?> GetAllUsers()
         {
-            return await SQS.GetAll<UserDTO>(_client, _baseUrl);
+            return await SQS.GetAll<UserDTO>(_client, $"{_baseUrl}/Active");
         }
 
         public async Task<UserDTO?> CreateUser(UserDTO userDTO)

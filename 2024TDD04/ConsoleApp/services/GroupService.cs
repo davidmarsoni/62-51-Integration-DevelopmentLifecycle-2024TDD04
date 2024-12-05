@@ -22,7 +22,7 @@ namespace MVC.Services
 
         public async Task<IEnumerable<GroupDTO>?> GetAllGroups()
         {
-            return await SQS.GetAll<GroupDTO>(_client, _baseUrl);
+            return await SQS.GetAll<GroupDTO>(_client, $"{_baseUrl}/Active");
         }
 
         public async Task<GroupDTO?> CreateGroup(GroupDTO groupDTO)

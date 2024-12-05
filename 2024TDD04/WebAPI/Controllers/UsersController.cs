@@ -182,7 +182,8 @@ namespace WebApi.Controllers
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            user.IsDeleted = true;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -15,7 +15,5 @@ namespace DTO
 
         [Required(ErrorMessage = "IsDeleted is required")]
         public bool IsDeleted { get; set; }
-
-        public string DisplayName => $"{Name} ({Acronym})";
     }
 }

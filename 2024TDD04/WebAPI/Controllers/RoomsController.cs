@@ -96,7 +96,8 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            _context.Rooms.Remove(room);
+            room.IsDeleted = true;
+            _context.Update(room);
             await _context.SaveChangesAsync();
 
             return NoContent();

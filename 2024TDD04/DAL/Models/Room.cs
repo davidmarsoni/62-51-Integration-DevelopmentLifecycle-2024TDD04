@@ -12,7 +12,8 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         public required string Name { get; set; }
-        public required string RoomAbreviation { get; set; }
+        public string? RoomAbreviation { get; set; }
+        public bool IsDeleted { get; set; }
         public ICollection<Access> User_Groups { get; } = new List<Access>();
     }
 }
