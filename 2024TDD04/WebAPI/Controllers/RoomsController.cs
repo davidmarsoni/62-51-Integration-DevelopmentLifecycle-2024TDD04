@@ -2,7 +2,6 @@
 using DTO;
 using DAL.Models;
 using DAL;
-using WebApi.Mapper;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Mapper;
 
@@ -30,6 +29,23 @@ namespace WebAPI.Controllers
             if (rooms != null && rooms.Count() > 0)
             {
                 foreach (Room room in rooms) {
+                    result.Add(RoomMapper.toDTO(room));
+                }
+            }
+            return result;
+        }
+
+        // GET: api/Room/Active
+        [HttpGet("Active")]
+        public async Task<ActionResult<List<RoomDTO>>> GetRoomsActive()
+        {
+            // get all rooms that are active
+            IEnumerable<Room> rooms = await _context.Rooms.Where(u => !u.IsDeleted).ToListAsync();
+            List<RoomDTO> result = new List<RoomDTO>();
+            if (rooms != null && rooms.Count() > 0)
+            {
+                foreach (Room room in rooms)
+                {
                     result.Add(RoomMapper.toDTO(room));
                 }
             }
@@ -66,7 +82,7 @@ namespace WebAPI.Controllers
             }
 
             //check if the room is already in the DB
-            if (_context.Rooms.Any(rm => rm.Name == roomDTO.Name || rm.RoomAbreviation == rm.RoomAbreviation)){
+            if (_context.Rooms.Any(rm => rm.Name == roomDTO.Name || rm.RoomAbreviation == roomDTO.RoomAbreviation)){
                 return Conflict();
             }
 
@@ -101,6 +117,20 @@ namespace WebAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/Room/Name/{name}
+        [HttpGet("Name/{name}")]
+        public async Task<ActionResult<bool>> RoomNameExists(string name)
+        {
+            return await _context.Rooms.AnyAsync(rm => rm.Name == name);
+        }
+
+        // GET: api/Room/Abreviation/{abreviation}
+        [HttpGet("Abreviation/{abreviation}")]
+        public async Task<ActionResult<bool>> RoomAbreviationExists(string abreviation)
+        {
+            return await _context.Rooms.AnyAsync(rm => rm.RoomAbreviation == abreviation);
         }
     }
 }

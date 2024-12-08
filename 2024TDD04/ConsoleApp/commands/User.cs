@@ -8,7 +8,7 @@ namespace ConsoleApp.commands
     public class User : ICommand
     {
         private UserService userService;
-        public User(HttpClient httpClient, string baseURL)
+        public User(HttpClient httpClient, string baseURL, bool debug)
         {
             userService = new UserService(httpClient, baseURL);
         }
@@ -105,7 +105,7 @@ namespace ConsoleApp.commands
             // get user exists
             UserDTO userDTO = userService.GetUserById(userId).Result;
             if (userDTO == null) { 
-                Console.WriteLine("User not found. Exiting ...", Colors.Red);
+                Console.WriteLine(Colors.Colorize("User not found. Exiting ...", Colors.Red));
                 return;
             }
             // ask for new username (press Enter to skip)
@@ -199,7 +199,7 @@ namespace ConsoleApp.commands
             }
             catch
             {
-                Console.WriteLine("An error occurred when parsing the userId. Exiting...", Colors.Red);
+                Console.WriteLine(Colors.Colorize("An error occurred when parsing the userId. Exiting...", Colors.Red));
                 return;
             }
             EntityCommandUtils.ConfirmAndDeleteEntity(userId, userService.DeleteUser, "User");

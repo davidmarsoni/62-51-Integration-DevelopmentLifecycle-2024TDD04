@@ -43,18 +43,6 @@ namespace ConsoleApp.utils
                 Console.WriteLine(Colors.Colorize($"An error occurred when deleting the {entityName.ToLower()} from the DB...", Colors.Red));
         }
 
-        public static string GetValidInput(string prompt, Func<string, bool> validationMethod, string exitMessage)
-        {
-            string input;
-            do
-            {
-                input = ConsoleManager.WaitInput(validationMethod, prompt);
-                if (ConsoleUtils.ExitOnInputExit(input, exitMessage))
-                    return null;
-            } while (!validationMethod(input));
-            return input;
-        }
-
         public static Boolean ValidationIdIsInt(string input)
         {
             return int.TryParse(input, out _);

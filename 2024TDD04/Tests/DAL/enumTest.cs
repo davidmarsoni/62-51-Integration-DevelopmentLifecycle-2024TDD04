@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using DAL.Models;
+using DAL.Enums;
 
 namespace Tests.DAL
 {

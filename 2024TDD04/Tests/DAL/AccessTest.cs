@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using DAL.Enums;
+using DAL.Models;
 using Xunit;
 
 namespace Tests.DAL

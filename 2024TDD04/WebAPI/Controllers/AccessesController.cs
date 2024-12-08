@@ -20,142 +20,137 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Accesses
-        [HttpGet]
-        public async Task<IEnumerable<AccessDTO>> GetAccessesAsync()
+        // GET: api/Accesses/HasAccessGroup/<roomId>/<groupId>
+        [HttpGet("HasAccessGroup/{roomId}/{groupId}")]
+        public async Task<ActionResult<bool>> HasAccessAsync(int roomId, int groupId)
         {
-            IEnumerable<Access> accesses = await _context.Accesses.ToListAsync();
-            List<AccessDTO> result = new List<AccessDTO>();
-            if (accesses != null && accesses.Any())
+            if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Groups.Any(g => g.Id == groupId))
             {
-                foreach (Access access in accesses)
-                {
-                    result.Add(AccessMapper.toDTO(access));
-                }
+                return BadRequest();
             }
-            return result;
+
+            return await _context.Accesses.AnyAsync(a => a.RoomId == roomId && a.GroupId == groupId);;
         }
 
-        // GET api/Accesses/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AccessDTO>> GetAsync(int id)
+        // GET: api/Accesses/HasAccessUser/<roomId>/<userId>
+        [HttpGet("HasAccessUser/{roomId}/{userId}")]
+        public async Task<ActionResult<bool>> HasAccessUserAsync(int roomId, int userId)
         {
-            var access = await _context.Accesses.FindAsync(id);
+            if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Users.Any(u => u.Id == userId))
+            {
+                return BadRequest();
+            }
 
-            if (access == null)
+            // Get all the groups of the user
+            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == userId).ToListAsync();
+
+            // If the user is not in any group, he doesn't have access
+            if (userGroups.Count == 0)
+            {
+                return false;
+            }
+
+            // Check if the user has access to the room
+            return await _context.Accesses.AnyAsync(a => a.RoomId == roomId && userGroups.Any(ug => ug.GroupId == a.GroupId));;
+        }
+
+        // GET: api/Accesses/GetRoomAccessedByGroup/<groupId>
+        [HttpGet("GetRoomAccessedByGroup/{groupId}")]
+        public async Task<ActionResult<RoomDTO>> GetRoomAccessedByGroupAsync(int groupId)
+        {
+            if (!_context.Groups.Any(g => g.Id == groupId))
+            {
+                return BadRequest();
+            }
+
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && a.GroupId == groupId));
+
+            if (room == null)
             {
                 return NotFound();
             }
 
-            AccessDTO accessDTO = AccessMapper.toDTO(access);
+            RoomDTO roomDTO = RoomMapper.toDTO(room);
 
-            return accessDTO;
+            return roomDTO;
         }
 
-        // POST: api/Accesses
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<AccessDTO>> PostAccesses(AccessDTO accessDTO) 
+        // GET: api/Accesses/GetRoomAccessedByUser/<userId>
+        [HttpGet("GetRoomAccessedByUser/{userId}")]
+        public async Task<ActionResult<RoomDTO>> GetRoomAccessedByUserAsync(int userId)
         {
-            Access access;
-
-            if (accessDTO == null)
+            if (!_context.Users.Any(u => u.Id == userId))
             {
                 return BadRequest();
             }
 
-            //check if the room exists
-            if (!_context.Rooms.Any(u => u.Id == accessDTO.RoomId))
+            // Get all the groups of the user
+            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == userId).ToListAsync();
+
+            // If the user is not in any group, he doesn't have access
+            if (userGroups.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && userGroups.Any(ug => ug.GroupId == a.GroupId)));
+
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            RoomDTO roomDTO = RoomMapper.toDTO(room);
+
+            return roomDTO;
+        }
+
+        // POST: api/GrantAccess
+        [HttpPost("GrantAccess")]
+        public async Task<ActionResult<Boolean>> GrantAccessAsync(AccessDTO accessDTO)
+        {
+            if (!_context.Rooms.Any(r => r.Id == accessDTO.RoomId) || !_context.Groups.Any(g => g.Id == accessDTO.GroupId))
             {
                 return BadRequest();
             }
-            //check if the group exists
-            if (!_context.Groups.Any(g => g.Id == accessDTO.GroupId))
-            {
-                return BadRequest();
-            }
-            //check if the access is already in the group
-            if (_context.Accesses.Any(ug => ug.RoomId == accessDTO.RoomId && ug.GroupId == accessDTO.GroupId))
+
+            // Check if the access already exists
+            if (await _context.Accesses.AnyAsync(a => a.RoomId == accessDTO.RoomId && a.GroupId == accessDTO.GroupId))
             {
                 return Conflict();
             }
 
-            try
-            {
-                access = AccessMapper.toDAL(accessDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
+            Access access = AccessMapper.toDAL(accessDTO);
 
             _context.Accesses.Add(access);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAccess", new { id = access.Id }, access);
+            return true;
         }
 
-        // PUT: api/Access/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAccess(int id, AccessDTO accessDTO)
+        // POST: api/RevokeAccess
+        [HttpPost("RevokeAccess")]
+        public async Task<ActionResult<Boolean>> RevokeAccessAsync(AccessDTO accessDTO)
         {
-            if (id != accessDTO.Id)
+            if (!_context.Rooms.Any(r => r.Id == accessDTO.RoomId) || !_context.Groups.Any(g => g.Id == accessDTO.GroupId))
             {
                 return BadRequest();
             }
 
-            Access access;
+            // Get the access
+            Access storedAccess = await _context.Accesses.FirstOrDefaultAsync(a => a.RoomId == accessDTO.RoomId && a.GroupId == accessDTO.GroupId);
 
-            try
-            {
-                access = AccessMapper.toDAL(accessDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
-
-            _context.Entry(access).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AccessExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/Access/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAccess(int id)
-        {
-            var access = await _context.Accesses.FindAsync(id);
-            if (access == null)
+            // If the access doesn't exist, return not found
+            if (storedAccess == null)
             {
                 return NotFound();
             }
 
-            _context.Accesses.Remove(access);
+            _context.Accesses.Remove(storedAccess);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return true;
         }
 
-        private bool AccessExists(int id)
-        {
-            return _context.Groups.Any(e => e.Id == id);
-        }
     }
 }

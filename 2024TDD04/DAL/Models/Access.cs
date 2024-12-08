@@ -1,5 +1,4 @@
-﻿using DAL.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,6 +15,5 @@ namespace DAL.Models
         public Room? Room { get; set; } = null!;
         public int GroupId { get; set; }
         public Group? Group { get; set; } = null!;
-        public AccessType AccessType { get; set; }
     }
 }

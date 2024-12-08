@@ -1,4 +1,5 @@
 ﻿using Azure;
+using ConsoleApp.utils;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -16,6 +17,8 @@ namespace MVC.Services.QuerySnippet
         public static readonly String POST = "POST";
         public static readonly String PUT = "PUT";
         public static readonly String DELETE = "DELETE";
+
+        public static bool Debug { get; set; } = false;
 
         #region HTTP Queries
 
@@ -70,7 +73,10 @@ namespace MVC.Services.QuerySnippet
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{originalOperation} Request failed with message: {e.Message}");
+                if (Debug)
+                {
+                    Console.WriteLine(Colors.Colorize($"{originalOperation} Request failed with message: {e.Message}", Colors.Magenta));
+                }
                 return false;
             }
         }
@@ -85,7 +91,10 @@ namespace MVC.Services.QuerySnippet
                 return JsonSerializer.Deserialize<T>(json, JsonSerializerOpt); ;
             } catch (Exception e)
             {
-                Console.WriteLine($"Failed to deserialize JSON: {e.Message}");
+                if (Debug)
+                {
+                    Console.WriteLine(Colors.Colorize($"Failed to deserialize JSON: {e.Message}", Colors.Magenta));
+                }
                 return default;
             }
             

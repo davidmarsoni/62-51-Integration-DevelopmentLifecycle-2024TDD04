@@ -6,8 +6,10 @@ namespace MVC.Services.QuerySnippet
     /// <summary>
     /// Method Library used to handle the standard CRUD operations for a resource.
     /// </summary>
-    public class StandardQuerySet
+    public static class StandardQuerySet
     {
+        public static bool Debug { get; set; } = false;
+
         /// <summary>
         /// Retrieves all resources of type 'T' from the specified URL using the provided HttpClient.
         /// </summary>
@@ -17,6 +19,7 @@ namespace MVC.Services.QuerySnippet
         /// <returns>Returns all resources of type 'T' if the request is successful, otherwise null.</returns>
         public static async Task<IEnumerable<T>?> GetAll<T>(HttpClient httpClient, String url)
         {
+            QS.Debug = Debug;
             return QS.HttpResponseHandling<IEnumerable<T>>(await QS.GetOnURL(httpClient, url), QS.GETALL);
         }
 
@@ -29,6 +32,7 @@ namespace MVC.Services.QuerySnippet
         /// <returns>Returns the retrieved resource of type 'T' if the request is successful, otherwise null.</returns>
         public static async Task<T?> Get<T>(HttpClient httpClient, String url)
         {
+            QS.Debug = Debug;
             return QS.HttpResponseHandling<T>(await QS.GetOnURL(httpClient, url), QS.GET);
         }
 
@@ -42,6 +46,7 @@ namespace MVC.Services.QuerySnippet
         /// <returns>Returns the created resource of type 'T' if the request is successful, otherwise null.</returns>
         public static async Task<T?> Post<T>(HttpClient httpClient, String url, T obj)
         {
+            QS.Debug = Debug;
             return QS.HttpResponseHandling<T>(await QS.PostOnUrl(httpClient, url, obj), QS.POST);
         }
 
@@ -55,6 +60,7 @@ namespace MVC.Services.QuerySnippet
         /// <returns>Returns if the resource was successfully created, otherwise false.</returns>
         public static async Task<Boolean> PostNoReturn<T>(HttpClient httpClient, String url, T obj)
         {
+            QS.Debug = Debug;
             HttpResponseMessage? httpResponseMessage = await QS.PostOnUrl(httpClient, url, obj);
             return QS.isHttpResponseMessageSuccess(httpResponseMessage, QS.POST);
         }
@@ -69,6 +75,7 @@ namespace MVC.Services.QuerySnippet
         /// <returns>Returns true if the resource was successfully updated, otherwise false. Does not return any objects type 'T'</returns>
         public static async Task<Boolean> PutNoReturn<T>(HttpClient httpClient, String url, T obj)
         {
+            QS.Debug = Debug;
             HttpResponseMessage? httpResponseMessage = await QS.PutOnUrl(httpClient, url, obj);
             return QS.isHttpResponseMessageSuccess(httpResponseMessage, QS.PUT);
         }
@@ -83,6 +90,7 @@ namespace MVC.Services.QuerySnippet
         /// <returns>Returns true if the resource was successfully deleted, otherwise false.</returns>
         public static async Task<Boolean> Delete(HttpClient httpClient, String url)
         {
+            QS.Debug = Debug;
             HttpResponseMessage? httpResponseMessage = await QS.DeleteOnUrl(httpClient, url);
             return QS.isHttpResponseMessageSuccess(httpResponseMessage, QS.DELETE);
         }

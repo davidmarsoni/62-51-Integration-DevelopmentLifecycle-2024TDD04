@@ -1,5 +1,4 @@
-﻿using DAL.Enums;
-using DAL.Models;
+﻿using DAL.Models;
 using DTO;
 
 namespace WebAPI.Mapper
@@ -14,7 +13,6 @@ namespace WebAPI.Mapper
                 RoomId = roomAccessLog.RoomId,
                 GroupId = roomAccessLog?.GroupId,
                 UserId = roomAccessLog.UserId,
-                AccessType = roomAccessLog.AccessType.ToString(),
                 Info = roomAccessLog.Info
             };
             return accessDTO;
@@ -28,7 +26,6 @@ namespace WebAPI.Mapper
                 RoomId = roomAccessLogDTO.RoomId,
                 GroupId = roomAccessLogDTO?.GroupId,
                 UserId = roomAccessLogDTO.UserId,
-                AccessType = Enum.Equals(roomAccessLogDTO.AccessType, "Allowed") ? AccessType.Allowed : AccessType.Forbidden,
                 Info = roomAccessLogDTO.Info
             };
             return roomAccessLog;

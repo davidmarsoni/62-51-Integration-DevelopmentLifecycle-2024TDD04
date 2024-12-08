@@ -8,11 +8,13 @@ namespace MVC.Services
     {
         private readonly HttpClient _client;
         private readonly string _baseUrl;
+        
 
-        public GroupService(HttpClient client, String baseURL)
+        public GroupService(HttpClient client, String baseURL, bool debug)
         {
             _client = client;
             _baseUrl = baseURL + "/groups";
+            SQS.Debug = debug;
         }
 
         public async Task<GroupDTO?> GetGroupById(int id)

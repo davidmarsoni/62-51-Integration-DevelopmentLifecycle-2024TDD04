@@ -9,10 +9,11 @@ namespace MVC.Services
         private readonly HttpClient _client;
         private readonly string _baseUrl;
 
-        public UserService(HttpClient client, String baseURL)
+        public UserService(HttpClient client, String baseURL, bool debug)
         {
             _client = client;
             _baseUrl = baseURL + "/users";
+            SQS.Debug = debug;
         }
 
         public async Task<UserDTO?> GetUserById(int id)

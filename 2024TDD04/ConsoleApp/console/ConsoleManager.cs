@@ -13,14 +13,14 @@ namespace ConsoleApp.console
         // dictionary of commands
         private Dictionary<string, ICommand> commands = new Dictionary<string, ICommand>();
 
-        public ConsoleManager(HttpClient httpClient, String baseURL)
+        public ConsoleManager(HttpClient httpClient, String baseURL, Boolean debug)
         {
-            commands.Add("room", new Room());
+            commands.Add("room", new Room(httpClient, baseURL, debug));
             commands.Add("history", new History());
             commands.Add("help", new Help(commands));
-            commands.Add("user", new User(httpClient, baseURL));
-            commands.Add("group", new Group(httpClient, baseURL));
-            commands.Add("access", new Access());
+            commands.Add("user", new User(httpClient, baseURL, debug));
+            commands.Add("group", new Group(httpClient, baseURL, debug));
+            commands.Add("access", new Access(httpClient,baseURL, debug));
         }
 
         public void Launch()

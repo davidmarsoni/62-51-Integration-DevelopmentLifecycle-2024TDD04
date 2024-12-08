@@ -8,7 +8,7 @@ namespace ConsoleApp.commands
     public class Group : ICommand
     {
         private GroupService groupService;
-        public Group(HttpClient httpClient, string baseURL)
+        public Group(HttpClient httpClient, string baseURL, bool debug)
         {
             groupService = new GroupService(httpClient, baseURL);
         }
