@@ -12,6 +12,8 @@ namespace DTO
         public int RoomId { get; set; }
         public int? GroupId { get; set; }
         public int UserId { get; set; }
+        public string? Room { get; set; }
+        public DateTime? TimeStamp { get; set; }
         public string AccessType { get; set; }
         public string Info { get; set; }
     }

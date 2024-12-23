@@ -1,12 +1,18 @@
-
 using ConsoleApp.console;
 
 namespace ConsoleApp.utils
 {
     public static class EntityCommandUtils
     {
-        public static void ListEntities<T>(IEnumerable<T>? entities, string entityName, Func<T, string> displayFunction)
+        public static void ListEntities<T>(IEnumerable<T>? entities, string entityName, Func<T, string> displayFunction, IEnumerable<string>? initialLines = null)
         {
+            if (initialLines != null)
+            {
+                foreach (var line in initialLines)
+                {
+                    Console.WriteLine(line);
+                }
+            }
             Console.WriteLine($"Listing {entityName.ToLower()}s...");
             if (entities == null)
             {
@@ -41,11 +47,6 @@ namespace ConsoleApp.utils
                 Console.WriteLine(Colors.Colorize($"Successfully deleted the {entityName.ToLower()}.", Colors.Green));
             else
                 Console.WriteLine(Colors.Colorize($"An error occurred when deleting the {entityName.ToLower()} from the DB...", Colors.Red));
-        }
-
-        public static Boolean ValidationIdIsInt(string input)
-        {
-            return int.TryParse(input, out _);
         }
     }
 }

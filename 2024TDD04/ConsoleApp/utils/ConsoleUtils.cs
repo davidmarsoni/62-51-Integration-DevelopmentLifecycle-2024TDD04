@@ -19,8 +19,18 @@ namespace ConsoleApp.utils
             return false;
         }
 
-        public static Boolean EmptyValidationMethod(string input) {
+        public static Boolean EmptyValidation(string input) {
             return true;
+        }
+
+        public static Boolean IsIntValidation(string input)
+        {
+            return int.TryParse(input, out _);
+        }
+
+        public static Boolean EmptyOrIntValidation(string input)
+        {
+            return string.IsNullOrEmpty(input) || int.TryParse(input, out _);
         }
     }
 }

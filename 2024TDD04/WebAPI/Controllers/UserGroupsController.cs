@@ -24,50 +24,36 @@ namespace WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/UserGroup
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserGroupDTO>>> GetUserGroups()
+        // GET: api/UserGroup/{groupId}/users
+        [HttpGet("{groupId}/users")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersInGroup(int groupId)
         {
-            IEnumerable<UserGroup> userGroups = await _context.UserGroups.ToListAsync();
-            List<UserGroupDTO> result = new List<UserGroupDTO>();
-            if (userGroups != null && userGroups.Count() > 0)
-            {
-                foreach (UserGroup userGroup in userGroups)
-                {
-                    // get the user associated with the userGroup
-                    User user = await _context.Users.FindAsync(userGroup.UserId);
-                    // get the group associated with the userGroup
-                    Group group = await _context.Groups.FindAsync(userGroup.GroupId);
-                    result.Add(UserGroupMapper.toDTO(userGroup, user, group));
-                }
-            }
-            return result;
-        }
+            var userGroups = await _context.UserGroups
+                .Where(ug => ug.GroupId == groupId)
+                .ToListAsync();
 
-        // GET: api/UserGroup/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserGroupDTO>> GetUserGroup(int id)
-        {
-            var userGroup = await _context.UserGroups.FindAsync(id);
-
-            if (userGroup == null)
+            if (userGroups == null || userGroups.Count == 0)
             {
                 return NotFound();
             }
-            User user = await _context.Users.FindAsync(userGroup.UserId);
-            Group group = await _context.Groups.FindAsync(userGroup.GroupId);
 
-            UserGroupDTO userGoupDTO = UserGroupMapper.toDTO(userGroup, user, group);
+            var users = new List<UserDTO>();
+            foreach (var userGroup in userGroups)
+            {
+                var user = await _context.Users.FindAsync(userGroup.UserId);
+                if (user != null)
+                {
+                    users.Add(UserMapper.toDTO(user));
+                }
+            }
 
-            return userGoupDTO;
+            return users;
         }
-
-        
 
         // POST: api/UserGroup
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserGroup>> PostUserGroup(UserGroupDTO userGroupDTO)
+        public async Task<ActionResult<UserGroupDTO>> PostUserGroup(UserGroupDTO userGroupDTO)
         {
             UserGroup userGroup;
             if (userGroupDTO == null)
@@ -76,19 +62,21 @@ namespace WebApi.Controllers
             }
             
             //check if the user exists
-            if(!_context.Users.Any(u => u.Id == userGroupDTO.UserId))
+            var user = await _context.Users.FindAsync(userGroupDTO.UserId);
+            if (user == null)
             {
-                return BadRequest();
+                return BadRequest("User does not exist.");
             }
             //check if the group exists
-            if(!_context.Groups.Any(g => g.Id == userGroupDTO.GroupId))
+            var group = await _context.Groups.FindAsync(userGroupDTO.GroupId);
+            if (group == null)
             {
-                return BadRequest();
+                return BadRequest("Group does not exist.");
             }   
             //check if the user is already in the group
             if(_context.UserGroups.Any(ug => ug.UserId == userGroupDTO.UserId && ug.GroupId == userGroupDTO.GroupId))
             {
-                return Conflict();
+                return Conflict("User is already in the group.");
             }
 
             try
@@ -101,17 +89,20 @@ namespace WebApi.Controllers
             }   
             
             _context.UserGroups.Add(userGroup);
-
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUserGroup", new { id = userGroup.GroupId }, userGroup);
+            // Fetch user and group details for the response DTO
+            UserGroupDTO resultDTO = UserGroupMapper.toDTO(userGroup, user, group);
+
+            return CreatedAtAction("GetUserGroup", new { id = userGroup.GroupId }, resultDTO);
         }
 
-        // DELETE: api/UserGroup/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserGroup(int id)
+        // DELETE: api/UserGroup/{groupId}/{userId}
+        [HttpDelete("{groupId}/{userId}")]
+        public async Task<IActionResult> DeleteUserFromGroup(int userId, int groupId)
         {
-            var userGroup = await _context.UserGroups.FindAsync(id);
+            var userGroup = await _context.UserGroups
+                .FirstOrDefaultAsync(ug => ug.UserId == userId && ug.GroupId == groupId);
             if (userGroup == null)
             {
                 return NotFound();

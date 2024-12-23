@@ -17,7 +17,7 @@ namespace ConsoleApp.commands
 
         public Room(HttpClient httpClient, string baseURL, bool debug)
         {
-            roomService = new RoomService(httpClient, baseURL);
+            roomService = new RoomService(httpClient, baseURL, debug);
         }
 
         public void Execute(string[] arguments)
@@ -97,7 +97,7 @@ namespace ConsoleApp.commands
             Console.WriteLine("Beginning the \"Edit Room\" process...");
             Console.WriteLine("Enter the " + Colors.Colorize("Room Id", Colors.Yellow) + " to edit a room.");
             string roomIdInput = ConsoleManager.WaitInput(
-                EntityCommandUtils.ValidationIdIsInt,
+                ConsoleUtils.IsIntValidation,
                 "To edit a room, input the " + Colors.Colorize("ID", Colors.Yellow) + ". (or type 'exit')").ToLower();
             if (ConsoleUtils.ExitOnInputExit(roomIdInput, "Exiting room editing."))
                 return;
@@ -150,7 +150,7 @@ namespace ConsoleApp.commands
             Console.WriteLine("Beginning the \"Delete Room\" process...");
             Console.WriteLine("Enter the " + Colors.Colorize("Room Id", Colors.Yellow) + " to delete a room.");
             string roomIdInput = ConsoleManager.WaitInput(
-                EntityCommandUtils.ValidationIdIsInt,
+                ConsoleUtils.IsIntValidation,
                 "To delete a room, input the " + Colors.Colorize("ID", Colors.Yellow) + ". (or type 'exit')").ToLower();
             if (ConsoleUtils.ExitOnInputExit(roomIdInput, "Exiting room deletion."))
                 return;

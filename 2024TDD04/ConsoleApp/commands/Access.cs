@@ -39,9 +39,6 @@ namespace ConsoleApp.commands
                 case "list":
                     ListAccesses();
                     break;
-                case "test":
-                    TestAccess();
-                    break;
                 default:
                     Console.WriteLine("Access : " + Colors.Colorize("Command not found", Colors.Red));
                     break;
@@ -55,7 +52,7 @@ namespace ConsoleApp.commands
 
         public string GetSubCommands()
         {
-            return "grant, revoke, list, test";
+            return "grant, revoke, list";
         }
 
         private void GrantAccess()
@@ -63,13 +60,13 @@ namespace ConsoleApp.commands
             Console.WriteLine("Beginning the \"Grant Access\" process...");
             // Prompt for RoomId
             Console.WriteLine("Enter the " + Colors.Colorize("Room Id", Colors.Yellow) + " to grant access to.");
-            string roomIdInput = ConsoleManager.WaitInput(EntityCommandUtils.ValidationIdIsInt, "Enter the Room ID (or type 'exit')");
+            string roomIdInput = ConsoleManager.WaitInput(ConsoleUtils.IsIntValidation, "Enter the Room ID (or type 'exit')");
             if (ConsoleUtils.ExitOnInputExit(roomIdInput, "Exiting grant access process."))
                 return;
 
             // Prompt for GroupId
             Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to grant access to.");
-            string groupIdInput = ConsoleManager.WaitInput(EntityCommandUtils.ValidationIdIsInt, "Enter the Group ID (or type 'exit')");
+            string groupIdInput = ConsoleManager.WaitInput(ConsoleUtils.IsIntValidation, "Enter the Group ID (or type 'exit')");
             if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting grant access process."))
                 return;
 
@@ -93,13 +90,13 @@ namespace ConsoleApp.commands
             Console.WriteLine("Beginning the \"Revoke Access\" process...");
             // Prompt for RoomId
             Console.WriteLine("Enter the " + Colors.Colorize("Room Id", Colors.Yellow) + " to revoke access from.");
-            string roomIdInput = ConsoleManager.WaitInput(EntityCommandUtils.ValidationIdIsInt, "Enter the Room ID (or type 'exit')");
+            string roomIdInput = ConsoleManager.WaitInput(ConsoleUtils.IsIntValidation, "Enter the Room ID (or type 'exit')");
             if (ConsoleUtils.ExitOnInputExit(roomIdInput, "Exiting revoke access process."))
                 return;
 
             // Prompt for GroupId
             Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to revoke access from.");
-            string groupIdInput = ConsoleManager.WaitInput(EntityCommandUtils.ValidationIdIsInt, "Enter the Group ID (or type 'exit')");
+            string groupIdInput = ConsoleManager.WaitInput(ConsoleUtils.IsIntValidation, "Enter the Group ID (or type 'exit')");
             if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting revoke access process."))
                 return;
 
@@ -130,7 +127,7 @@ namespace ConsoleApp.commands
             {
                 // Prompt for UserId
                 Console.WriteLine("Enter the " + Colors.Colorize("User Id", Colors.Yellow) + " to list accessible rooms for.");
-                string userIdInput = ConsoleManager.WaitInput(EntityCommandUtils.ValidationIdIsInt, "Enter the User ID (or type 'exit')");
+                string userIdInput = ConsoleManager.WaitInput(ConsoleUtils.IsIntValidation, "Enter the User ID (or type 'exit')");
                 if (ConsoleUtils.ExitOnInputExit(userIdInput, "Exiting list accesses process."))
                     return;
 
@@ -146,7 +143,7 @@ namespace ConsoleApp.commands
             {
                 // Prompt for GroupId
                 Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to list accessible rooms for.");
-                string groupIdInput = ConsoleManager.WaitInput(EntityCommandUtils.ValidationIdIsInt, "Enter the Group ID (or type 'exit')");
+                string groupIdInput = ConsoleManager.WaitInput(ConsoleUtils.IsIntValidation, "Enter the Group ID (or type 'exit')");
                 if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting list accesses process."))
                     return;
 
@@ -158,12 +155,6 @@ namespace ConsoleApp.commands
                 else
                     Console.WriteLine($"No accessible rooms found for group {groupId}.");
             }
-        }
-
-        private void TestAccess()
-        {
-            // Placeholder for test access functionality
-            Console.WriteLine("Test Access functionality is not implemented yet.");
         }
     }
 }

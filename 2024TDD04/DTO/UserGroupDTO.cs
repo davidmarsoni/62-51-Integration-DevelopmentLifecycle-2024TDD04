@@ -4,8 +4,6 @@ namespace DTO
 {
     public class UserGroupDTO
     {
-        [Required(ErrorMessage = "User-Group ID is required")]
-        public int Id { get; set; }
 
         [Required(ErrorMessage = "User ID is required")]
         public int UserId { get; set; }

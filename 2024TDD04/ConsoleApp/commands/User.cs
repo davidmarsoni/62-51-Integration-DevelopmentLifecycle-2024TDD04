@@ -10,7 +10,7 @@ namespace ConsoleApp.commands
         private UserService userService;
         public User(HttpClient httpClient, string baseURL, bool debug)
         {
-            userService = new UserService(httpClient, baseURL);
+            userService = new UserService(httpClient, baseURL, debug);
         }
 
         public void Execute(String[] arguments)
@@ -85,7 +85,7 @@ namespace ConsoleApp.commands
             // ask the user to enter the username
             Console.WriteLine("Enter the " + Colors.Colorize("User Id", Colors.Yellow) + " to edit a user.");
             String userInput = ConsoleManager.WaitInput(
-                EntityCommandUtils.ValidationIdIsInt,
+                ConsoleUtils.IsIntValidation,
                 "To edit a user, input the " + Colors.Colorize("ID", Colors.Yellow) + ". (or type 'exit')"
                 ).ToLower();
             // check if the user want to exit
@@ -110,7 +110,7 @@ namespace ConsoleApp.commands
             }
             // ask for new username (press Enter to skip)
             Console.WriteLine("Enter a new " + Colors.Colorize("Username", Colors.Yellow) + " for the user. (Press Enter to skip)");
-            userInput = ConsoleManager.WaitInput(ConsoleUtils.EmptyValidationMethod, "(Press Enter to skip)");
+            userInput = ConsoleManager.WaitInput(ConsoleUtils.EmptyValidation, "(Press Enter to skip)");
             // check if the user wants to exit
             if (ConsoleUtils.ExitOnInputExit(userInput, "Exiting user editing."))
                 return;
@@ -149,7 +149,7 @@ namespace ConsoleApp.commands
                 {
                     return "exit";
                 }
-                // check if the username already exists
+                // check if the username already exists in the DB
                 Boolean userExist = userService.GetUsernameExist(username).Result;
                 if (userExist != null && userExist)
                 {
@@ -170,7 +170,7 @@ namespace ConsoleApp.commands
             // ask the user to enther the id of the user to delete
             Console.WriteLine("Enter the " + Colors.Colorize("User Id", Colors.Yellow) + " to delete a user.");
             String userInput = ConsoleManager.WaitInput(
-                EntityCommandUtils.ValidationIdIsInt,
+                ConsoleUtils.IsIntValidation,
                 "To delete a user, input the " + Colors.Colorize("ID", Colors.Yellow) + ". (or type 'exit')"
                 ).ToLower();
             // check if the user want to exit

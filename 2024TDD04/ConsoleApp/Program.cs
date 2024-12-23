@@ -9,7 +9,7 @@ namespace ConsoleApp
         {
             // consts
             const string BASE_URL = "https://localhost:7284/api";
-            const bool DEBUG = true;
+            const bool DEBUG = false;
 
             // init
             HttpClient httpClient = new HttpClient();

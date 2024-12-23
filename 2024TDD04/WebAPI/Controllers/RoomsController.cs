@@ -68,7 +68,47 @@ namespace WebAPI.Controllers
             return roomDTO;
         }
 
+        // PUT: api/Room/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutRoom(int id, RoomDTO roomDTO)
+        {
+            if (id != roomDTO.Id)
+            {
+                return BadRequest();
+            }
 
+            Room room;
+
+            try
+            {
+                room = RoomMapper.toDAL(roomDTO);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+
+            _context.Entry(room).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RoomExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
 
         // POST: api/Room
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -82,7 +122,7 @@ namespace WebAPI.Controllers
             }
 
             //check if the room is already in the DB
-            if (_context.Rooms.Any(rm => rm.Name == roomDTO.Name || rm.RoomAbreviation == roomDTO.RoomAbreviation)){
+            if (await _context.Rooms.AnyAsync(rm => rm.Name == roomDTO.Name || rm.RoomAbreviation == roomDTO.RoomAbreviation)){
                 return Conflict();
             }
 
@@ -131,6 +171,11 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<bool>> RoomAbreviationExists(string abreviation)
         {
             return await _context.Rooms.AnyAsync(rm => rm.RoomAbreviation == abreviation);
+        }
+
+        private bool RoomExists(int id)
+        {
+            return _context.Rooms.Any(e => e.Id == id);
         }
     }
 }

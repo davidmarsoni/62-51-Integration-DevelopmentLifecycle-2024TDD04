@@ -16,7 +16,7 @@ namespace DAL.Models
         public int? GroupId { get; set; }
         public Group? Group { get; set; } = null!;
         public int RoomId { get; set; }
-        public Room? Room { get; set; } = null!;
+        public string Room { get; set; }
         public required string Info { get; set; }
         public DateTime Timestamp { get; set; }
     }

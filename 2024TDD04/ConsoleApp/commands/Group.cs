@@ -8,9 +8,12 @@ namespace ConsoleApp.commands
     public class Group : ICommand
     {
         private GroupService groupService;
+        private UserGroupService userGroupService;
+
         public Group(HttpClient httpClient, string baseURL, bool debug)
         {
-            groupService = new GroupService(httpClient, baseURL);
+            groupService = new GroupService(httpClient, baseURL, debug);
+            userGroupService = new UserGroupService(httpClient, baseURL, debug);
         }
 
         public void Execute(String[] arguments)
@@ -34,6 +37,15 @@ namespace ConsoleApp.commands
                 case "edit":
                     EditGroup();
                     break;
+                case "adduser":
+                    AddUserToGroup();
+                    break;
+                case "removeuser":
+                    RemoveUserFromGroup();
+                    break;
+                case "listusers":
+                    ListUsersInGroup();
+                    break;
                 default:
                     Console.WriteLine("Group : " + Colors.Colorize("Command not found", Colors.Red));
                     break;
@@ -47,7 +59,7 @@ namespace ConsoleApp.commands
 
         public string GetSubCommands()
         {
-            return "add, delete, list, edit";
+            return "add, delete, list, edit, adduser, removeuser, listusers";
         }
 
         // methods
@@ -89,7 +101,7 @@ namespace ConsoleApp.commands
             Console.WriteLine("Beginning the \"Edit Group\" process...");
             Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to edit a group.");
             String groupIdInput = ConsoleManager.WaitInput(
-                EntityCommandUtils.ValidationIdIsInt,
+                ConsoleUtils.IsIntValidation,
                 "To edit a group, input the " + Colors.Colorize("ID", Colors.Yellow) + ". (or type 'exit')").ToLower();
             if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting group editing."))
                 return;
@@ -142,7 +154,7 @@ namespace ConsoleApp.commands
             Console.WriteLine("Beginning the \"Delete Group\" process...");
             Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to delete a group.");
             String groupIdInput = ConsoleManager.WaitInput(
-                EntityCommandUtils.ValidationIdIsInt,
+                ConsoleUtils.IsIntValidation,
                 "To delete a group, input the " + Colors.Colorize("ID", Colors.Yellow) + ". (or type 'exit')").ToLower();
             if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting group deletion."))
                 return;
@@ -157,6 +169,114 @@ namespace ConsoleApp.commands
                 return;
             }
             EntityCommandUtils.ConfirmAndDeleteEntity(groupId, groupService.DeleteGroup, "Group");
+        }
+
+        private void AddUserToGroup()
+        {
+            Console.WriteLine("Beginning the \"Add User to Group\" process...");
+            Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to add a user to.");
+            String groupIdInput = ConsoleManager.WaitInput(
+                ConsoleUtils.IsIntValidation,
+                "To add a user to a group, input the " + Colors.Colorize("Group Id", Colors.Yellow) + ". (or type 'exit')"
+            ).ToLower();
+            if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting add user to group."))
+                return;
+
+            Console.WriteLine("Enter the " + Colors.Colorize("User Id", Colors.Yellow) + " to add to the group.");
+            String userIdInput = ConsoleManager.WaitInput(
+                ConsoleUtils.IsIntValidation,
+                "To add a user to a group, input the " + Colors.Colorize("User Id", Colors.Yellow) + ". (or type 'exit')"
+            ).ToLower();
+            if (ConsoleUtils.ExitOnInputExit(userIdInput, "Exiting add user to group."))
+                return;
+
+            int groupId;
+            int userId;
+            try
+            {
+                groupId = int.Parse(groupIdInput);
+                userId = int.Parse(userIdInput);
+            }
+            catch
+            {
+                Console.WriteLine(Colors.Colorize("An error occurred when parsing the IDs. Exiting...", Colors.Red));
+                return;
+            }
+
+            UserGroupDTO userGroupDTO = new UserGroupDTO
+            {
+                GroupId = groupId,
+                UserId = userId
+            };
+
+            if (userGroupService.AddUserToGroup(userGroupDTO).Result)
+                Console.WriteLine(Colors.Colorize("Successfully added the user to the group.", Colors.Green));
+            else
+                Console.WriteLine(Colors.Colorize("An error occurred when adding the user to the group...", Colors.Red));
+        }
+
+        private void RemoveUserFromGroup()
+        {
+            Console.WriteLine("Beginning the \"Remove User from Group\" process...");
+            Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to remove a user from.");
+            String groupIdInput = ConsoleManager.WaitInput(
+                ConsoleUtils.IsIntValidation,
+                "To remove a user from a group, input the " + Colors.Colorize("Group Id", Colors.Yellow) + ". (or type 'exit')"
+            ).ToLower();
+            if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting remove user from group."))
+                return;
+
+            Console.WriteLine("Enter the " + Colors.Colorize("User Id", Colors.Yellow) + " to remove from the group.");
+            String userIdInput = ConsoleManager.WaitInput(
+                ConsoleUtils.IsIntValidation,
+                "To remove a user from a group, input the " + Colors.Colorize("User Id", Colors.Yellow) + ". (or type 'exit')"
+            ).ToLower();
+            if (ConsoleUtils.ExitOnInputExit(userIdInput, "Exiting remove user from group."))
+                return;
+
+            int groupId;
+            int userId;
+            try
+            {
+                groupId = int.Parse(groupIdInput);
+                userId = int.Parse(userIdInput);
+            }
+            catch
+            {
+                Console.WriteLine(Colors.Colorize("An error occurred when parsing the IDs. Exiting...", Colors.Red));
+                return;
+            }
+
+            if (userGroupService.RemoveUserFromGroup(groupId, userId).Result)
+                Console.WriteLine(Colors.Colorize("Successfully removed the user from the group.", Colors.Green));
+            else
+                Console.WriteLine(Colors.Colorize("An error occurred when removing the user from the group...", Colors.Red));
+        }
+
+        private void ListUsersInGroup()
+        {
+            Console.WriteLine("Beginning the \"List Users in Group\" process...");
+            Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to list users.");
+            String groupIdInput = ConsoleManager.WaitInput(
+                ConsoleUtils.IsIntValidation,
+                "To list users in a group, input the " + Colors.Colorize("Group Id", Colors.Yellow) + ". (or type 'exit')"
+            ).ToLower();
+            if (ConsoleUtils.ExitOnInputExit(groupIdInput, "Exiting list users in group."))
+                return;
+
+            int groupId;
+            try
+            {
+                groupId = int.Parse(groupIdInput);
+            }
+            catch
+            {
+                Console.WriteLine(Colors.Colorize("An error occurred when parsing the Group Id. Exiting...", Colors.Red));
+                return;
+            }
+
+            IEnumerable<UserDTO>? users = userGroupService.GetUsersInGroup(groupId).Result;
+            EntityCommandUtils.ListEntities(users, "User", user => $"{user.Id} - {user.Username}");
         }
 
         private string GroupInputValidName()

@@ -11,5 +11,8 @@ namespace MVC.Services.Interfaces
         Task<bool> DeleteGroup(int id);
         Task<bool> GroupNameExists(string name);
         Task<bool> GroupAcronymExists(string acronym);
+        Task<bool> AddUserToGroup(UserGroupDTO userGroupDTO);
+        Task<bool> RemoveUserFromGroup(int groupId, int userId);
+        Task<IEnumerable<UserDTO>?> GetUsersInGroup(int groupId);
     }
 }

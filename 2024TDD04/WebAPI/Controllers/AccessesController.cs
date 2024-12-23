@@ -26,10 +26,10 @@ namespace WebAPI.Controllers
         {
             if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Groups.Any(g => g.Id == groupId))
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            return await _context.Accesses.AnyAsync(a => a.RoomId == roomId && a.GroupId == groupId);;
+            return await _context.Accesses.AnyAsync(a => a.RoomId == roomId && a.GroupId == groupId);
         }
 
         // GET: api/Accesses/HasAccessUser/<roomId>/<userId>
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
         {
             if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Users.Any(u => u.Id == userId))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             // Get all the groups of the user
@@ -50,8 +50,17 @@ namespace WebAPI.Controllers
                 return false;
             }
 
-            // Check if the user has access to the room
-            return await _context.Accesses.AnyAsync(a => a.RoomId == roomId && userGroups.Any(ug => ug.GroupId == a.GroupId));;
+            // Check all the groups of the user to see if he has access
+            // Cycle through all the groups of the user to see if he has access
+            foreach (var userGroup in userGroups)
+            {
+                if (await _context.Accesses.AnyAsync(a => a.RoomId == roomId && a.GroupId == userGroup.GroupId))
+                {
+                    return true;
+                }
+            }
+            // If the user is not in any group that has access, return false
+            return false;
         }
 
         // GET: api/Accesses/GetRoomAccessedByGroup/<groupId>
@@ -60,7 +69,7 @@ namespace WebAPI.Controllers
         {
             if (!_context.Groups.Any(g => g.Id == groupId))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && a.GroupId == groupId));
@@ -134,7 +143,7 @@ namespace WebAPI.Controllers
         {
             if (!_context.Rooms.Any(r => r.Id == accessDTO.RoomId) || !_context.Groups.Any(g => g.Id == accessDTO.GroupId))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             // Get the access

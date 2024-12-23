@@ -16,11 +16,12 @@ namespace ConsoleApp.console
         public ConsoleManager(HttpClient httpClient, String baseURL, Boolean debug)
         {
             commands.Add("room", new Room(httpClient, baseURL, debug));
-            commands.Add("history", new History());
+            commands.Add("history", new History(httpClient, baseURL, debug));
             commands.Add("help", new Help(commands));
             commands.Add("user", new User(httpClient, baseURL, debug));
             commands.Add("group", new Group(httpClient, baseURL, debug));
             commands.Add("access", new Access(httpClient,baseURL, debug));
+            commands.Add("test", new Test(httpClient, baseURL, debug));
         }
 
         public void Launch()

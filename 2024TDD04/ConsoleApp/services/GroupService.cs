@@ -51,5 +51,20 @@ namespace MVC.Services
         {
             return await SQS.Get<bool>(_client, $"{_baseUrl}/Acronym/{acronym}");
         }
+
+        public async Task<bool> AddUserToGroup(UserGroupDTO userGroupDTO)
+        {
+            return await SQS.PostNoReturn(_client, $"{_baseUrl}/UserGroups", userGroupDTO);
+        }
+
+        public async Task<bool> RemoveUserFromGroup(int groupId, int userId)
+        {
+            return await SQS.Delete(_client, $"{_baseUrl}/UserGroups/{groupId}/{userId}");
+        }
+
+        public async Task<IEnumerable<UserDTO>?> GetUsersInGroup(int groupId)
+        {
+            return await SQS.GetAll<UserDTO>(_client, $"{_baseUrl}/UserGroups/{groupId}/users");
+        }
     }
 }
