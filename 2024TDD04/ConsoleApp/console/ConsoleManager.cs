@@ -1,4 +1,11 @@
 ﻿using ConsoleApp.commands;
+using ConsoleApp.commands.Access;
+using ConsoleApp.commands.Group;
+using ConsoleApp.commands.History;
+using ConsoleApp.commands.interfaces;
+using ConsoleApp.commands.Room;
+using ConsoleApp.commands.Test;
+using ConsoleApp.commands.User;
 using ConsoleApp.utils;
 using System;
 using System.Collections.Generic;
@@ -20,12 +27,15 @@ namespace ConsoleApp.console
             commands.Add("help", new Help(commands));
             commands.Add("user", new User(httpClient, baseURL, debug));
             commands.Add("group", new Group(httpClient, baseURL, debug));
-            commands.Add("access", new Access(httpClient,baseURL, debug));
+            commands.Add("access", new Access(httpClient, baseURL, debug));
             commands.Add("test", new Test(httpClient, baseURL, debug));
         }
 
         public void Launch()
         {
+            // show the hello message
+            HelloMessage();
+
             while (true)
             {
                 // print '>' character
@@ -68,10 +78,12 @@ namespace ConsoleApp.console
             }
         }
 
-        public static string WaitInput(Func<string, Boolean> validation, string errorMessage) {
+        public static string WaitInput(Func<string, Boolean> validation, string errorMessage)
+        {
             string output = "";
             Boolean isValid = false;
-            while (!isValid) {
+            while (!isValid)
+            {
                 // print '>' character
                 Console.Write("> ");
                 // wait on user input
@@ -91,6 +103,19 @@ namespace ConsoleApp.console
             {
                 Console.WriteLine(command.Key + " - " + command.Value.GetDescription());
             }
+        }
+
+        private void HelloMessage()
+        {
+            Console.WriteLine();
+            Console.WriteLine(@"██████╗  ██████╗  ██████╗ ███╗   ███╗     █████╗  ██████╗ ██████╗███████╗███████╗███████╗
+██╔══██╗██╔═══██╗██╔═══██╗████╗ ████║    ██╔══██╗██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝
+██████╔╝██║   ██║██║   ██║██╔████╔██║    ███████║██║     ██║     █████╗  ███████╗███████╗
+██╔══██╗██║   ██║██║   ██║██║╚██╔╝██║    ██╔══██║██║     ██║     ██╔══╝  ╚════██║╚════██║
+██║  ██║╚██████╔╝╚██████╔╝██║ ╚═╝ ██║    ██║  ██║╚██████╗╚██████╗███████╗███████║███████║
+╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝    ╚═╝  ╚═╝ ╚═════╝╚═════╝╚══════╝╚══════╝╚══════╝");
+            Console.WriteLine();
+            Console.WriteLine(Colors.Colorize("Type 'help' to see the list of commands", Colors.Green));
         }
     }
 }

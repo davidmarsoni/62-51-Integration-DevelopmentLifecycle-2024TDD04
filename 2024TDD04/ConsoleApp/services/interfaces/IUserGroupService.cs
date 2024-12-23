@@ -1,6 +1,6 @@
 using DTO;
 
-namespace MVC.Services.Interfaces
+namespace ConsoleApp.services.@interface
 {
     public interface IUserGroupService
     {

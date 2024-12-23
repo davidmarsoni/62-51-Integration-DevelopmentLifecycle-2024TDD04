@@ -1,10 +1,5 @@
-﻿using ConsoleApp.commands;
+﻿using ConsoleApp.commands.interfaces;
 using ConsoleApp.utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp.commands
 {
@@ -34,7 +29,6 @@ namespace ConsoleApp.commands
 
                     // print the description
                     Console.WriteLine(command.GetDescription());
-
                     // print the subcommands
                     Console.WriteLine(command.GetSubCommands());
                 }
@@ -52,14 +46,9 @@ namespace ConsoleApp.commands
             }
         }
 
-        public string GetDescription()
-        {
-            return "help - Displays the list of available commands.";
-        }
+        public string GetDescription() => "help : Displays the list of available commands.";
 
-        public string GetSubCommands()
-        {
-            return "help [command name] - Displays the subcommands of a command.";
-        }
+        public string GetSubCommands() => "help [command name] : Displays the subcommands of a command.";
+        
     }
 }

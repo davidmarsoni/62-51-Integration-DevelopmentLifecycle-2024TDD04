@@ -20,7 +20,7 @@ namespace DAL
         {
             if (!builder.IsConfigured)
             {
-                builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=RoomRoom");
+                builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=RoomAccess");
             }
         }
 

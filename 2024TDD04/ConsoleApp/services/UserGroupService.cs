@@ -1,5 +1,5 @@
+using ConsoleApp.services.@interface;
 using DTO;
-using MVC.Services.Interfaces;
 using SQS = MVC.Services.QuerySnippet.StandardQuerySet;
 
 namespace MVC.Services

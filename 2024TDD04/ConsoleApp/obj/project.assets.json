@@ -2845,19 +2845,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mathias\\.nuget\\packages\\": {}
+    "C:\\Users\\david\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\ConsoleApp.csproj",
+      "projectUniqueName": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\ConsoleApp.csproj",
       "projectName": "ConsoleApp",
-      "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\ConsoleApp.csproj",
-      "packagesPath": "C:\\Users\\Mathias\\.nuget\\packages\\",
-      "outputPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\obj\\",
+      "projectPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\ConsoleApp.csproj",
+      "packagesPath": "C:\\Users\\david\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Mathias\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\david\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2872,8 +2872,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj": {
-              "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj"
+            "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj": {
+              "projectPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj"
             }
           }
         }
@@ -2908,7 +2908,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
