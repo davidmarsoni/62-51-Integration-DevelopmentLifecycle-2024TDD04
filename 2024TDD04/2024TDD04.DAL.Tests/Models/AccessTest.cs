@@ -1,5 +1,4 @@
-﻿using DAL.Enums;
-using DAL.Models;
+﻿using DAL.Models;
 using Xunit;
 
 namespace _2024TDD04.DAL.Tests.Models
@@ -17,7 +16,6 @@ namespace _2024TDD04.DAL.Tests.Models
             Assert.Null(access.Room);
             Assert.Equal(0, access.GroupId);
             Assert.Null(access.Group);
-            Assert.Equal(default, access.AccessType);
         }
 
         [Fact]
@@ -74,20 +72,6 @@ namespace _2024TDD04.DAL.Tests.Models
 
             // Assert
             Assert.Equal(expectedGroup, access.Group);
-        }
-
-        [Fact]
-        public void Access_SetAccessType_ShouldReturnCorrectValue()
-        {
-            // Arrange
-            var access = new Access();
-            var expectedAccessType = AccessType.Allowed;
-
-            // Act
-            access.AccessType = expectedAccessType;
-
-            // Assert
-            Assert.Equal(expectedAccessType, access.AccessType);
         }
     }
 }

@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "AutoMapper/13.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Options": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Azure.Core/1.38.0": {
         "type": "package",
         "dependencies": {
@@ -43,6 +59,22 @@
         },
         "runtime": {
           "lib/netstandard2.0/Azure.Identity.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Castle.Core/5.1.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Diagnostics.EventLog": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/Castle.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Castle.Core.dll": {
             "related": ".xml"
           }
         }
@@ -889,6 +921,18 @@
           }
         }
       },
+      "Moq/4.20.72": {
+        "type": "package",
+        "dependencies": {
+          "Castle.Core": "5.1.1"
+        },
+        "compile": {
+          "lib/net6.0/Moq.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Moq.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -1346,6 +1390,32 @@
         },
         "build": {
           "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "System.Diagnostics.EventLog/6.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/System.Diagnostics.EventLog.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/System.Diagnostics.EventLog.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/netcoreapp3.1/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          },
+          "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Diagnostics.Tools/4.3.0": {
@@ -2693,6 +2763,19 @@
           "build/net6.0/xunit.runner.visualstudio.props": {}
         }
       },
+      "ConsoleApp/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DTO": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ConsoleApp.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ConsoleApp.dll": {}
+        }
+      },
       "DAL/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -2710,6 +2793,9 @@
       "DTO/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DAL": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/DTO.dll": {}
         },
@@ -2738,6 +2824,21 @@
     }
   },
   "libraries": {
+    "AutoMapper/13.0.1": {
+      "sha512": "/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
+      "type": "package",
+      "path": "automapper/13.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "automapper.13.0.1.nupkg.sha512",
+        "automapper.nuspec",
+        "icon.png",
+        "lib/net6.0/AutoMapper.dll",
+        "lib/net6.0/AutoMapper.xml"
+      ]
+    },
     "Azure.Core/1.38.0": {
       "sha512": "IuEgCoVA0ef7E4pQtpC3+TkPbzaoQfa77HlfJDmfuaJUCVJmn7fT0izamZiryW5sYUFKizsftIxMkXKbgIcPMQ==",
       "type": "package",
@@ -2774,6 +2875,30 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "Castle.Core/5.1.1": {
+      "sha512": "rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
+      "type": "package",
+      "path": "castle.core/5.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ASL - Apache Software Foundation License.txt",
+        "CHANGELOG.md",
+        "LICENSE",
+        "castle-logo.png",
+        "castle.core.5.1.1.nupkg.sha512",
+        "castle.core.nuspec",
+        "lib/net462/Castle.Core.dll",
+        "lib/net462/Castle.Core.xml",
+        "lib/net6.0/Castle.Core.dll",
+        "lib/net6.0/Castle.Core.xml",
+        "lib/netstandard2.0/Castle.Core.dll",
+        "lib/netstandard2.0/Castle.Core.xml",
+        "lib/netstandard2.1/Castle.Core.dll",
+        "lib/netstandard2.1/Castle.Core.xml",
+        "readme.txt"
       ]
     },
     "coverlet.collector/6.0.0": {
@@ -4189,6 +4314,23 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Moq/4.20.72": {
+      "sha512": "EA55cjyNn8eTNWrgrdZJH5QLFp2L43oxl1tlkoYUKIE9pRwL784OWiTXeCV5ApS+AMYEAlt7Fo03A2XfouvHmQ==",
+      "type": "package",
+      "path": "moq/4.20.72",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net462/Moq.dll",
+        "lib/net6.0/Moq.dll",
+        "lib/netstandard2.0/Moq.dll",
+        "lib/netstandard2.1/Moq.dll",
+        "moq.4.20.72.nupkg.sha512",
+        "moq.nuspec",
+        "readme.md"
+      ]
+    },
     "NETStandard.Library/1.6.1": {
       "sha512": "WcSp3+vP+yHNgS8EV5J7pZ9IRpeDuARBPN28by8zqff1wJQXm26PVU8L3/fYLBJVU7BtDyqNVWq2KlCVvSSR4A==",
       "type": "package",
@@ -4933,6 +5075,37 @@
         "lib/netstandard2.0/System.Diagnostics.DiagnosticSource.xml",
         "system.diagnostics.diagnosticsource.9.0.0.nupkg.sha512",
         "system.diagnostics.diagnosticsource.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Diagnostics.EventLog/6.0.0": {
+      "sha512": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw==",
+      "type": "package",
+      "path": "system.diagnostics.eventlog/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/netcoreapp2.0/System.Diagnostics.EventLog.targets",
+        "buildTransitive/netcoreapp3.1/_._",
+        "lib/net461/System.Diagnostics.EventLog.dll",
+        "lib/net461/System.Diagnostics.EventLog.xml",
+        "lib/net6.0/System.Diagnostics.EventLog.dll",
+        "lib/net6.0/System.Diagnostics.EventLog.xml",
+        "lib/netcoreapp3.1/System.Diagnostics.EventLog.dll",
+        "lib/netcoreapp3.1/System.Diagnostics.EventLog.xml",
+        "lib/netstandard2.0/System.Diagnostics.EventLog.dll",
+        "lib/netstandard2.0/System.Diagnostics.EventLog.xml",
+        "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.Messages.dll",
+        "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.dll",
+        "runtimes/win/lib/net6.0/System.Diagnostics.EventLog.xml",
+        "runtimes/win/lib/netcoreapp3.1/System.Diagnostics.EventLog.Messages.dll",
+        "runtimes/win/lib/netcoreapp3.1/System.Diagnostics.EventLog.dll",
+        "runtimes/win/lib/netcoreapp3.1/System.Diagnostics.EventLog.xml",
+        "system.diagnostics.eventlog.6.0.0.nupkg.sha512",
+        "system.diagnostics.eventlog.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
@@ -8384,6 +8557,11 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
+    "ConsoleApp/1.0.0": {
+      "type": "project",
+      "path": "../ConsoleApp/ConsoleApp.csproj",
+      "msbuildProject": "../ConsoleApp/ConsoleApp.csproj"
+    },
     "DAL/1.0.0": {
       "type": "project",
       "path": "../DAL/DAL.csproj",
@@ -8402,9 +8580,12 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "AutoMapper >= 13.0.1",
+      "ConsoleApp >= 1.0.0",
       "DAL >= 1.0.0",
       "DTO >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 17.8.0",
+      "Moq >= 4.20.72",
       "WebAPI >= 1.0.0",
       "coverlet.collector >= 6.0.0",
       "xunit >= 2.5.3",
@@ -8412,19 +8593,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\david\\.nuget\\packages\\": {}
+    "C:\\Users\\Mathias\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\2024TDD04.DAL.Tests\\2024TDD04.DAL.Tests.csproj",
+      "projectUniqueName": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\2024TDD04.DAL.Tests\\2024TDD04.DAL.Tests.csproj",
       "projectName": "2024TDD04.DAL.Tests",
-      "projectPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\2024TDD04.DAL.Tests\\2024TDD04.DAL.Tests.csproj",
-      "packagesPath": "C:\\Users\\david\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\2024TDD04.DAL.Tests\\obj\\",
+      "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\2024TDD04.DAL.Tests\\2024TDD04.DAL.Tests.csproj",
+      "packagesPath": "C:\\Users\\Mathias\\.nuget\\packages\\",
+      "outputPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\2024TDD04.DAL.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\david\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Mathias\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8439,14 +8620,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DAL\\DAL.csproj": {
-              "projectPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DAL\\DAL.csproj"
+            "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\ConsoleApp.csproj": {
+              "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\ConsoleApp\\ConsoleApp.csproj"
             },
-            "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj": {
-              "projectPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj"
+            "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DAL\\DAL.csproj": {
+              "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DAL\\DAL.csproj"
             },
-            "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\WebAPI\\WebAPI.csproj": {
-              "projectPath": "C:\\Users\\david\\OneDrive - HESSO\\Git\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\WebAPI\\WebAPI.csproj"
+            "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj": {
+              "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\DTO\\DTO.csproj"
+            },
+            "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\WebAPI\\WebAPI.csproj": {
+              "projectPath": "C:\\62-51-Integration-DevelopmentLifecycle-2024TDD04\\2024TDD04\\WebAPI\\WebAPI.csproj"
             }
           }
         }
@@ -8466,9 +8650,17 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "AutoMapper": {
+            "target": "Package",
+            "version": "[13.0.1, )"
+          },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[17.8.0, )"
+          },
+          "Moq": {
+            "target": "Package",
+            "version": "[4.20.72, )"
           },
           "coverlet.collector": {
             "target": "Package",
@@ -8499,7 +8691,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
