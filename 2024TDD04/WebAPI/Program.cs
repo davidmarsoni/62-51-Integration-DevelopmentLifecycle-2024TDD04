@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class Program
     {
         public static void Main(string[] args)

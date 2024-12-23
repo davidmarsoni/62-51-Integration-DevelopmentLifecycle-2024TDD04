@@ -102,16 +102,20 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && userGroups.Any(ug => ug.GroupId == a.GroupId)));
-
-            if (room == null)
+            // Check all the groups of the user to see if he has access
+            var userGroupIds = userGroups.Select(ug => ug.GroupId).ToList();
+            foreach (var userGroupId in userGroupIds)
             {
-                return NotFound();
+                var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && a.GroupId == userGroupId));
+
+                if (room != null)
+                {
+                    RoomDTO roomDTO = RoomMapper.toDTO(room);
+
+                    return roomDTO;
+                }
             }
-
-            RoomDTO roomDTO = RoomMapper.toDTO(room);
-
-            return roomDTO;
+            return NotFound();
         }
 
         // POST: api/GrantAccess
