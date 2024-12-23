@@ -18,7 +18,10 @@ namespace DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=RoomRoom");
+            if (!builder.IsConfigured)
+            {
+                builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=RoomRoom");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
