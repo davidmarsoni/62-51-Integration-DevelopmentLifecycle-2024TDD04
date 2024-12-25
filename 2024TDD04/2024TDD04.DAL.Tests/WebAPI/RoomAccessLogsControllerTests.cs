@@ -81,6 +81,7 @@ namespace _2024TDD04.DAL.Tests.WebAPI
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
             Assert.Single(roomAccessLogs);
+            Assert.Equal(2, roomAccessLogs[0].Id);
         }
 
         [Fact]

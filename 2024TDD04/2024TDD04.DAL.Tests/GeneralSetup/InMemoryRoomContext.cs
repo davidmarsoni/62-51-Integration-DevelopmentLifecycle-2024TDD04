@@ -25,7 +25,7 @@ namespace _2024TDD04.DAL.Tests.WebAPI
                 new User { Id = 1, Username = "Widmer", IsDeleted = false },
                 new User { Id = 2, Username = "David", IsDeleted = false },
                 new User { Id = 3, Username = "Zanya", IsDeleted = true },
-                new User { Id = 4, Username = "Mathias", IsDeleted = true }
+                new User { Id = 4, Username = "Mathias", IsDeleted = false }
             );
             context.Groups.AddRange(
                 new Group { Id = 1, Name = "Teachers", Acronym = "TCH" },

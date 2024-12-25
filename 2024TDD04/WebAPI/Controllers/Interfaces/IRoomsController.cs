@@ -6,7 +6,7 @@ namespace WebApi.Controllers.Interfaces
     public interface IRoomsController
     {
         Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms();
-        Task<ActionResult<List<RoomDTO>>> GetRoomsActive();
+        Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsActive();
         Task<ActionResult<RoomDTO>> GetRoom(int id);
         Task<IActionResult> PutRoom(int id, RoomDTO roomDTO);
         Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomDTO);

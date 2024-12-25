@@ -35,6 +35,14 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
+            // Check if the user is not deleted
+            var user = await _context.Users.FindAsync(roomAccessDTO.UserId);
+            // If the user is deleted, return a 403 Forbidden, or a 404 Not Found if the user does not exist
+            if (user == null || user.IsDeleted)
+            {
+                return user == null ? NotFound() : Forbid();
+            }
+
             // Get all the groups of the user
             var userGroups = await _context.UserGroups.Where(ug => ug.UserId == roomAccessDTO.UserId).ToListAsync();
 
@@ -50,7 +58,7 @@ namespace WebAPI.Controllers
                     Info = "User is not in any group, access denied.",
                 };
                 _context.RoomAccessLogs.Add(logNoGroup);
-                return null;
+                return NoContent();
             }
 
             // Check if the user has access to the room
@@ -74,7 +82,7 @@ namespace WebAPI.Controllers
             };
             _context.RoomAccessLogs.Add(log);
 
-            return hasAccess != null ? roomAccessDTO : null;
+            return hasAccess != null ? roomAccessDTO : NoContent();
         }
     }
 }

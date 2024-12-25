@@ -36,7 +36,7 @@ namespace WebApi.Controllers
 
         // GET: api/Groups/Active
         [HttpGet("Active")]
-        public async Task<ActionResult<List<GroupDTO>>> GetUsersActive()
+        public async Task<ActionResult<IEnumerable<GroupDTO>>> GetUsersActive()
         {
             // get all groups that are active
             IEnumerable<Group> groups = await _context.Groups.Where(u => !u.IsDeleted).ToListAsync();
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
 
         // GET: api/Groups/User/5
         [HttpGet("User/{userId}")]
-        public async Task<ActionResult<List<GroupDTO>>> GetGroupsByUserId(int userId)
+        public async Task<ActionResult<IEnumerable<GroupDTO>>> GetGroupsByUserId(int userId)
         {
             // get all groups that the user is in
             IEnumerable<Group> groups = await _context.Groups.Where(g => g.Users.Any(u => u.Id == userId)).ToListAsync();

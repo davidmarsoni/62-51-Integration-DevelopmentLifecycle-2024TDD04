@@ -20,7 +20,7 @@ namespace WebApi.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<List<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             IEnumerable<User> users = await _context.Users.ToListAsync();
             List<UserDTO> result = new List<UserDTO>();
@@ -73,7 +73,7 @@ namespace WebApi.Controllers
 
         // GET: api/Users/Group/5
         [HttpGet("Group/{groupId}")]
-        public async Task<ActionResult<List<UserDTO>>> GetUsersByGroupId(int groupId)
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByGroupId(int groupId)
         {
             // get all active users that are in the group
             var users = await _context.UserGroups
@@ -118,18 +118,15 @@ namespace WebApi.Controllers
                 return BadRequest();
             }
 
-            User user;
+            User user = UserMapper.toDAL(userDTO);
 
-            try
+            var existingUser = _context.Users.Local.FirstOrDefault(u => u.Id == id);
+            if (existingUser != null)
             {
-                user = UserMapper.toDAL(userDTO);
+                _context.Entry(existingUser).State = EntityState.Detached;
             }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
-
             _context.Entry(user).State = EntityState.Modified;
+
 
             try
             {
@@ -143,7 +140,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500);
                 }
             }
 
@@ -155,15 +152,12 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO userDTO)
         {
-            User user;
+            User user = UserMapper.toDAL(userDTO);
 
-            try
+            // check if user already exists
+            if (UserExists(user.Id))
             {
-                user = UserMapper.toDAL(userDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
+                return Conflict();
             }
 
             _context.Users.Add(user);
@@ -189,8 +183,7 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        private bool UserExists(int id)
-        {
+        private bool UserExists(int id) { 
             return _context.Users.Any(e => e.Id == id);
         }
     }

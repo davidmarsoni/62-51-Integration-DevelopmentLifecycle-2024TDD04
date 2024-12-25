@@ -5,10 +5,10 @@ namespace WebApi.Controllers.Interfaces
 {
     public interface IUsersController
     {
-        Task<ActionResult<List<UserDTO>>> GetUsers();
-        Task<ActionResult<Boolean>> GetUsernameExist(string username);
-        Task<ActionResult<List<UserDTO>>> GetUsersActive();
-        Task<ActionResult<List<UserDTO>>> GetUsersByGroupId(int groupId);
+        Task<ActionResult<IEnumerable<UserDTO>>> GetUsers();
+        Task<ActionResult<bool>> GetUsernameExist(string username);
+        Task<ActionResult<IEnumerable<UserDTO>>> GetUsersActive();
+        Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByGroupId(int groupId);
         Task<ActionResult<UserDTO>> GetUser(int id);
         Task<IActionResult> PutUser(int id, UserDTO userDTO);
         Task<ActionResult<UserDTO>> PostUser(UserDTO userDTO);

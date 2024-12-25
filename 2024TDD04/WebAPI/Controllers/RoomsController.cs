@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Room/Active
         [HttpGet("Active")]
-        public async Task<ActionResult<List<RoomDTO>>> GetRoomsActive()
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsActive()
         {
             // get all rooms that are active
             IEnumerable<Room> rooms = await _context.Rooms.Where(u => !u.IsDeleted).ToListAsync();
@@ -78,18 +78,14 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
 
-            Room room;
+            Room room = RoomMapper.toDAL(roomDTO);
 
-            try
+            var existingRoom = await _context.Rooms.FindAsync(id);
+            if (existingRoom == null)
             {
-                room = RoomMapper.toDAL(roomDTO);
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
-
-            _context.Entry(room).State = EntityState.Modified;
+            _context.Entry(existingRoom).CurrentValues.SetValues(room);
 
             try
             {
@@ -115,7 +111,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomDTO)
         {
-            Room room;
+            
             if (roomDTO == null)
             {
                 return BadRequest();
@@ -126,14 +122,7 @@ namespace WebAPI.Controllers
                 return Conflict();
             }
 
-            try
-            {
-                room = RoomMapper.toDAL(roomDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
+            Room room = RoomMapper.toDAL(roomDTO);
 
             _context.Rooms.Add(room);
 
