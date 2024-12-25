@@ -72,6 +72,12 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
 
+            // Check if the room is not deleted
+            if (await _context.Rooms.AnyAsync(r => r.Id == accessDTO.RoomId && r.IsDeleted))
+            {
+                return NotFound();
+            }
+
             // Check if the access already exists
             if (await _context.Accesses.AnyAsync(a => a.RoomId == accessDTO.RoomId && a.GroupId == accessDTO.GroupId))
             {
@@ -91,6 +97,12 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<Boolean>> RevokeAccessAsync(AccessDTO accessDTO)
         {
             if (!_context.Rooms.Any(r => r.Id == accessDTO.RoomId) || !_context.Groups.Any(g => g.Id == accessDTO.GroupId))
+            {
+                return NotFound();
+            }
+
+            // Check if the room is not deleted
+            if (await _context.Rooms.AnyAsync(r => r.Id == accessDTO.RoomId && r.IsDeleted))
             {
                 return NotFound();
             }

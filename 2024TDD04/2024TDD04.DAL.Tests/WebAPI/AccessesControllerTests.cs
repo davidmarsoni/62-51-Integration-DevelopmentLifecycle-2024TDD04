@@ -143,8 +143,8 @@ namespace _2024TDD04.DAL.Tests.WebAPI
         [Fact]
         public async void GrantAccessAsync_GrantAccess_ShouldReturnTrue(){
             // Arrange
-            // Teachers group will be granted access to Utility Closet R303
-            AccessDTO accessDTO = new AccessDTO { RoomId = 3, GroupId = 1 };
+            // Students group will be granted access to Classroom 301
+            AccessDTO accessDTO = new AccessDTO { RoomId = 1, GroupId = 2 };
 
             // Act
             var result = await _accessesController.GrantAccessAsync(accessDTO);
@@ -192,6 +192,19 @@ namespace _2024TDD04.DAL.Tests.WebAPI
             Assert.IsType<ConflictResult>(result.Result);
         }
 
+        [Fact]
+        public async void GrantAccessAsync_GrantAccessToDeletedRoom_ShouldReturnNotFound(){
+            // Arrange
+            // Room 303 is deleted
+            AccessDTO accessDTO = new AccessDTO { RoomId = 3, GroupId = 1 };
+
+            // Act
+            var result = await _accessesController.GrantAccessAsync(accessDTO);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
         #endregion
 
         #region RevokeAccessAsync
@@ -230,6 +243,18 @@ namespace _2024TDD04.DAL.Tests.WebAPI
 
             // Assert
             Assert.True(result.Value);
+        }
+
+        [Fact]
+        public async void RevokeAccessAsync_RevokeAccessToDeletedRoom_ShouldReturnNotFound(){
+            // Arrange
+            var dto = new AccessDTO { RoomId = 3, GroupId = 1 };
+
+            // Act
+            var result = await _accessesController.RevokeAccessAsync(dto);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         #endregion
