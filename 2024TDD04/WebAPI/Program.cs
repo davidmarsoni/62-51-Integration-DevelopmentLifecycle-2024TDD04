@@ -9,6 +9,10 @@ namespace WebAPI
     {
         public static void Main(string[] args)
         {
+            // Define the environment variable
+            Environment.SetEnvironmentVariable("ENVIRONMENT", "Development");
+
+            // Create the DbContext
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.

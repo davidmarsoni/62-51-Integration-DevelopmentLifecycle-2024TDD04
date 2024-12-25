@@ -22,7 +22,7 @@ namespace _2024TDD04.DAL.Tests.WebAPI
 
         #region GetRoomAccessLogs
         [Fact]
-        public async void GetRoomAccessLogs_WhenAllParametersNull_ReturnsAllRoomAccessLogs()
+        public async void GetRoomAccessLogs_WhenAllParametersNull_ReturnsAllRoomAccessLogsUsingDefaultValues()
         {
             // Act
             var result = await roomAccessLogsController.GetRoomAccessLogsAsync(null, null, null);
@@ -48,7 +48,7 @@ namespace _2024TDD04.DAL.Tests.WebAPI
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenSingleLogAsked_ReturnsRoomAccessLogsSingle(){
+        public async void GetRoomAccessLogs_WhenSingleLogsAsked_ReturnsRoomAccessLogsSingle(){
             // Arrange
 
             // Act
@@ -57,6 +57,18 @@ namespace _2024TDD04.DAL.Tests.WebAPI
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
             Assert.Single(roomAccessLogs);
+        }
+
+        [Fact]
+        public async void GetRoomAccessLogs_WhenThreeLogsAsked_ReturnsAllRoomAccessLogs(){
+            // Arrange
+
+            // Act
+            var result = await roomAccessLogsController.GetRoomAccessLogsAsync(3, null, null);
+
+            // Assert
+            var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
+            Assert.Equal(2, roomAccessLogs.Count);
         }
 
         [Fact]

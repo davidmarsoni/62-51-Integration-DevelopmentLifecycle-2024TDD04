@@ -22,51 +22,51 @@ namespace _2024TDD04.DAL.Tests.WebAPI
             _accessesController = new AccessesController(_testDbContext);
         }
 
-        #region HasAccessAsync
+        #region HasAccessGroupAsync
 
         [Fact]
-        public async void HasAccessUserAsync_CheckIfGroupHasAccess_ShouldReturnTrue(){
+        public async void HasAccessGroupAsync_CheckIfGroupHasAccess_ShouldReturnTrue(){
             // Arrange
 
             // Act
             // Teachers group has access to Room 301
-            var result = await _accessesController.HasAccessAsync(1, 1);
+            var result = await _accessesController.HasAccessGroupAsync(1, 1);
 
             // Assert
             Assert.True(result.Value);
         }
 
         [Fact]
-        public async void HasAccessUserAsync_CheckIfGroupHasAccess_ShouldReturnFalse(){
+        public async void HasAccessGroupAsync_CheckIfGroupHasAccess_ShouldReturnFalse(){
             // Arrange
 
             // Act
             // Students group does not have access to Room 301
-            var result = await _accessesController.HasAccessAsync(1, 2);
+            var result = await _accessesController.HasAccessGroupAsync(1, 2);
 
             // Assert
             Assert.False(result.Value);
         }
 
         [Fact]
-        public async void HasAccessAsync_CheckIfRoomDoesNotExist_ShouldReturnNotFound(){
+        public async void HasAccessGroupAsync_CheckIfRoomDoesNotExist_ShouldReturnNotFound(){
             // Arrange
 
             // Act
             // Room Id 100 does not exist
-            var result = await _accessesController.HasAccessAsync(100, 1);
+            var result = await _accessesController.HasAccessGroupAsync(100, 1);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
-        public async void HasAccessUserAsync_CheckIfGroupDoesNotExist_ShouldReturnNotFound(){
+        public async void HasAccessGroupAsync_CheckIfGroupDoesNotExist_ShouldReturnNotFound(){
             // Arrange
 
             // Act
             // Group Id 100 does not exist
-            var result = await _accessesController.HasAccessAsync(1, 100);
+            var result = await _accessesController.HasAccessGroupAsync(1, 100);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -234,100 +234,6 @@ namespace _2024TDD04.DAL.Tests.WebAPI
 
         #endregion
 
-        #region GetRoomAccessedByGroupAsync
-
-        [Fact]
-        public async void GetRoomAccessedByGroupAsync_GroupDoesNotExist_ShouldReturnNotFound(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByGroupAsync(999); 
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetRoomAccessedByGroupAsync_NoRoomForGroup_ShouldReturnNotFound(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByGroupAsync(3);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetRoomAccessedByGroupAsync_GroupHasAccess_ShouldReturnRoom(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByGroupAsync(1);
-
-            // Assert
-            Assert.IsType<RoomDTO>(result.Value);
-        }
-
-        #endregion
-
-        #region GetRoomAccessedByUserAsync
-
-        [Fact]
-        public async void GetRoomAccessedByUserAsync_UserDoesNotExist_ShouldReturnBadRequest(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByUserAsync(999);
-
-            // Assert
-            Assert.IsType<BadRequestResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetRoomAccessedByUserAsync_UserInNoGroup_ShouldReturnNotFound(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByUserAsync(3);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetRoomAccessedByUserAsync_NoRoomForUserGroup_ShouldReturnNotFound(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByUserAsync(3);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetRoomAccessedByUserAsync_UserHasNoGroup_ShouldReturnNotFound(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByUserAsync(4);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetRoomAccessedByUserAsync_UserHasAccess_ShouldReturnRoom(){
-            // Arrange
-
-            // Act
-            var result = await _accessesController.GetRoomAccessedByUserAsync(2);
-
-            // Assert
-            Assert.IsType<RoomDTO>(result.Value);
-        }
-
-        #endregion
+        
     }
 }

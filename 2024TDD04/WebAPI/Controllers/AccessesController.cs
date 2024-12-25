@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Accesses/HasAccessGroup/<roomId>/<groupId>
         [HttpGet("HasAccessGroup/{roomId}/{groupId}")]
-        public async Task<ActionResult<bool>> HasAccessAsync(int roomId, int groupId)
+        public async Task<ActionResult<bool>> HasAccessGroupAsync(int roomId, int groupId)
         {
             if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Groups.Any(g => g.Id == groupId))
             {
@@ -61,61 +61,6 @@ namespace WebAPI.Controllers
             }
             // If the user is not in any group that has access, return false
             return false;
-        }
-
-        // GET: api/Accesses/GetRoomAccessedByGroup/<groupId>
-        [HttpGet("GetRoomAccessedByGroup/{groupId}")]
-        public async Task<ActionResult<RoomDTO>> GetRoomAccessedByGroupAsync(int groupId)
-        {
-            if (!_context.Groups.Any(g => g.Id == groupId))
-            {
-                return NotFound();
-            }
-
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && a.GroupId == groupId));
-
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            RoomDTO roomDTO = RoomMapper.toDTO(room);
-
-            return roomDTO;
-        }
-
-        // GET: api/Accesses/GetRoomAccessedByUser/<userId>
-        [HttpGet("GetRoomAccessedByUser/{userId}")]
-        public async Task<ActionResult<RoomDTO>> GetRoomAccessedByUserAsync(int userId)
-        {
-            if (!_context.Users.Any(u => u.Id == userId))
-            {
-                return BadRequest();
-            }
-
-            // Get all the groups of the user
-            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == userId).ToListAsync();
-
-            // If the user is not in any group, he doesn't have access
-            if (userGroups.Count == 0)
-            {
-                return NotFound();
-            }
-
-            // Check all the groups of the user to see if he has access
-            var userGroupIds = userGroups.Select(ug => ug.GroupId).ToList();
-            foreach (var userGroupId in userGroupIds)
-            {
-                var room = await _context.Rooms.FirstOrDefaultAsync(r => _context.Accesses.Any(a => a.RoomId == r.Id && a.GroupId == userGroupId));
-
-                if (room != null)
-                {
-                    RoomDTO roomDTO = RoomMapper.toDTO(room);
-
-                    return roomDTO;
-                }
-            }
-            return NotFound();
         }
 
         // POST: api/GrantAccess

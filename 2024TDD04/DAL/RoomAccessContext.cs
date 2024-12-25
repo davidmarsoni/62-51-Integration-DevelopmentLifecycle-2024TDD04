@@ -18,7 +18,8 @@ namespace DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            if (!builder.IsConfigured)
+            var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
+            if (environment == "Development")
             {
                 builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=RoomAccess");
             }

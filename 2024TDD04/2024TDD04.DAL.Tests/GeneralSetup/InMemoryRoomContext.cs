@@ -8,6 +8,10 @@ namespace _2024TDD04.DAL.Tests.WebAPI
     {
         public static RoomAccessContext CreateInMemoryContext()
         {
+            // Define the environment variable
+            Environment.SetEnvironmentVariable("ENVIRONMENT", "Test");
+
+            // Create a new instance of DbContextOptionsBuilder with an in-memory database
             var options = new DbContextOptionsBuilder<RoomAccessContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
