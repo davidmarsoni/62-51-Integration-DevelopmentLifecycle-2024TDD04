@@ -39,7 +39,7 @@ namespace WebApi.Controllers
         public async Task<ActionResult<IEnumerable<GroupDTO>>> GetUsersActive()
         {
             // get all groups that are active
-            IEnumerable<Group> groups = await _context.Groups.Where(u => !u.IsDeleted).ToListAsync();
+            IEnumerable<Group> groups = await _context.Groups.Where(user => !user.IsDeleted).ToListAsync();
             List<GroupDTO> result = new List<GroupDTO>();
             if (groups != null && groups.Count() > 0)
             {
@@ -72,7 +72,7 @@ namespace WebApi.Controllers
         public async Task<ActionResult<IEnumerable<GroupDTO>>> GetGroupsByUserId(int userId)
         {
             // get all groups that the user is in
-            IEnumerable<Group> groups = await _context.Groups.Where(g => g.Users.Any(u => u.Id == userId)).ToListAsync();
+            IEnumerable<Group> groups = await _context.Groups.Where(group => group.Users.Any(user => user.Id == userId)).ToListAsync();
             List<GroupDTO> result = new List<GroupDTO>();
             if (groups != null && groups.Count() > 0)
             {
@@ -88,7 +88,7 @@ namespace WebApi.Controllers
         [HttpGet("Name/{name}")]
         public async Task<ActionResult<bool>> GroupNameExists(string name)
         {
-            bool exists = await _context.Groups.AnyAsync(g => g.Name == name);
+            bool exists = await _context.Groups.AnyAsync(group => group.Name == name);
             return exists;
         }
 
@@ -96,12 +96,11 @@ namespace WebApi.Controllers
         [HttpGet("Acronym/{acronym}")]
         public async Task<ActionResult<bool>> GroupAcronymExists(string acronym)
         {
-            bool exists = await _context.Groups.AnyAsync(g => g.Acronym == acronym);
+            bool exists = await _context.Groups.AnyAsync(group => group.Acronym == acronym);
             return exists;
         }
 
         // PUT: api/Groups/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGroup(int id, GroupDTO groupDTO)
         {
@@ -129,7 +128,7 @@ namespace WebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GroupExists(id))
+                if (!_context.Groups.Any(group => group.Id == id))
                 {
                     return NotFound();
                 }
@@ -143,7 +142,6 @@ namespace WebApi.Controllers
         }
 
         // POST: api/Groups
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<GroupDTO>> PostGroup(GroupDTO groupDTO)
         {
@@ -181,9 +179,6 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        private bool GroupExists(int id)
-        {
-            return _context.Groups.Any(e => e.Id == id);
-        }
+       
     }
 }

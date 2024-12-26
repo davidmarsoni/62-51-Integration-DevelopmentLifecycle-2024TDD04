@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Mapper;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -24,25 +22,25 @@ namespace WebAPI.Controllers
         [HttpGet("HasAccessGroup/{roomId}/{groupId}")]
         public async Task<ActionResult<bool>> HasAccessGroupAsync(int roomId, int groupId)
         {
-            if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Groups.Any(g => g.Id == groupId))
+            if (!_context.Rooms.Any(room => room.Id == roomId) || !_context.Groups.Any(group => group.Id == groupId))
             {
                 return NotFound();
             }
 
-            return await _context.Accesses.AnyAsync(a => a.RoomId == roomId && a.GroupId == groupId);
+            return await _context.Accesses.AnyAsync(access => access.RoomId == roomId && access.GroupId == groupId);
         }
 
         // GET: api/Accesses/HasAccessUser/<roomId>/<userId>
         [HttpGet("HasAccessUser/{roomId}/{userId}")]
         public async Task<ActionResult<bool>> HasAccessUserAsync(int roomId, int userId)
         {
-            if (!_context.Rooms.Any(r => r.Id == roomId) || !_context.Users.Any(u => u.Id == userId))
+            if (!_context.Rooms.Any(room => room.Id == roomId) || !_context.Users.Any(user => user.Id == userId))
             {
                 return NotFound();
             }
 
             // Get all the groups of the user
-            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == userId).ToListAsync();
+            var userGroups = await _context.UserGroups.Where(userGroup => userGroup.UserId == userId).ToListAsync();
 
             // If the user is not in any group, he doesn't have access
             if (userGroups.Count == 0)
@@ -54,7 +52,7 @@ namespace WebAPI.Controllers
             // Cycle through all the groups of the user to see if he has access
             foreach (var userGroup in userGroups)
             {
-                if (await _context.Accesses.AnyAsync(a => a.RoomId == roomId && a.GroupId == userGroup.GroupId))
+                if (await _context.Accesses.AnyAsync(access => access.RoomId == roomId && access.GroupId == userGroup.GroupId))
                 {
                     return true;
                 }
@@ -67,13 +65,13 @@ namespace WebAPI.Controllers
         [HttpGet("GetAccessesByUserId/{userId}")]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByUserId(int userId)
         {
-            if (!_context.Users.Any(u => u.Id == userId))
+            if (!_context.Users.Any(user => user.Id == userId))
             {
                 return NotFound();
             }
 
             // Get all the groups of the user
-            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == userId).ToListAsync();
+            var userGroups = await _context.UserGroups.Where(userGroup => userGroup.UserId == userId).ToListAsync();
 
             // If the user is not in any group, he doesn't have access
             if (userGroups.Count == 0)
@@ -85,7 +83,7 @@ namespace WebAPI.Controllers
             // Cycle through all the groups of the user to see if he has access
             foreach (var userGroup in userGroups)
             {
-                var accesses = await _context.Accesses.Where(a => a.GroupId == userGroup.GroupId).ToListAsync();
+                var accesses = await _context.Accesses.Where(access => access.GroupId == userGroup.GroupId).ToListAsync();
                 if (accesses != null && accesses.Count() > 0)
                 {
                     foreach (Access access in accesses)
@@ -105,13 +103,13 @@ namespace WebAPI.Controllers
         [HttpGet("GetAccessesByGroupId/{groupId}")]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByGroupId(int groupId)
         {
-            if (!_context.Groups.Any(g => g.Id == groupId))
+            if (!_context.Groups.Any(group => group.Id == groupId))
             {
                 return NotFound();
             }
 
             List<RoomDTO> result = new List<RoomDTO>();
-            var accesses = await _context.Accesses.Where(a => a.GroupId == groupId).ToListAsync();
+            var accesses = await _context.Accesses.Where(access => access.GroupId == groupId).ToListAsync();
             if (accesses != null && accesses.Count() > 0)
             {
                 foreach (Access access in accesses)
@@ -130,19 +128,19 @@ namespace WebAPI.Controllers
         [HttpPost("GrantAccess")]
         public async Task<ActionResult<Boolean>> GrantAccessAsync(AccessDTO accessDTO)
         {
-            if (!_context.Rooms.Any(r => r.Id == accessDTO.RoomId) || !_context.Groups.Any(g => g.Id == accessDTO.GroupId))
+            if (!_context.Rooms.Any(room => room.Id == accessDTO.RoomId) || !_context.Groups.Any(group => group.Id == accessDTO.GroupId))
             {
                 return BadRequest();
             }
 
             // Check if the room is not deleted
-            if (await _context.Rooms.AnyAsync(r => r.Id == accessDTO.RoomId && r.IsDeleted))
+            if (await _context.Rooms.AnyAsync(room => room.Id == accessDTO.RoomId && room.IsDeleted))
             {
                 return NotFound();
             }
 
             // Check if the access already exists
-            if (await _context.Accesses.AnyAsync(a => a.RoomId == accessDTO.RoomId && a.GroupId == accessDTO.GroupId))
+            if (await _context.Accesses.AnyAsync(access => access.RoomId == accessDTO.RoomId && access.GroupId == accessDTO.GroupId))
             {
                 return Conflict();
             }
@@ -159,19 +157,19 @@ namespace WebAPI.Controllers
         [HttpPost("RevokeAccess")]
         public async Task<ActionResult<Boolean>> RevokeAccessAsync(AccessDTO accessDTO)
         {
-            if (!_context.Rooms.Any(r => r.Id == accessDTO.RoomId) || !_context.Groups.Any(g => g.Id == accessDTO.GroupId))
+            if (!_context.Rooms.Any(room => room.Id == accessDTO.RoomId) || !_context.Groups.Any(group => group.Id == accessDTO.GroupId))
             {
                 return NotFound();
             }
 
             // Check if the room is not deleted
-            if (await _context.Rooms.AnyAsync(r => r.Id == accessDTO.RoomId && r.IsDeleted))
+            if (await _context.Rooms.AnyAsync(room => room.Id == accessDTO.RoomId && room.IsDeleted))
             {
                 return NotFound();
             }
 
             // Get the access
-            Access storedAccess = await _context.Accesses.FirstOrDefaultAsync(a => a.RoomId == accessDTO.RoomId && a.GroupId == accessDTO.GroupId);
+            Access storedAccess = await _context.Accesses.FirstOrDefaultAsync(access => access.RoomId == accessDTO.RoomId && access.GroupId == accessDTO.GroupId);
 
             // If the access doesn't exist, return not found
             if (storedAccess == null)

@@ -12,7 +12,7 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         public required string Username { get; set; }
-        public bool IsDeleted { get; set; } = false!;
+        public bool IsDeleted { get; set; } = false;
 
         public ICollection<Group> Groups { get; } = new List<Group>();
         public ICollection<UserGroup> User_Groups { get; } = new List<UserGroup>();
