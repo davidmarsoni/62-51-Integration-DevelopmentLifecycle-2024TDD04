@@ -9,5 +9,8 @@ namespace WebApi.Controllers.Interfaces
         Task<ActionResult<bool>> HasAccessUserAsync(int roomId, int userId);
         Task<ActionResult<Boolean>> GrantAccessAsync(AccessDTO accessDTO);
         Task<ActionResult<Boolean>> RevokeAccessAsync(AccessDTO accessDTO);
+
+        Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByUserId(int userId);
+        Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByGroupId(int groupId);
     }
 }

@@ -7,11 +7,6 @@ using ConsoleApp.commands.Room;
 using ConsoleApp.commands.Test;
 using ConsoleApp.commands.User;
 using ConsoleApp.utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp.console
 {
@@ -22,13 +17,13 @@ namespace ConsoleApp.console
 
         public ConsoleManager(HttpClient httpClient, String baseURL, Boolean debug)
         {
-            commands.Add("room", new Room(httpClient, baseURL, debug));
-            commands.Add("history", new History(httpClient, baseURL, debug));
-            commands.Add("help", new Help(commands));
-            commands.Add("user", new User(httpClient, baseURL, debug));
-            commands.Add("group", new Group(httpClient, baseURL, debug));
-            commands.Add("access", new Access(httpClient, baseURL, debug));
-            commands.Add("test", new Test(httpClient, baseURL, debug));
+            commands.Add(Room.CommandName, new Room(httpClient, baseURL, debug));
+            commands.Add(History.CommandName, new History(httpClient, baseURL, debug));
+            commands.Add(Help.CommandName, new Help(commands));
+            commands.Add(User.CommandName, new User(httpClient, baseURL, debug));
+            commands.Add(Group.CommandName, new Group(httpClient, baseURL, debug));
+            commands.Add(Access.CommandName, new Access(httpClient, baseURL, debug));
+            commands.Add(Test.CommandName, new Test(httpClient, baseURL, debug));
         }
 
         public void Launch()
@@ -75,33 +70,6 @@ namespace ConsoleApp.console
                         }
                     }
                 }
-            }
-        }
-
-        public static string WaitInput(Func<string, Boolean> validation, string errorMessage)
-        {
-            string output = "";
-            Boolean isValid = false;
-            while (!isValid)
-            {
-                // print '>' character
-                Console.Write("> ");
-                // wait on user input
-                output = Console.ReadLine();
-                // validate
-                isValid = validation(output);
-                // if is not valid
-                if (!isValid)
-                    Console.WriteLine(errorMessage);
-            }
-            return output;
-        }
-
-        public void ShowHelp()
-        {
-            foreach (var command in commands)
-            {
-                Console.WriteLine(command.Key + " - " + command.Value.GetDescription());
             }
         }
 

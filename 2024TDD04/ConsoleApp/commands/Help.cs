@@ -8,6 +8,8 @@ namespace ConsoleApp.commands
         // dictionary of commands
         private Dictionary<string, ICommand> commands;
 
+        public static string CommandName => "help";
+
         public Help(Dictionary<string, ICommand> commands)
         {
             this.commands = commands;
@@ -46,9 +48,9 @@ namespace ConsoleApp.commands
             }
         }
 
-        public string GetDescription() => "help : Displays the list of available commands.";
+        public string GetDescription() => $"{CommandName} : Displays the list of available commands.";
 
-        public string GetSubCommands() => "help [command name] : Displays the subcommands of a command.";
+        public string GetSubCommands() => $"{CommandName} [command name] : Displays the subcommands of a command.";
         
     }
 }

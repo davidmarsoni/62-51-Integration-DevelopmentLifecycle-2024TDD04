@@ -63,6 +63,69 @@ namespace WebAPI.Controllers
             return false;
         }
 
+        // GET: api/Accesses/GetAccessesByUserId/<userId>
+        [HttpGet("GetAccessesByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByUserId(int userId)
+        {
+            if (!_context.Users.Any(u => u.Id == userId))
+            {
+                return NotFound();
+            }
+
+            // Get all the groups of the user
+            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == userId).ToListAsync();
+
+            // If the user is not in any group, he doesn't have access
+            if (userGroups.Count == 0)
+            {
+                return NoContent();
+            }
+
+            List<RoomDTO> result = new List<RoomDTO>();
+            // Cycle through all the groups of the user to see if he has access
+            foreach (var userGroup in userGroups)
+            {
+                var accesses = await _context.Accesses.Where(a => a.GroupId == userGroup.GroupId).ToListAsync();
+                if (accesses != null && accesses.Count() > 0)
+                {
+                    foreach (Access access in accesses)
+                    {
+                        Room room = await _context.Rooms.FindAsync(access.RoomId);
+                        if (room != null)
+                        {
+                            result.Add(RoomMapper.toDTO(room));
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        // GET: api/Accesses/GetAccessesByGroupId/<groupId>
+        [HttpGet("GetAccessesByGroupId/{groupId}")]
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByGroupId(int groupId)
+        {
+            if (!_context.Groups.Any(g => g.Id == groupId))
+            {
+                return NotFound();
+            }
+
+            List<RoomDTO> result = new List<RoomDTO>();
+            var accesses = await _context.Accesses.Where(a => a.GroupId == groupId).ToListAsync();
+            if (accesses != null && accesses.Count() > 0)
+            {
+                foreach (Access access in accesses)
+                {
+                    Room room = await _context.Rooms.FindAsync(access.RoomId);
+                    if (room != null)
+                    {
+                        result.Add(RoomMapper.toDTO(room));
+                    }
+                }
+            }
+            return result;
+        }
+
         // POST: api/GrantAccess
         [HttpPost("GrantAccess")]
         public async Task<ActionResult<Boolean>> GrantAccessAsync(AccessDTO accessDTO)

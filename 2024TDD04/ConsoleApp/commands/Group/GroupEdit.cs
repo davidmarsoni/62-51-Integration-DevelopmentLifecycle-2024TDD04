@@ -1,9 +1,8 @@
 using ConsoleApp.commands.interfaces;
-using ConsoleApp.console;
-using ConsoleApp.helpers;
 using ConsoleApp.utils;
 using DTO;
 using MVC.Services;
+using static ConsoleApp.utils.ConsoleUtils;
 namespace ConsoleApp.commands.Group
 {
     public class GroupEdit : ISubCommand
@@ -18,69 +17,33 @@ namespace ConsoleApp.commands.Group
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"Edit Group\" process...");
-            Console.WriteLine("Enter the " + Colors.Colorize("Group Id", Colors.Yellow) + " to edit a group.");
-            int groupId = InputHelper.PromptForInt("Group Id", "To edit a group, input the ID. (or type 'exit')");
-            if (groupId == -1) return;
-
-            GroupDTO groupDTO = groupService.GetGroupById(groupId).Result;
+            Title("Edit a group");
+            var idInput = InputUtils.PromptForInt("Group Id", "Enter the Group ID (or type 'exit')");
+            GroupDTO? groupDTO = groupService.GetGroupById(idInput).Result;
             if (groupDTO == null)
             {
-                Console.WriteLine(Colors.Colorize("Group not found. Exiting...", Colors.Red));
+                Error("The group with the given ID does not exist.");
                 return;
             }
-            Console.WriteLine("Enter a new " + Colors.Colorize("Name", Colors.Yellow) + " for the group. (Press Enter to skip)");
-            String nameInput = ConsoleManager.WaitInput(ValidateGroupNameIsUniqueForEdit, "(Press Enter to skip)").Trim();
-            if (ConsoleUtils.ExitOnInputExit(nameInput, "Exiting group editing."))
-                return;
+            var (exit2, nameInput) = InputUtils.PromptForString("Name",
+                "Enter the new " + Colors.Colorize($"Name ({groupDTO.Name})", Colors.Yellow) + " of the group leaving blank will keep the same name (or type 'exit')",
+                (input) => GroupUtils.ValidateName(groupService, input),
+                true);
+            if (exit2) return;
+            var (exit3, acronymInput) = InputUtils.PromptForString("Acronym",
+                "Enter an new optional " + Colors.Colorize($"Acronym ({groupDTO.Acronym})", Colors.Yellow) + " for the group leaving blank will remove the acronym (or type 'exit')",
+                (input) => GroupUtils.ValidateAcronym(groupService, input),
+                true);
+            if (exit3) return;
 
-            Console.WriteLine("Enter a new " + Colors.Colorize("Acronym", Colors.Yellow) + " for the group. (Press Enter to skip)");
-            String acronymInput = ConsoleManager.WaitInput(ValidateGroupAcronymIsUnique, "(Press Enter to skip)").Trim();
-            if (ConsoleUtils.ExitOnInputExit(acronymInput, "Exiting group editing."))
-                return;
-
-            if (string.IsNullOrEmpty(nameInput) && string.IsNullOrEmpty(acronymInput))
-            {
-                Console.WriteLine("No changes made. Exiting group editing.");
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(nameInput))
+            if(nameInput != "" || nameInput != null)
                 groupDTO.Name = nameInput;
-
-            if (!string.IsNullOrEmpty(acronymInput))
-                groupDTO.Acronym = acronymInput;
-
+                
+            groupDTO.Acronym = acronymInput;
             if (groupService.UpdateGroup(groupDTO).Result)
-                Console.WriteLine(Colors.Colorize("Successfully edited the group.", Colors.Green));
+                Success("Successfully edited the group.");
             else
-                Console.WriteLine(Colors.Colorize("An error occurred when editing the group in the DB...", Colors.Red));
-        
-        }
-
-
-        private bool ValidateGroupNameIsUniqueForEdit(string input)
-        {
-            if (string.IsNullOrEmpty(input) || input.ToLower() == "exit")
-                return true;
-            if (groupService.GroupNameExists(input).Result)
-            {
-                Console.WriteLine(Colors.Colorize("Group name already exists. Please choose a different name.", Colors.Red));
-                return false;
-            }
-            return true;
-        }
-
-        private bool ValidateGroupAcronymIsUnique(string input)
-        {
-            if (string.IsNullOrEmpty(input) || input.ToLower() == "exit")
-                return true;
-            if (groupService.GroupAcronymExists(input).Result)
-            {
-                Console.WriteLine(Colors.Colorize("Group acronym already exists. Please choose a different acronym.", Colors.Red));
-                return false;
-            }
-            return true;
+                Error("An error occurred when editing the group in the DB...");
         }
 
         public string GetDescription() => $"{CommandName} : Edit a group.";

@@ -19,18 +19,54 @@ namespace ConsoleApp.utils
             return false;
         }
 
-        public static Boolean EmptyValidation(string input) {
-            return true;
-        }
-
         public static Boolean IsIntValidation(string input)
         {
             return int.TryParse(input, out _);
         }
 
-        public static Boolean EmptyOrIntValidation(string input)
+        public static string WaitInput(Func<string, Boolean> validation, string errorMessage)
         {
-            return string.IsNullOrEmpty(input) || int.TryParse(input, out _);
+            string output = "";
+            Boolean isValid = false;
+            while (!isValid)
+            {
+                // print '>' character
+                Console.Write("> ");
+                // wait on user input
+                output = Console.ReadLine();
+                // validate
+                isValid = validation(output);
+                // if is not valid
+                if (!isValid)
+                    Console.WriteLine(errorMessage);
+            }
+            return output;
+        }
+        
+
+        public static void Title(string title)
+        {
+            Console.WriteLine($"Begining the \"{title}\" process...");
+        }
+
+        public static void Success(string message)
+        {
+            Console.WriteLine(Colors.Colorize(message, Colors.Green));
+        }
+
+        public static void Error(string message)
+        {
+            Console.WriteLine(Colors.Colorize(message, Colors.Red));
+        }
+
+        public static void Info(string message)
+        {
+            Console.WriteLine(Colors.Colorize(message, Colors.Blue));
+        }
+
+        public static void Warning(string message)
+        {
+            Console.WriteLine(Colors.Colorize(message, Colors.Yellow));
         }
     }
 }

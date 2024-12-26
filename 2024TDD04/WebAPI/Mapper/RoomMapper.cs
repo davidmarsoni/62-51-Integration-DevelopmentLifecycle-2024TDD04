@@ -11,7 +11,8 @@ namespace WebAPI.Mapper
             {
                 Id = room.Id,
                 Name = room.Name,
-                RoomAbreviation = room.RoomAbreviation
+                RoomAbreviation = room.RoomAbreviation,
+                IsDeleted = room.IsDeleted
             };
             return roomDTO;
         }
@@ -22,7 +23,8 @@ namespace WebAPI.Mapper
             {
                 Id = roomDTO.Id,
                 Name = roomDTO.Name,
-                RoomAbreviation = roomDTO.RoomAbreviation
+                RoomAbreviation = roomDTO.RoomAbreviation,
+                IsDeleted = roomDTO.IsDeleted
             };
             return room;
         }

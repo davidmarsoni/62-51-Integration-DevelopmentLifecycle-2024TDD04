@@ -8,9 +8,10 @@ using MVC.Services.Interfaces;
 namespace ConsoleApp.commands.History
 {
     public class History : BaseCommand
-    {
+    {   
+        public static string CommandName => "history";
         public History(HttpClient httpClient, string baseURL, bool debug)
-            : base("history : Manages the history.", new Dictionary<string, ISubCommand>
+            : base($"{CommandName} : Manages the history.", new Dictionary<string, ISubCommand>
             {
                 { HistoryList.CommandName, new HistoryList(new AccessLogService(httpClient, baseURL, debug)) }
             })

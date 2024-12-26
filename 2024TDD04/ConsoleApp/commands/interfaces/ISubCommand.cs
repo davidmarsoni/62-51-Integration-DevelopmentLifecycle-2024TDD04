@@ -4,6 +4,6 @@ namespace ConsoleApp.commands.interfaces
     {
         void Execute(string[] arguments);
         string GetDescription();
-        static string CommandName { get; }
+        static string? CommandName { get; }
     }
 }

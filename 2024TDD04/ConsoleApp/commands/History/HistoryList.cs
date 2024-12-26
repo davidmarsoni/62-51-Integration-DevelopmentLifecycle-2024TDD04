@@ -1,9 +1,8 @@
 using ConsoleApp.commands.interfaces;
-using ConsoleApp.helpers;
 using ConsoleApp.utils;
 using MVC.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
-using ConsoleApp.console;
+using static ConsoleApp.utils.ConsoleUtils;
 
 namespace ConsoleApp.commands.History
 {
@@ -19,41 +18,31 @@ namespace ConsoleApp.commands.History
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"List History\" process...");
-        
+            Title("List History");
+    
             // ask the user to enter the log number
-            Console.WriteLine("Enter the " + Colors.Colorize("Log number", Colors.Yellow) + " to list history.");
-            string logNumberInput = ConsoleManager.WaitInput(
-                ConsoleUtils.IsIntValidation,
-                "To list history, input the " + Colors.Colorize("Log number", Colors.Yellow) + ". (or type 'exit')"
-            ).ToLower();
+            var logNumberInput = InputUtils.PromptForInt("Log number", "To list history, input the Log number. (or type 'exit')");
             // check if the user wants to exit
-            if (ConsoleUtils.ExitOnInputExit(logNumberInput, "Exiting list history."))
+            if (logNumberInput == -1)
                 return;
         
             // ask the user to enter the offset
-            Console.WriteLine("Enter the " + Colors.Colorize("Offset", Colors.Yellow) + " to list history.");
-            string offsetInput = ConsoleManager.WaitInput(
-                ConsoleUtils.IsIntValidation,
-                "To list history, input the " + Colors.Colorize("Offset", Colors.Yellow) + ". (or type 'exit')"
-            ).ToLower();
+            var offsetInput = InputUtils.PromptForInt("Offset", "To list history, input the Offset. (or type 'exit')");
+           
             // check if the user wants to exit
-            if (ConsoleUtils.ExitOnInputExit(offsetInput, "Exiting list history."))
+            if (offsetInput == -1)
                 return;
         
             // ask the user to enter the order
-            Console.WriteLine("Enter the " + Colors.Colorize("Order", Colors.Yellow) + " to list history.");
-            string order = ConsoleManager.WaitInput(
-                input => !string.IsNullOrEmpty(input),
-                "To list history, input the " + Colors.Colorize("Order", Colors.Yellow) + ". (or type 'exit')"
-            ).ToLower();
+            var (exit, order) = InputUtils.PromptForString("Order", "To list history, input the Order. (asc/desc) (or type 'exit')", OrderVerify);
+           
             // check if the user wants to exit
-            if (ConsoleUtils.ExitOnInputExit(order, "Exiting list history."))
+            if (exit)
                 return;
         
             // parse the log number and offset
-            int? logNumber = string.IsNullOrEmpty(logNumberInput) ? null : int.Parse(logNumberInput);
-            int? offset = string.IsNullOrEmpty(offsetInput) ? null : int.Parse(offsetInput);
+            int logNumber = logNumberInput;
+            int offset = offsetInput;
         
             Console.WriteLine("Fetching access history logs...");
             var logs = accessLogService.GetAccessLog(logNumber, offset, order).Result;
@@ -67,10 +56,18 @@ namespace ConsoleApp.commands.History
             {
                 return $"{log.Id} - {log.RoomId} - {log.UserId} - {log.TimeStamp}";
             },
+
             new List<string> {
                 $"Access logs : {Colors.Colorize($"{logs.Count()} logs found", Colors.Green)}",
                 "ID - Room ID - User ID - Timestamp"
             });
+        }
+
+        public (bool, string) OrderVerify(string input) {
+            if (!input.Equals("asc", StringComparison.OrdinalIgnoreCase) &&
+                !input.Equals("desc", StringComparison.OrdinalIgnoreCase))
+                return (false, "History : " + Colors.Colorize("Invalid order. Please type 'asc' or 'desc'", Colors.Orange));
+            return (true, null);
         }
 
         public string GetDescription() => $"{CommandName} - Lists the history.";

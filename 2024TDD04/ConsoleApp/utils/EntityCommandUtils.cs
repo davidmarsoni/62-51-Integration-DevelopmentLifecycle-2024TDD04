@@ -1,4 +1,4 @@
-using ConsoleApp.console;
+using static ConsoleApp.utils.ConsoleUtils;
 
 namespace ConsoleApp.utils
 {
@@ -32,7 +32,7 @@ namespace ConsoleApp.utils
 
         public static void ConfirmAndDeleteEntity(int entityId, Func<int, Task<bool>> deleteFunction, string entityName)
         {
-            Console.WriteLine($"Beginning the \"Delete {entityName}\" process...");
+            // Confirm deletion
             Console.WriteLine(Colors.Colorize($"Are you sure you want to delete the {entityName.ToLower()}? (type 'y' to confirm)", Colors.Red));
             Console.Write("> ");
             string confirm = Console.ReadLine().ToLower();
@@ -41,12 +41,14 @@ namespace ConsoleApp.utils
                 Console.WriteLine($"Exiting {entityName.ToLower()} deletion.");
                 return;
             }
+
+            // Delete entity
             Console.WriteLine(Colors.Colorize($"Deleting the {entityName.ToLower()}...", Colors.Red));
             bool entityDeleted = deleteFunction(entityId).Result;
             if (entityDeleted)
-                Console.WriteLine(Colors.Colorize($"Successfully deleted the {entityName.ToLower()}.", Colors.Green));
+                Success($"Successfully deleted the {entityName.ToLower()}.");
             else
-                Console.WriteLine(Colors.Colorize($"An error occurred when deleting the {entityName.ToLower()} from the DB...", Colors.Red));
+                Error($"An error occurred when deleting the {entityName.ToLower()} from the DB...");
         }
     }
 }

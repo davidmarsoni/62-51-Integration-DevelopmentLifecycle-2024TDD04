@@ -10,7 +10,7 @@ namespace DTO
         [StringLength(100, ErrorMessage = "Name must be between 1 and 100 characters", MinimumLength = 1)]
         public string Name { get; set; }
 
-        [StringLength(10, ErrorMessage = "Acronym must be between 1 and 10 characters", MinimumLength = 1)]
+        [StringLength(10, ErrorMessage = "Acronym must be between 1 and 10 characters", MinimumLength = 0)]
         public string? Acronym { get; set; }
 
         [Required(ErrorMessage = "IsDeleted is required")]

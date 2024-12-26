@@ -35,7 +35,7 @@ namespace WebApi.Controllers
 
         // GET: api/Users/Username
         [HttpGet("Username/{username}")]
-        public async Task<ActionResult<Boolean>> GetUsernameExist(string username)
+        public async Task<ActionResult<Boolean>> UsernameExist(string username)
         {
             IEnumerable<User> users = await _context.Users.ToListAsync();
             List<UserDTO> result = new List<UserDTO>();

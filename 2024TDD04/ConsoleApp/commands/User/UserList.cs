@@ -2,6 +2,7 @@ using ConsoleApp.commands.interfaces;
 using ConsoleApp.utils;
 using DTO;
 using MVC.Services;
+using static ConsoleApp.utils.ConsoleUtils;
 
 namespace ConsoleApp.commands.User
 {
@@ -17,7 +18,7 @@ namespace ConsoleApp.commands.User
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"List Users\" process...");
+            Title("List existing users");
             IEnumerable<UserDTO>? userDTOs = userService.GetAllUsers().Result;
             EntityCommandUtils.ListEntities(userDTOs, "User", user => $"{user.Id} - {user.Username}");
         }

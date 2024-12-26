@@ -14,10 +14,9 @@ namespace ConsoleApp.commands.Room
 {
     public class Room : BaseCommand
     {
-        private readonly RoomService roomService;
-
+        public static string CommandName => "room";
         public Room(HttpClient httpClient, string baseURL, bool debug)
-            : base("room : Manage rooms.", new Dictionary<string, ISubCommand>
+            : base($"{CommandName} : Manage rooms.", new Dictionary<string, ISubCommand>
             {
                 { RoomAdd.CommandName, new RoomAdd(new RoomService(httpClient, baseURL, debug)) },
                 { RoomDelete.CommandName, new RoomDelete(new RoomService(httpClient, baseURL, debug)) },
@@ -25,7 +24,6 @@ namespace ConsoleApp.commands.Room
                 { RoomEdit.CommandName, new RoomEdit(new RoomService(httpClient, baseURL, debug)) }
             })
         {
-            roomService = new RoomService(httpClient, baseURL, debug);
         }
     }
 }

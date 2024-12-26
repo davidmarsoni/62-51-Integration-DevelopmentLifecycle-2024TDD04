@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
 
         // GET: api/RoomAccessLogs?logNumber=10&offset=0&order=desc
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RoomAccessLogDTO>>> GetRoomAccessLogsAsync([FromQuery] int? logNumber, [FromQuery] int? offset, [FromQuery] string? order)
+        public async Task<ActionResult<IEnumerable<RoomAccessLogDTO>>> GetRoomAccessLogs([FromQuery] int? logNumber, [FromQuery] int? offset, [FromQuery] string? order)
         {
             // If the parameters are not provided, use default values
             if (logNumber == null || logNumber < 0)

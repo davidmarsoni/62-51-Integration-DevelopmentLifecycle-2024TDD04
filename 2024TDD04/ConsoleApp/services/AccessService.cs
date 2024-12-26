@@ -25,16 +25,6 @@ namespace MVC.Services
             return await SQS.PostNoReturn(_client, $"{_baseUrl}/RevokeAccess", accessDTO);
         }
 
-        public async Task<RoomDTO?> GetRoomAccessibleByGroup(int groupId)
-        {
-            return await SQS.Get<RoomDTO>(_client, $"{_baseUrl}/GetRoomAccessedByGroup/{groupId}");
-        }
-
-        public async Task<RoomDTO?> GetRoomAccessibleByUser(int userId)
-        {
-            return await SQS.Get<RoomDTO>(_client, $"{_baseUrl}/GetRoomAccessedByUser/{userId}");
-        }
-
         public async Task<bool> HasAccessGroupAsync(int roomId, int groupId)
         {
             return await SQS.Get<bool>(_client, $"{_baseUrl}/HasAccessGroup/{roomId}/{groupId}");
@@ -43,6 +33,16 @@ namespace MVC.Services
         public async Task<bool> HasAccessUserAsync(int roomId, int userId)
         {
             return await SQS.Get<bool>(_client, $"{_baseUrl}/HasAccessUser/{roomId}/{userId}");
+        }
+
+        public async Task<IEnumerable<RoomDTO>?> GetAccessesByUserId(int userId)
+        {
+            return await SQS.Get<IEnumerable<RoomDTO>>(_client, $"{_baseUrl}/GetAccessesByUserId/{userId}");
+        }
+
+        public async Task<IEnumerable<RoomDTO>?> GetAccessesByGroupId(int groupId)
+        {
+            return await SQS.Get<IEnumerable<RoomDTO>>(_client, $"{_baseUrl}/GetAccessesByGroupId/{groupId}");
         }
     }
 }

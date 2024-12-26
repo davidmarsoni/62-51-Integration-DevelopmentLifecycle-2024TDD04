@@ -41,14 +41,14 @@ namespace MVC.Services
             return await SQS.Delete(_client, $"{_baseUrl}/{id}");
         }
 
-        public async Task<bool> RoomNameExists(string name)
+        public async Task<bool> NameExists(string name)
         {
-            return await SQS.Get<bool>(_client, $"{_baseUrl}/Name/{name}");
+            return await SQS.Get<Boolean>(_client, $"{_baseUrl}/Name/{name}");
         }
 
-        public async Task<bool> RoomAbreviationExists(string roomAbreviation)
+        public async Task<bool> AbreviationExists(string roomAbreviation)
         {
-            return await SQS.Get<bool>(_client, $"{_baseUrl}/Abreviation/{roomAbreviation}");
+            return await SQS.Get<Boolean>(_client, $"{_baseUrl}/Abreviation/{roomAbreviation}");
         }
     }
 }

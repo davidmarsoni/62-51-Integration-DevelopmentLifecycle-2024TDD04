@@ -1,23 +1,19 @@
-﻿using DTO;
-using MVC.Services;
-using ConsoleApp.utils;
+﻿using MVC.Services;
 using ConsoleApp.commands.interfaces;
 
 namespace ConsoleApp.commands.Access
 {
     public class Access : BaseCommand
     {
-        private readonly AccessService accessService;
-
+        public static string CommandName => "access";
         public Access(HttpClient httpClient, string baseURL, bool debug)
-            : base("access : Manage access to rooms for groups.", new Dictionary<string, ISubCommand>
+            : base($"{CommandName} : Manage access to rooms for groups.", new Dictionary<string, ISubCommand>
             {
-                { AccessGrant.CommandName, new AccessGrant(new AccessService(httpClient, baseURL, debug)) },
-                { AccessRevoke.CommandName, new AccessRevoke(new AccessService(httpClient, baseURL, debug)) },
-                { AccessList.CommandName, new AccessList(new AccessService(httpClient, baseURL, debug)) }
+                { AccessGrant.CommandName, new AccessGrant(new AccessService(httpClient, baseURL, debug), new GroupService(httpClient, baseURL, debug), new RoomService(httpClient, baseURL, debug)) },
+                { AccessRevoke.CommandName, new AccessRevoke(new AccessService(httpClient, baseURL, debug), new GroupService(httpClient, baseURL, debug), new RoomService(httpClient, baseURL, debug)) },
+                { AccessList.CommandName, new AccessList(new AccessService(httpClient, baseURL, debug),new GroupService(httpClient, baseURL, debug), new UserService(httpClient, baseURL, debug)) }
             })
         {
-            accessService = new AccessService(httpClient, baseURL, debug);
         }
     }
 }

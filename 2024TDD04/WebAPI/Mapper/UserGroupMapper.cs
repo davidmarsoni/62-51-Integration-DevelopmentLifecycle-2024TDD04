@@ -9,7 +9,7 @@ namespace WebApi.Mapper
         {
             UserGroupDTO userGroupDTO = new UserGroupDTO
             {
-
+                Id = userGroup.Id,  
                 GroupId = userGroup.GroupId,
                 Groupname = group?.Name,
                 UserId = userGroup.UserId,
@@ -23,6 +23,7 @@ namespace WebApi.Mapper
         {
             UserGroup userGroup = new UserGroup
             {
+                Id = userGroupDTO.Id,
                 GroupId = userGroupDTO.GroupId,
                 UserId = userGroupDTO.UserId
             };

@@ -11,8 +11,6 @@ namespace WebAPI.Mapper
             {
                 Id = roomAccessLog.Id,
                 RoomId = roomAccessLog.RoomId,
-                Room = roomAccessLog.Room,
-                GroupId = roomAccessLog?.GroupId,
                 UserId = roomAccessLog.UserId,
                 TimeStamp = roomAccessLog.Timestamp,
                 Info = roomAccessLog.Info
@@ -26,8 +24,6 @@ namespace WebAPI.Mapper
             {
                 Id = roomAccessLogDTO.Id,
                 RoomId = roomAccessLogDTO.RoomId,
-                Room = roomAccessLogDTO.Room,
-                GroupId = roomAccessLogDTO?.GroupId,
                 UserId = roomAccessLogDTO.UserId,
                 Info = roomAccessLogDTO.Info
             };

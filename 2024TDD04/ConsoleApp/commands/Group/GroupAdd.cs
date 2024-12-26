@@ -1,9 +1,8 @@
 using ConsoleApp.commands.interfaces;
-using ConsoleApp.console;
-using ConsoleApp.helpers;
 using ConsoleApp.utils;
 using DTO;
 using MVC.Services;
+using static ConsoleApp.utils.ConsoleUtils;
 
 namespace ConsoleApp.commands.Group
 {
@@ -19,54 +18,30 @@ namespace ConsoleApp.commands.Group
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"Add Group\" process...");
-            Console.WriteLine("Enter a " + Colors.Colorize("Name", Colors.Yellow) + " to create a group.");
-            string nameInput = InputHelper.PromptForString("Name", "Enter the group name (or type 'exit')");
-            if (nameInput == null) return;
-            Console.WriteLine("Enter an optional " + Colors.Colorize("Acronym", Colors.Yellow) + " for the group.");
-            String acronymInput = ConsoleManager.WaitInput(ValidateGroupAcronymIsUnique, "(Press enter to skip)").Trim();
-            if (ConsoleUtils.ExitOnInputExit(acronymInput, "Exiting group creation."))
-                return;
-            GroupDTO groupDTO = new GroupDTO
+            Title("Add a new group");
+            var (exit, nameInput) = InputUtils.PromptForString("Name",
+                "Enter the " + Colors.Colorize("Name", Colors.Yellow) + " of the group. (or type 'exit')",
+                (input) => GroupUtils.ValidateName(groupService, input));
+            if (exit) return;
+            var (exit2, acronymInput) = InputUtils.PromptForString("Acronym",
+                "Enter an optional " + Colors.Colorize("Acronym", Colors.Yellow) + " for the group. (or type 'exit')",
+                (input) => GroupUtils.ValidateAcronym(groupService, input),
+                true);
+            if (exit2) return;
+
+            GroupDTO groupDTO = new () 
             {
                 Name = nameInput,
-                Acronym = string.IsNullOrEmpty(acronymInput) ? null : acronymInput,
-                IsDeleted = false
+                Acronym = string.IsNullOrEmpty(acronymInput) ? null : acronymInput
             };
             if (groupService.CreateGroup(groupDTO).Result != null)
-                Console.WriteLine(Colors.Colorize("Successfully added the group.", Colors.Green));
+                Success("Successfully added the group.");
             else
-                Console.WriteLine(Colors.Colorize("An error occurred when adding the group to the DB...", Colors.Red));
-        
+                Error("An error occurred when adding the group to the DB...");
         }
 
-        public string GetDescription() => $"Usage: {CommandName} <name> [acronym]";
+        public string GetDescription() => $"{CommandName} : Add a new group.";
 
 
-        private bool ValidateGroupNameIsUnique(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return false;
-            if (input.ToLower() == "exit")
-                return true;
-            if (groupService.GroupNameExists(input).Result)
-            {
-                Console.WriteLine(Colors.Colorize("Group name already exists. Please choose a different name.", Colors.Red));
-                return false;
-            }
-            return true;
-        }
-
-        private bool ValidateGroupAcronymIsUnique(string input)
-        {
-            if (string.IsNullOrEmpty(input) || input.ToLower() == "exit")
-                return true;
-            if (groupService.GroupAcronymExists(input).Result)
-            {
-                Console.WriteLine(Colors.Colorize("Group acronym already exists. Please choose a different acronym.", Colors.Red));
-                return false;
-            }
-            return true;
-        }
     }
 }

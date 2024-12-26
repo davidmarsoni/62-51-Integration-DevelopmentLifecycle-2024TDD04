@@ -2,6 +2,7 @@ using ConsoleApp.commands.interfaces;
 using DTO;
 using MVC.Services;
 using ConsoleApp.utils;
+using static ConsoleApp.utils.ConsoleUtils; // new using
 
 namespace ConsoleApp.commands.Room
 {
@@ -17,7 +18,7 @@ namespace ConsoleApp.commands.Room
 
         public void Execute(string[] arguments)
         {
-            // ...logic from ListRooms...
+            Title("List existing rooms");
             IEnumerable<RoomDTO>? roomDTOs = roomService.GetAllRooms().Result;
             EntityCommandUtils.ListEntities(roomDTOs, "Room", room =>
             {

@@ -10,6 +10,7 @@ namespace MVC.Services.Interfaces
         public Task<UserDTO?> CreateUser(UserDTO accountDTO);
         public Task<Boolean> UpdateUser(UserDTO accountDTO);
         public Task<Boolean> DeleteUser(int id);
+        public Task<Boolean> UsernameExist(string username);
         
     }
 }

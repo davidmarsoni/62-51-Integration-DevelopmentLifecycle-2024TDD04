@@ -2,7 +2,8 @@ using ConsoleApp.commands.interfaces;
 using ConsoleApp.utils;
 using DTO;
 using MVC.Services;
-// ...existing using statements...
+using static ConsoleApp.utils.ConsoleUtils;
+
 namespace ConsoleApp.commands.Group
 {
     public class GroupList : ISubCommand
@@ -17,6 +18,7 @@ namespace ConsoleApp.commands.Group
 
         public void Execute(string[] arguments)
         {
+            Title("List existing groups");
             IEnumerable<GroupDTO>? groupDTOs = groupService.GetAllGroups().Result;
             EntityCommandUtils.ListEntities(groupDTOs, "Group", group =>
             {

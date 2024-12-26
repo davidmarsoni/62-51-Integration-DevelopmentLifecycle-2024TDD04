@@ -52,12 +52,12 @@ namespace WebAPI.Controllers
                 RoomAccessLog logNoGroup = new RoomAccessLog
                 {
                     RoomId = roomAccessDTO.RoomId,
-                    Room = room.Name,
                     UserId = roomAccessDTO.UserId,
                     Timestamp = DateTime.Now,
                     Info = "User is not in any group, access denied.",
                 };
                 _context.RoomAccessLogs.Add(logNoGroup);
+                _context.SaveChanges();
                 return NoContent();
             }
 
@@ -75,12 +75,12 @@ namespace WebAPI.Controllers
             RoomAccessLog log = new RoomAccessLog
             {
                 RoomId = roomAccessDTO.RoomId,
-                Room = room.Name,
                 UserId = roomAccessDTO.UserId,
                 Timestamp = DateTime.Now,
                 Info = hasAccess != null ? "User was granted access." : "User was denied access, unsufficient rights.",
             };
             _context.RoomAccessLogs.Add(log);
+            _context.SaveChanges();
 
             return hasAccess != null ? roomAccessDTO : NoContent();
         }

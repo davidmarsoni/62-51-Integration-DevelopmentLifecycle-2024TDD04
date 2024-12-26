@@ -118,7 +118,7 @@ namespace WebAPI.Controllers
             }
 
             //check if the room is already in the DB
-            if (await _context.Rooms.AnyAsync(rm => rm.Name == roomDTO.Name || rm.RoomAbreviation == roomDTO.RoomAbreviation)){
+            if (await _context.Rooms.AnyAsync(rm => rm.Name == roomDTO.Name)){
                 return Conflict();
             }
 

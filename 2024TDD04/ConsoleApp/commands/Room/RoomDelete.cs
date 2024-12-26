@@ -2,6 +2,7 @@ using ConsoleApp.commands.interfaces;
 using ConsoleApp.console;
 using ConsoleApp.utils;
 using MVC.Services;
+using static ConsoleApp.utils.ConsoleUtils;
 
 namespace ConsoleApp.commands.Room
 {
@@ -17,18 +18,17 @@ namespace ConsoleApp.commands.Room
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"Delete Room\" process...");
-            // ...logic from DeleteRoom...
-            string roomIdInput = ConsoleManager.WaitInput(
-                ConsoleUtils.IsIntValidation,
-                "To delete a room, input the ID. (or type 'exit')").ToLower();
-            if (ConsoleUtils.ExitOnInputExit(roomIdInput, "Exiting room deletion."))
-                return;
-            if (!int.TryParse(roomIdInput, out int roomId))
+            Title("Delete a room");
+            int roomId = InputUtils.PromptForInt("Room Id", "Enter the Room ID (or type 'exit')");
+            if (roomId == -1) return;
+
+            var roomDTO = roomService.GetRoomById(roomId).Result;
+            if (roomDTO == null)
             {
-                Console.WriteLine(Colors.Colorize("Error parsing RoomId. Exiting...", Colors.Red));
+                Error("Room not found. Exiting...");
                 return;
             }
+            Warning("Deleting the room...");
             EntityCommandUtils.ConfirmAndDeleteEntity(roomId, roomService.DeleteRoom, "Room");
         }
 

@@ -37,7 +37,7 @@ namespace WebAPI
                 //and we don't need to create the database here
 
                 dbContext.Database.EnsureCreated(); // Create the database if it doesn't exist
-                                                    //dbContext.Database.Migrate(); // Apply migrations
+                //dbContext.Database.Migrate(); // Apply migrations
             }
 
             // Configure the HTTP request pipeline.

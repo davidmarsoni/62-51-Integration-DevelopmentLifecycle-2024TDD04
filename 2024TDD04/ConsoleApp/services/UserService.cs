@@ -21,7 +21,7 @@ namespace MVC.Services
             return await SQS.Get<UserDTO>(_client, $"{_baseUrl}/{id}");
         }
 
-        public async Task<Boolean> GetUsernameExist(string username) 
+        public async Task<Boolean> UsernameExist(string username) 
         {
             return await SQS.Get<Boolean>(_client, $"{_baseUrl}/Username/{username}");
         }

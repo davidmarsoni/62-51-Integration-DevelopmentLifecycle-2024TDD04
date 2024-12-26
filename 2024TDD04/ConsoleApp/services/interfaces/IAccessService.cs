@@ -7,9 +7,8 @@ namespace MVC.Services.Interfaces
     {
         Task<bool> GrantAccessAsync(AccessDTO accessDTO);
         Task<bool> RevokeAccessAsync(AccessDTO accessDTO);
-        Task<RoomDTO?> GetRoomAccessibleByGroup(int groupId);
-        Task<RoomDTO?> GetRoomAccessibleByUser(int userId);
         Task<bool> HasAccessGroupAsync(int roomId, int groupId);
         Task<bool> HasAccessUserAsync(int roomId, int userId);
-    }
+        Task<IEnumerable<RoomDTO>?> GetAccessesByUserId(int roomId);
+        Task<IEnumerable<RoomDTO>?> GetAccessesByGroupId(int groupId);}
 }

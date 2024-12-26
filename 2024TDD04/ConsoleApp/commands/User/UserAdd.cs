@@ -1,8 +1,8 @@
 using ConsoleApp.commands.interfaces;
-using ConsoleApp.console;
 using ConsoleApp.utils;
 using DTO;
 using MVC.Services;
+using static ConsoleApp.utils.ConsoleUtils;
 
 namespace ConsoleApp.commands.User
 {
@@ -18,48 +18,22 @@ namespace ConsoleApp.commands.User
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"Add User\" process...");
-            Console.WriteLine("Enter a " + Colors.Colorize("Username", Colors.Yellow) + " to create a user.");
-            String userInput = UserInputValidUsername();
-            if (ConsoleUtils.ExitOnInputExit(userInput, "Exiting user creation."))
-                return;
+            Title("Add a new user");
+
+            // ask for username 
+            string prompt ="Enter the "+ Colors.Colorize("Username", Colors.Yellow) + " of the user no space allowed (or type 'exit')";
+            var (exit, input) = InputUtils.PromptForString("Username", prompt, (input) => UserUtils.ValidateUsername(userService, input));
+            if (exit) return;
+
+            // create user in the database
             UserDTO userDTO = new UserDTO();
-            userDTO.Username = userInput.Split(" ")[0];
+            userDTO.Username = input.Split(" ")[0];
             userDTO.IsDeleted = false;
+
             if (userService.CreateUser(userDTO).Result != null)
-                Console.WriteLine(Colors.Colorize("Successfully added the user.", Colors.Green));
+                Success("Successfully added the user.");
             else
-                Console.WriteLine(Colors.Colorize("An error occured when adding the user to the DB...", Colors.Red));
-        }
-
-        private string UserInputValidUsername(){
-            Boolean valid = false;
-            String username = "";
-            while (!valid)
-            {
-                username = ConsoleManager.WaitInput(
-                    AddUserValidation,
-                    "To add/edit a user, input the " + Colors.Colorize("Username", Colors.Yellow) + ". (or type 'exit')"
-                    );
-                if (username.ToLower() == "exit")
-                {
-                    return "exit";
-                }
-                Boolean userExist = userService.GetUsernameExist(username).Result;
-                if (userExist != null && userExist)
-                {
-                    Console.WriteLine("The username already exists. Please input a new username.");
-                }
-                else
-                {
-                    valid = true;
-                }
-            }
-            return username;
-        }
-
-        private static Boolean AddUserValidation(string input) {
-            return !String.IsNullOrEmpty(input) && input.Split(" ").Length > 0 || input.Split(" ")[0].ToLower() == "exit";
+                Error("An error occured when adding the user to the DB...");
         }
 
         public string GetDescription() => $"{CommandName} : Add a new user.";

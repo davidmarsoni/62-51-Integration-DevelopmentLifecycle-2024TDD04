@@ -1,9 +1,8 @@
 using ConsoleApp.commands.interfaces;
-using ConsoleApp.console;
-using ConsoleApp.helpers;
 using ConsoleApp.utils;
 using MVC.Services;
-// ...existing using statements...
+using static ConsoleApp.utils.ConsoleUtils;
+
 namespace ConsoleApp.commands.Group
 {
     public class GroupDelete : ISubCommand
@@ -18,10 +17,17 @@ namespace ConsoleApp.commands.Group
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"Delete Group\" process...");
-            int groupId = InputHelper.PromptForInt("Group Id", "To delete a group, input the ID. (or type 'exit')");
+            Title("Delete a group");
+            int groupId = InputUtils.PromptForInt("Group Id", "Enter the Group ID (or type 'exit')");
             if (groupId == -1) return;
 
+            var groupDTO = groupService.GetGroupById(groupId).Result;
+            if (groupDTO == null || groupDTO.IsDeleted)
+            {
+                Error("Group not found. Exiting...");
+                return;
+            }
+            Warning("Deleting the group...");
             EntityCommandUtils.ConfirmAndDeleteEntity(groupId, groupService.DeleteGroup, "Group");
         }
 

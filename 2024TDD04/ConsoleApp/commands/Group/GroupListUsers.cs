@@ -1,10 +1,9 @@
 using ConsoleApp.commands.interfaces;
-using ConsoleApp.console;
-using ConsoleApp.helpers;
 using ConsoleApp.utils;
 using DTO;
 using MVC.Services;
-// ...existing using statements...
+using static ConsoleApp.utils.ConsoleUtils;
+
 namespace ConsoleApp.commands.Group
 {
     public class GroupListUsers : ISubCommand
@@ -21,9 +20,17 @@ namespace ConsoleApp.commands.Group
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"List Users in Group\" process...");
-            int groupId = InputHelper.PromptForInt("Group Id", "To list users in a group, input the Group Id. (or type 'exit')");
+            Title("List Users in Group");
+            int groupId = InputUtils.PromptForInt("Group Id", "To list users in a group, input the Group Id. (or type 'exit')");
             if (groupId == -1) return;
+
+            //verify group exists and is not deleted
+            GroupDTO groupDTO = groupService.GetGroupById(groupId).Result;
+            if (groupDTO == null || groupDTO.IsDeleted)
+            {
+                Error("The group with the given ID does not exist.");
+                return;
+            }
 
             IEnumerable<UserDTO>? users = userGroupService.GetUsersInGroup(groupId).Result;
             EntityCommandUtils.ListEntities(users, "User", user => $"{user.Id} - {user.Username}");

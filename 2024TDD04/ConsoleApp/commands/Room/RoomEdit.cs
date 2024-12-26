@@ -1,8 +1,8 @@
 using ConsoleApp.commands.interfaces;
 using ConsoleApp.utils;
-using DTO;
 using MVC.Services;
-using ConsoleApp.helpers;
+using static ConsoleApp.utils.ConsoleUtils;
+using ConsoleApp.commands.User;
 
 namespace ConsoleApp.commands.Room
 {
@@ -18,40 +18,39 @@ namespace ConsoleApp.commands.Room
 
         public void Execute(string[] arguments)
         {
-            Console.WriteLine("Beginning the \"Edit Room\" process...");
-            int roomId = InputHelper.PromptForInt("Room ID", "Input the room ID (or type 'exit')");
+            Title("Edit a room");
+            int roomId = InputUtils.PromptForInt("Room Id", "Enter the Room ID (or type 'exit')");
             if (roomId == -1) return;
 
-            RoomDTO? roomDTO = roomService.GetRoomById(roomId).Result;
+            var roomDTO = roomService.GetRoomById(roomId).Result;
             if (roomDTO == null)
             {
                 Console.WriteLine(Colors.Colorize("Room not found. Exiting...", Colors.Red));
                 return;
             }
-            Console.WriteLine("Enter a new Name for the room. (Press Enter to skip)");
-            string nameInput = InputHelper.PromptForString("Name", "(Press Enter to skip)");
-            if (ConsoleUtils.ExitOnInputExit(nameInput, "Exiting room editing."))
-                return;
 
-            Console.WriteLine("Enter a new Abreviation for the room. (Press Enter to skip)");
-            string abreviationInput = InputHelper.PromptForString("Abreviation", "(Press Enter to skip)");
-            if (ConsoleUtils.ExitOnInputExit(abreviationInput, "Exiting room editing."))
-                return;
+            string promptName = "Enter the new " + Colors.Colorize($"Name ({roomDTO.Name})", Colors.Yellow) + " of the room or leave empty to keep the current name. (or type 'exit')";
+            var (exit, newName) = InputUtils.PromptForString("Name", 
+                promptName, 
+                (input) => RoomUtils.ValidateName(roomService, input),
+                true);
+            if (exit) return;
 
-            if (string.IsNullOrEmpty(nameInput) && string.IsNullOrEmpty(abreviationInput))
-            {
-                Console.WriteLine("No changes made. Exiting room editing.");
-                return;
-            }
-            if (!string.IsNullOrEmpty(nameInput))
-                roomDTO.Name = nameInput;
-            if (!string.IsNullOrEmpty(abreviationInput))
-                roomDTO.RoomAbreviation = abreviationInput;
+            if (!string.IsNullOrEmpty(newName)) roomDTO.Name = newName;
+
+            string promptAbbrev = "Enter the new " + Colors.Colorize($"Abreviation ({roomDTO.RoomAbreviation})", Colors.Yellow) + " of the room or leave empty to delete the current abbreviation. (or type 'exit')";
+            var (exit2, newAbbrev) = InputUtils.PromptForString("Abreviation", 
+                promptAbbrev, 
+                (input) => RoomUtils.ValidateAbbreviation(roomService, input),
+                true);
+            if (exit2) return;
+
+            if (!string.IsNullOrEmpty(newAbbrev)) roomDTO.RoomAbreviation = newAbbrev;
 
             if (roomService.UpdateRoom(roomDTO).Result)
-                Console.WriteLine(Colors.Colorize("Successfully edited the room.", Colors.Green));
+                Success("Successfully edited the room.");
             else
-                Console.WriteLine(Colors.Colorize("An error occurred when editing the room in the DB...", Colors.Red));
+                Error("An error occurred when editing the room...");
         }
 
         public string GetDescription() => $"{CommandName} : Edit an existing room.";

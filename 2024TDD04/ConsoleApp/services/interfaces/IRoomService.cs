@@ -10,7 +10,7 @@ namespace MVC.Services.Interfaces
         Task<RoomDTO?> CreateRoom(RoomDTO roomDTO);
         Task<bool> UpdateRoom(RoomDTO roomDTO);
         Task<bool> DeleteRoom(int id);
-        Task<bool> RoomNameExists(string name);
-        Task<bool> RoomAbreviationExists(string roomAbreviation);
+        Task<Boolean> NameExists(string name);
+        Task<Boolean> AbreviationExists(string roomAbreviation);
     }
 }

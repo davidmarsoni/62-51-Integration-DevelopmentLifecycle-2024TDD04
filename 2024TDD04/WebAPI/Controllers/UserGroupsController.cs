@@ -24,6 +24,26 @@ namespace WebApi.Controllers
             _context = context;
         }
 
+        // GET: api/UserGroup
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserGroupDTO>> GetUserGroup(int id)
+        {
+            var userGroup = await _context.UserGroups.FindAsync(id);
+
+            if (userGroup == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(userGroup.UserId);
+            var group = await _context.Groups.FindAsync(userGroup.GroupId);
+
+            UserGroupDTO userGroupDTO = UserGroupMapper.toDTO(userGroup, user, group);
+
+            return userGroupDTO;
+        }
+
         // GET: api/UserGroup/{groupId}/users
         [HttpGet("{groupId}/users")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersInGroup(int groupId)
@@ -94,7 +114,7 @@ namespace WebApi.Controllers
             // Fetch user and group details for the response DTO
             UserGroupDTO resultDTO = UserGroupMapper.toDTO(userGroup, user, group);
 
-            return CreatedAtAction("GetUserGroup", new { id = userGroup.GroupId }, resultDTO);
+            return CreatedAtAction("GetUserGroup", new { id = resultDTO.Id }, resultDTO);
         }
 
         // DELETE: api/UserGroup/{groupId}/{userId}
