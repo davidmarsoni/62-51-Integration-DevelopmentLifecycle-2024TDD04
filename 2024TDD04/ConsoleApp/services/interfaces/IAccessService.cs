@@ -10,5 +10,6 @@ namespace MVC.Services.Interfaces
         Task<bool> HasAccessGroupAsync(int roomId, int groupId);
         Task<bool> HasAccessUserAsync(int roomId, int userId);
         Task<IEnumerable<RoomDTO>?> GetAccessesByUserId(int roomId);
-        Task<IEnumerable<RoomDTO>?> GetAccessesByGroupId(int groupId);}
+        Task<IEnumerable<RoomDTO>?> GetAccessesByGroupId(int groupId);
+    }
 }

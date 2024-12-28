@@ -57,6 +57,10 @@ namespace WebApi.Controllers
         {
             var (group, error) = await ValidateGroupAsync(id);
             if (error != null) return error;
+            if (group == null)
+            {
+                return NotFound();
+            }
             return GroupMapper.toDTO(group);
         }
 
@@ -97,30 +101,32 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGroup(int id, GroupDTO groupDTO)
         {
-            if (id != groupDTO.Id) return BadRequest();
-
-            var (group, error) = await ValidateGroupAsync(id);
-            if (error != null) return error;
-
-            _context.Entry(group).CurrentValues.SetValues(GroupMapper.toDAL(groupDTO));
-
+            if (groupDTO == null || id != groupDTO.Id)
+            {
+                return BadRequest("Invalid group data or ID mismatch");
+            }
+        
             try
             {
+                var existingGroup = await _context.Groups
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(group => group.Id == id);
+        
+                if (existingGroup == null)
+                {
+                    return NotFound($"Group with ID {id} not found");
+                }
+        
+                var updatedGroup = GroupMapper.toDAL(groupDTO);
+                _context.Groups.Update(updatedGroup);
                 await _context.SaveChangesAsync();
+        
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!_context.Groups.Any(group => group.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest("Invalid group data : " + ex.Message);
             }
-
-            return NoContent();
         }
 
         // POST: api/Groups

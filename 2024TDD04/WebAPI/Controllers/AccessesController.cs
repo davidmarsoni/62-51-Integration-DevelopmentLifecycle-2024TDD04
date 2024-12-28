@@ -9,7 +9,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-        public class AccessesController : ControllerBase
+    public class AccessesController : ControllerBase
     {
         private readonly RoomAccessContext _context;
     
