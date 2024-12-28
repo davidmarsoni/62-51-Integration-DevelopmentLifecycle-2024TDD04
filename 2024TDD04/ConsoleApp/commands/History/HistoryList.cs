@@ -54,12 +54,12 @@ namespace ConsoleApp.commands.History
         
             EntityCommandUtils.ListEntities(logs, "Log", log =>
             {
-                return $"{log.Id} - {log.RoomId} - {log.UserId} - {log.TimeStamp}";
+                return $"{log.Id} - {log.RoomName}({log.RoomId}) - {log.Username}({log.UserId}) - {log.TimeStamp}";
             },
 
             new List<string> {
                 $"Access logs : {Colors.Colorize($"{logs.Count()} logs found", Colors.Green)}",
-                "ID - Room ID - User ID - Timestamp"
+                "ID - Room Name (id) - Username (id) - Timestamp"
             });
         }
 

@@ -18,6 +18,14 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
+        private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return (null, NotFound());
+            if (user.IsDeleted) return (null, Forbid());
+            return (user, null);
+        }
+
         // POST: api/RoomAccesses/Access
         [HttpPost("Access")]
         public async Task<ActionResult<RoomAccessDTO>> AccessAsync(RoomAccessDTO roomAccessDTO)
@@ -35,16 +43,11 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            // Check if the user is not deleted
-            var user = await _context.Users.FindAsync(roomAccessDTO.UserId);
-            // If the user is deleted, return a 403 Forbidden, or a 404 Not Found if the user does not exist
-            if (user == null || user.IsDeleted)
-            {
-                return user == null ? NotFound() : Forbid();
-            }
+            var (user, error) = await ValidateUserAsync(roomAccessDTO.UserId);
+            if (error != null) return error;
 
             // Get all the groups of the user
-            var userGroups = await _context.UserGroups.Where(ug => ug.UserId == roomAccessDTO.UserId).ToListAsync();
+            var userGroups = await _context.UserGroups.Where(userGroup => userGroup.UserId == roomAccessDTO.UserId).ToListAsync();
 
             // If the user is not in any group, he doesn't have access
             if (userGroups.Count() == 0)
@@ -65,7 +68,7 @@ namespace WebAPI.Controllers
             bool? hasAccess = null;
             foreach (var userGroup in userGroups)
             {
-                hasAccess = _context.Accesses.Any(a => a.RoomId == roomAccessDTO.RoomId && a.GroupId == userGroup.GroupId);
+                hasAccess = _context.Accesses.Any(access => access.RoomId == roomAccessDTO.RoomId && access.GroupId == userGroup.GroupId);
                 if (hasAccess == true)
                 {
                     break;

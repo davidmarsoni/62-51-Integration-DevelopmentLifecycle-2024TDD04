@@ -27,7 +27,10 @@ namespace WebApi.Controllers
             if (users != null && users.Count() > 0) {
                 foreach ( User user in users )
                 {
-                    result.Add(UserMapper.toDTO(user));
+                    if (user != null)
+                    {
+                        result.Add(UserMapper.toDTO(user)); 
+                    }
                 }
             }
             return result;
@@ -59,7 +62,7 @@ namespace WebApi.Controllers
         public async Task<ActionResult<List<UserDTO>>> GetUsersActive()
         {
             // get all users that are active
-            IEnumerable<User> users = await _context.Users.Where(u => !u.IsDeleted).ToListAsync();
+            IEnumerable<User> users = await _context.Users.Where(user => !user.IsDeleted).ToListAsync();
             List<UserDTO> result = new List<UserDTO>();
             if (users != null && users.Count() > 0)
             {
@@ -77,35 +80,39 @@ namespace WebApi.Controllers
         {
             // get all active users that are in the group
             var users = await _context.UserGroups
-                .Where(ug => ug.GroupId == groupId && !ug.User.IsDeleted)
-                .Select(ug => ug.User)
+                .Where(userGroup => userGroup.GroupId == groupId && userGroup.User != null && !userGroup.User.IsDeleted)
+                .Select(userGroup => userGroup.User)
                 .ToListAsync();
 
             List<UserDTO> result = new List<UserDTO>();
             if (users != null && users.Count > 0)
             {
-                foreach (User user in users)
+                foreach (User? user in users)
                 {
-                    result.Add(UserMapper.toDTO(user));
+                    if(user != null)
+                    {
+                        result.Add(UserMapper.toDTO(user));
+                    }
                 }
             }
             return result;
+        }
+
+        private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return (null, NotFound());
+            if (user.IsDeleted) return (null, Forbid());
+            return (user, null);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            UserDTO userDTO = UserMapper.toDTO(user);
-
-            return userDTO;
+            var (user, error) = await ValidateUserAsync(id);
+            if (error != null) return error;
+            return UserMapper.toDTO(user);
         }
 
         // PUT: api/Users/5
@@ -118,15 +125,11 @@ namespace WebApi.Controllers
                 return BadRequest();
             }
 
-            User user = UserMapper.toDAL(userDTO);
+            var (existingUser, error) = await ValidateUserAsync(id);
+            if (error != null) return error;
 
-            var existingUser = _context.Users.Local.FirstOrDefault(u => u.Id == id);
-            if (existingUser != null)
-            {
-                _context.Entry(existingUser).State = EntityState.Detached;
-            }
-            _context.Entry(user).State = EntityState.Modified;
-
+            _context.Entry(existingUser).State = EntityState.Detached;
+            _context.Entry(UserMapper.toDAL(userDTO)).State = EntityState.Modified;
 
             try
             {
@@ -170,12 +173,8 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
+            var (user, error) = await ValidateUserAsync(id);
+            if (error != null) return error;
             user.IsDeleted = true;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
@@ -184,7 +183,7 @@ namespace WebApi.Controllers
         }
 
         private bool UserExists(int id) { 
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Users.Any(user => user.Id == id); 
         }
     }
 }

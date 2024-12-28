@@ -23,45 +23,37 @@ namespace WebAPI.Controllers
 
 
         // GET: api/RoomAccessLogs?logNumber=10&offset=0&order=desc
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<RoomAccessLogDTO>>> GetRoomAccessLogs([FromQuery] int? logNumber, [FromQuery] int? offset, [FromQuery] string? order)
+               [HttpGet]
+        public async Task<ActionResult<IEnumerable<RoomAccessLogDTO>>> GetRoomAccessLogs(
+            [FromQuery] int? logNumber = 10, 
+            [FromQuery] int? offset = 0, 
+            [FromQuery] string? order = "desc")
         {
-            // If the parameters are not provided, use default values
-            if (logNumber == null || logNumber < 0)
-            {
-                logNumber = 10;
-            }
-            if (offset == null || offset < 0)
-            {
-                offset = 0;
-            }
-            if (order == null || (order != "asc" && order != "desc"))
-            { // take the latest logs by default
-                order = "desc";
-            }
-            // Get the logs
-            IEnumerable<RoomAccessLog> logs;
-            if (order == "asc"){
-                logs = await _context.RoomAccessLogs
-                .OrderBy(l => l.Timestamp)
-                .Skip((int)offset)
-                .Take((int)logNumber)
+            // Validate and normalize parameters
+            logNumber = Math.Max(0, logNumber ?? 10);
+            offset = Math.Max(0, offset ?? 0);
+            order = (order?.ToLower() == "asc") ? "asc" : "desc";
+        
+            // Build base query with included relations
+            var query = _context.RoomAccessLogs
+                .Include(log => log.User)
+                .Include(log => log.Room)
+                .AsNoTracking();
+        
+            // Apply ordering
+            query = order == "asc" 
+                ? query.OrderBy(log => log.Timestamp)
+                : query.OrderByDescending(log => log.Timestamp);
+        
+            // Apply pagination and execute query
+            var logs = await query
+                .Skip(offset.Value)
+                .Take(logNumber.Value)
                 .ToListAsync();
-            } else {
-                logs = await _context.RoomAccessLogs
-                .OrderByDescending(l => l.Timestamp)
-                .Skip((int)offset)
-                .Take((int)logNumber)
-                .ToListAsync();
-            }
-
-            // Map the logs to DTO
-            List<RoomAccessLogDTO> logsDTO = new List<RoomAccessLogDTO>();
-            foreach (var log in logs)
-            {
-                logsDTO.Add(RoomAccessLogMapper.toDTO(log));
-            }
-
+        
+            // Map to DTOs
+            var logsDTO = logs.Select(log => RoomAccessLogMapper.toDTO(log)).ToList();
+        
             return logsDTO;
         }
     }

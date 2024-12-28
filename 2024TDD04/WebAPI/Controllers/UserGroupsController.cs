@@ -70,35 +70,42 @@ namespace WebApi.Controllers
             return users;
         }
 
+        private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return (null, BadRequest("User does not exist."));
+            if (user.IsDeleted) return (null, Forbid());
+            return (user, null);
+        }
+
+        private async Task<(Group? group, ActionResult? error)> ValidateGroupAsync(int groupId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group == null) return (null, BadRequest("Group does not exist."));
+            if (group.IsDeleted) return (null, Forbid());
+            return (group, null);
+        }
+
         // POST: api/UserGroup
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<UserGroupDTO>> PostUserGroup(UserGroupDTO userGroupDTO)
         {
-            UserGroup userGroup;
-            if (userGroupDTO == null)
-            {
-                return BadRequest();
-            }
-            
-            //check if the user exists
-            var user = await _context.Users.FindAsync(userGroupDTO.UserId);
-            if (user == null)
-            {
-                return BadRequest("User does not exist.");
-            }
-            //check if the group exists
-            var group = await _context.Groups.FindAsync(userGroupDTO.GroupId);
-            if (group == null)
-            {
-                return BadRequest("Group does not exist.");
-            }   
+            if (userGroupDTO == null) return BadRequest();
+
+            var (user, userError) = await ValidateUserAsync(userGroupDTO.UserId);
+            if (userError != null) return userError;
+
+            var (group, groupError) = await ValidateGroupAsync(userGroupDTO.GroupId);
+            if (groupError != null) return groupError; 
+
             //check if the user is already in the group
-            if(_context.UserGroups.Any(ug => ug.UserId == userGroupDTO.UserId && ug.GroupId == userGroupDTO.GroupId))
+            if(_context.UserGroups.Any(userGroup => userGroup.UserId == userGroupDTO.UserId && userGroup.GroupId == userGroupDTO.GroupId))
             {
                 return Conflict("User is already in the group.");
             }
 
+            UserGroup userGroup;
             try
             {
                 userGroup = UserGroupMapper.toDAL(userGroupDTO);
@@ -122,7 +129,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> DeleteUserFromGroup(int userId, int groupId)
         {
             var userGroup = await _context.UserGroups
-                .FirstOrDefaultAsync(ug => ug.UserId == userId && ug.GroupId == groupId);
+                .FirstOrDefaultAsync(userGroup => userGroup.UserId == userId && userGroup.GroupId == groupId);
             if (userGroup == null)
             {
                 return NotFound();
@@ -136,7 +143,7 @@ namespace WebApi.Controllers
 
         private bool UserGroupExists(int id)
         {
-            return _context.UserGroups.Any(e => e.GroupId == id);
+            return _context.UserGroups.Any(userGroup => userGroup.GroupId == id);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsActive()
         {
             // get all rooms that are active
-            IEnumerable<Room> rooms = await _context.Rooms.Where(u => !u.IsDeleted).ToListAsync();
+            IEnumerable<Room> rooms = await _context.Rooms.Where(user => !user.IsDeleted).ToListAsync();
             List<RoomDTO> result = new List<RoomDTO>();
             if (rooms != null && rooms.Count() > 0)
             {
@@ -52,20 +52,21 @@ namespace WebAPI.Controllers
             return result;
         }
 
+        private async Task<(Room? room, ActionResult? error)> ValidateRoomAsync(int id)
+        {
+            var room = await _context.Rooms.FindAsync(id);
+            if (room == null) return (null, NotFound());
+            if (room.IsDeleted) return (null, Forbid());
+            return (room, null);
+        }
+
         // GET: api/Room/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDTO>> GetRoom(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
-
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            RoomDTO roomDTO = RoomMapper.toDTO(room);
-
-            return roomDTO;
+            var (room, error) = await ValidateRoomAsync(id);
+            if (error != null) return error;
+            return RoomMapper.toDTO(room);
         }
 
         // PUT: api/Room/5
@@ -78,14 +79,10 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
 
-            Room room = RoomMapper.toDAL(roomDTO);
+            var (existingRoom, error) = await ValidateRoomAsync(id);
+            if (error != null) return error;
 
-            var existingRoom = await _context.Rooms.FindAsync(id);
-            if (existingRoom == null)
-            {
-                return NotFound();
-            }
-            _context.Entry(existingRoom).CurrentValues.SetValues(room);
+            _context.Entry(existingRoom).CurrentValues.SetValues(RoomMapper.toDAL(roomDTO));
 
             try
             {
@@ -118,7 +115,7 @@ namespace WebAPI.Controllers
             }
 
             //check if the room is already in the DB
-            if (await _context.Rooms.AnyAsync(rm => rm.Name == roomDTO.Name)){
+            if (await _context.Rooms.AnyAsync(room => room.Name == roomDTO.Name)){
                 return Conflict();
             }
 
@@ -135,11 +132,8 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
-            if (room == null)
-            {
-                return NotFound();
-            }
+            var (room, error) = await ValidateRoomAsync(id);
+            if (error != null) return error;
 
             room.IsDeleted = true;
             _context.Update(room);
@@ -152,14 +146,14 @@ namespace WebAPI.Controllers
         [HttpGet("Name/{name}")]
         public async Task<ActionResult<bool>> RoomNameExists(string name)
         {
-            return await _context.Rooms.AnyAsync(rm => rm.Name == name);
+            return await _context.Rooms.AnyAsync(room => room.Name == name);
         }
 
         // GET: api/Room/Abreviation/{abreviation}
         [HttpGet("Abreviation/{abreviation}")]
         public async Task<ActionResult<bool>> RoomAbreviationExists(string abreviation)
         {
-            return await _context.Rooms.AnyAsync(rm => rm.RoomAbreviation == abreviation);
+            return await _context.Rooms.AnyAsync(room => room.RoomAbreviation == abreviation);
         }
 
         private bool RoomExists(int id)

@@ -11,7 +11,9 @@ namespace WebAPI.Mapper
             {
                 Id = roomAccessLog.Id,
                 RoomId = roomAccessLog.RoomId,
+                RoomName = roomAccessLog.Room?.Name,
                 UserId = roomAccessLog.UserId,
+                Username = roomAccessLog.User?.Username,
                 TimeStamp = roomAccessLog.Timestamp,
                 Info = roomAccessLog.Info
             };

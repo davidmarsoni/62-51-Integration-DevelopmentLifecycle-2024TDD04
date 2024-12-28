@@ -5,6 +5,7 @@ namespace DAL
 {
     public class RoomAccessContextFactory : IDesignTimeDbContextFactory<RoomAccessContext>
     {
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public RoomAccessContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<RoomAccessContext>();

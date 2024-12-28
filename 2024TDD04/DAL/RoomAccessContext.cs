@@ -16,6 +16,7 @@ namespace DAL
         {
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
@@ -24,7 +25,8 @@ namespace DAL
                 builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=RoomAccess");
             }
         }
-
+        
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure many-to-many for User-UserGroups-Group

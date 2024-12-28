@@ -55,16 +55,9 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupDTO>> GetGroup(int id)
         {
-            var group = await _context.Groups.FindAsync(id);
-
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            var groupDTO = GroupMapper.toDTO(group);
-
-            return groupDTO;
+            var (group, error) = await ValidateGroupAsync(id);
+            if (error != null) return error;
+            return GroupMapper.toDTO(group);
         }
 
         // GET: api/Groups/User/5
@@ -104,23 +97,12 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGroup(int id, GroupDTO groupDTO)
         {
-            if (id != groupDTO.Id)
-            {
-                return BadRequest();
-            }
+            if (id != groupDTO.Id) return BadRequest();
 
-            Group group;
+            var (group, error) = await ValidateGroupAsync(id);
+            if (error != null) return error;
 
-            try
-            {
-                group = GroupMapper.toDAL(groupDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
-
-            _context.Entry(group).State = EntityState.Modified;
+            _context.Entry(group).CurrentValues.SetValues(GroupMapper.toDAL(groupDTO));
 
             try
             {
@@ -166,11 +148,8 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGroup(int id)
         {
-            var group = await _context.Groups.FindAsync(id);
-            if (group == null)
-            {
-                return NotFound();
-            }
+            var (group, error) = await ValidateGroupAsync(id);
+            if (error != null) return error;
 
             group.IsDeleted = true;
             _context.Groups.Update(group);
@@ -179,6 +158,12 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-       
+        private async Task<(Group? group, ActionResult? error)> ValidateGroupAsync(int id)
+        {
+            var group = await _context.Groups.FindAsync(id);
+            if (group == null) return (null, NotFound());
+            if (group.IsDeleted) return (null, Forbid());
+            return (group, null);
+        }
     }
 }

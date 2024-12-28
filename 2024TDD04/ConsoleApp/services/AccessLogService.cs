@@ -11,13 +11,8 @@ namespace MVC.Services
         public AccessLogService(HttpClient client, string baseURL, bool debug)
         {
             _client = client;
-            _baseUrl = baseURL + "/accesslogs";
+            _baseUrl = baseURL + "/RoomAccessLogs";
             SQS.Debug = debug;
-        }
-
-        public async Task<bool> LogAccessAsync(RoomAccessLogDTO roomAccessLogDTO)
-        {
-            return await SQS.PostNoReturn(_client, $"{_baseUrl}/LogAccess", roomAccessLogDTO);
         }
 
         public async Task<IEnumerable<RoomAccessLogDTO>> GetAccessLog(int? logNumber, int? offset, string? order)
