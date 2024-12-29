@@ -24,7 +24,7 @@ namespace WebApi.Controllers
         {
             IEnumerable<Group> groups = await _context.Groups.ToListAsync();
             List<GroupDTO> result = new List<GroupDTO>();
-            if (groups != null && groups.Count() > 0)
+            if (groups != null && groups.Any())
             {
                 foreach (Group group in groups)
                 {
@@ -36,12 +36,12 @@ namespace WebApi.Controllers
 
         // GET: api/Groups/Active
         [HttpGet("Active")]
-        public async Task<ActionResult<IEnumerable<GroupDTO>>> GetUsersActive()
+        public async Task<ActionResult<IEnumerable<GroupDTO>>> GetGroupsActive()
         {
             // get all groups that are active
             IEnumerable<Group> groups = await _context.Groups.Where(user => !user.IsDeleted).ToListAsync();
             List<GroupDTO> result = new List<GroupDTO>();
-            if (groups != null && groups.Count() > 0)
+            if (groups != null && groups.Any())
             {
                 foreach (Group group in groups)
                 {
@@ -71,7 +71,7 @@ namespace WebApi.Controllers
             // get all groups that the user is in
             IEnumerable<Group> groups = await _context.Groups.Where(group => group.Users.Any(user => user.Id == userId)).ToListAsync();
             List<GroupDTO> result = new List<GroupDTO>();
-            if (groups != null && groups.Count() > 0)
+            if (groups != null && groups.Any())
             {
                 foreach (Group group in groups)
                 {

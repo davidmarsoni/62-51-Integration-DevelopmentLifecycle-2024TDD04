@@ -2,8 +2,9 @@ using DAL;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Controllers;
+using _2024TDD04.WebAPI.Tests.GeneralSetup;
 
-namespace _2024TDD04.DAL.Tests.WebAPI
+namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class RoomsControllerTests
     {

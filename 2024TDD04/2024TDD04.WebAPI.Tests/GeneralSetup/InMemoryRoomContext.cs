@@ -2,7 +2,7 @@ using DAL;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace _2024TDD04.DAL.Tests.WebAPI
+namespace _2024TDD04.WebAPI.Tests.GeneralSetup
 {
     public class InMemoryRoomContext
     {

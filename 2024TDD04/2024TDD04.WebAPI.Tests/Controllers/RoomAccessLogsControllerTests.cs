@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Controllers;
+using _2024TDD04.WebAPI.Tests.GeneralSetup;
 
-namespace _2024TDD04.DAL.Tests.WebAPI
+namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class RoomAccessLogsControllerTests
     {

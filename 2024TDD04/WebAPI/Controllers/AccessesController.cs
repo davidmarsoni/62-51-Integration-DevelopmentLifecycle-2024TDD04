@@ -18,21 +18,28 @@ namespace WebAPI.Controllers
             _context = context;
         }
     
-        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateAccess(int roomId, int groupId)
+        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateGroupExists(int groupId)
         {
-            var roomExists = await _context.Rooms.AnyAsync(room => room.Id == roomId && !room.IsDeleted);
             var groupExists = await _context.Groups.AnyAsync(group => group.Id == groupId);
-    
-            if (!roomExists || !groupExists)
+            if (!groupExists)
                 return (false, NotFound());
-    
             return (true, null);
         }
     
-        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateUser(int userId)
+        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateRoomExists(int roomId)
         {
-            var exists = await _context.Users.AnyAsync(user => user.Id == userId);
-            return exists ? (true, null) : (false, NotFound());
+            var roomExists = await _context.Rooms.AnyAsync(room => room.Id == roomId && !room.IsDeleted);
+            if (!roomExists)
+                return (false, NotFound());
+            return (true, null);
+        }
+
+        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateUserExists(int userId)
+        {
+            var userExists = await _context.Users.AnyAsync(user => user.Id == userId);
+            if (!userExists)
+                return (false, NotFound());
+            return (true, null);
         }
     
         private async Task<IQueryable<Access>> GetUserAccessesQuery(int userId)
@@ -58,8 +65,11 @@ namespace WebAPI.Controllers
         [HttpGet("HasAccessGroup/{roomId}/{groupId}")]
         public async Task<ActionResult<bool>> HasAccessGroupAsync(int roomId, int groupId)
         {
-            var (isValid, errorResponse) = await ValidateAccess(roomId, groupId);
+            var (isValid, errorResponse) = await ValidateGroupExists(groupId);
             if (!isValid) return errorResponse!;
+
+            var (isValidRoom, errorResponseRoom) = await ValidateRoomExists(roomId);
+            if (!isValidRoom) return errorResponseRoom!;
     
             return await _context.Accesses.AnyAsync(access => 
                 access.RoomId == roomId && access.GroupId == groupId);
@@ -68,8 +78,11 @@ namespace WebAPI.Controllers
         [HttpGet("HasAccessUser/{roomId}/{userId}")]
         public async Task<ActionResult<bool>> HasAccessUserAsync(int roomId, int userId)
         {
-            var (isValid, errorResponse) = await ValidateUser(userId);
+            var (isValid, errorResponse) = await ValidateUserExists(userId);
             if (!isValid) return errorResponse!;
+
+            var (isValidRoom, errorResponseRoom) = await ValidateRoomExists(roomId);
+            if (!isValidRoom) return errorResponseRoom!;
     
             var accessQuery = await GetUserAccessesQuery(userId);
             return await accessQuery.AnyAsync(access => access.RoomId == roomId);
@@ -78,7 +91,7 @@ namespace WebAPI.Controllers
         [HttpGet("GetAccessesByUserId/{userId}")]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByUserId(int userId)
         {
-            var (isValid, errorResponse) = await ValidateUser(userId);
+            var (isValid, errorResponse) = await ValidateUserExists(userId);
             if (!isValid) return errorResponse!;
     
             var accessQuery = await GetUserAccessesQuery(userId);
@@ -100,8 +113,11 @@ namespace WebAPI.Controllers
         [HttpPost("GrantAccess")]
         public async Task<ActionResult<bool>> GrantAccessAsync(AccessDTO accessDTO)
         {
-            var (isValid, errorResponse) = await ValidateAccess(accessDTO.RoomId, accessDTO.GroupId);
+            var (isValid, errorResponse) = await ValidateGroupExists(accessDTO.GroupId);
             if (!isValid) return errorResponse!;
+
+            var (isValidRoom, errorResponseRoom) = await ValidateRoomExists(accessDTO.RoomId);
+            if (!isValidRoom) return errorResponseRoom!;
     
             if (await _context.Accesses.AnyAsync(access => 
                 access.RoomId == accessDTO.RoomId && access.GroupId == accessDTO.GroupId))
@@ -115,7 +131,7 @@ namespace WebAPI.Controllers
         [HttpPost("RevokeAccess")]
         public async Task<ActionResult<bool>> RevokeAccessAsync(AccessDTO accessDTO)
         {
-            var (isValid, errorResponse) = await ValidateAccess(accessDTO.RoomId, accessDTO.GroupId);
+            var (isValid, errorResponse) = await ValidateGroupExists(accessDTO.GroupId);
             if (!isValid) return errorResponse!;
     
             var access = await _context.Accesses.FirstOrDefaultAsync(access => 

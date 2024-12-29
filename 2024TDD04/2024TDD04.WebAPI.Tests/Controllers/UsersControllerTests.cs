@@ -9,8 +9,9 @@ using System.Linq;
 using WebApi.Controllers;
 using WebAPI.Controllers;
 using Xunit;
+using _2024TDD04.WebAPI.Tests.GeneralSetup;
 
-namespace _2024TDD04.DAL.Tests.WebAPI
+namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class UsersControllerTests
     {
@@ -102,7 +103,7 @@ namespace _2024TDD04.DAL.Tests.WebAPI
             // Assert
             Assert.IsType<ActionResult<List<UserDTO>>>(result);
             Assert.NotNull(result.Value);
-            Assert.Equal(3, result.Value.Count());
+            Assert.Equal(3, result.Value.Count);
         }
 
         [Fact]
