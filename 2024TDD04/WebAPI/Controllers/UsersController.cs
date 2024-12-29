@@ -78,6 +78,12 @@ namespace WebApi.Controllers
         [HttpGet("Group/{groupId}")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByGroupId(int groupId)
         {
+            // check if group exists
+            if (!_context.Groups.Any(group => group.Id == groupId))
+            {
+                return NotFound();
+            }
+
             // get all active users that are in the group
             var users = await _context.UserGroups
                 .Where(userGroup => userGroup.GroupId == groupId && userGroup.User != null && !userGroup.User.IsDeleted)

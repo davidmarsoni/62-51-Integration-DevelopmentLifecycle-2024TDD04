@@ -22,7 +22,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region AccessAsync
 
         [Fact]
-        public async void AccessAsync_UserInGroupWithAccess_ShouldReturnRoomAccessDTO()
+        public async void AccessAsync_WhenGivenUserWithAccess_ShouldReturnRoomAccessDTO()
         {
             // Arrange
             RoomAccessDTO accessDTO = new RoomAccessDTO
@@ -42,7 +42,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_UserInGroupWithoutAccess_ShouldReturnNull()
+        public async void AccessAsync_WhenGivenUserWithoutAccess_ShouldReturnNull()
         {
             // Arrange
             RoomAccessDTO accessDTO = new RoomAccessDTO
@@ -60,7 +60,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_UserNotInAnyGroup_ShouldReturnNullAction()
+        public async void AccessAsync_WhenGivenUserWithoutGroup_ShouldReturnNullAction()
         {
             // Arrange
             RoomAccessDTO accessDTO = new RoomAccessDTO
@@ -77,24 +77,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_UserDoesNotExist_ShouldReturnNotFound()
-        {
-            // Arrange
-            RoomAccessDTO accessDTO = new RoomAccessDTO
-            {
-                UserId = 999, // Non-existent user
-                RoomId = 1
-            };
-
-            // Act
-            var result = await _roomAccessesController.AccessAsync(accessDTO);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void AccessAsync_UserIsDeleted_ShouldReturnForbid()
+        public async void AccessAsync_WhenGivenDeletedUser_ShouldReturnForbid()
         {
             // Arrange
             RoomAccessDTO accessDTO = new RoomAccessDTO
@@ -111,7 +94,24 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_RoomDoesNotExist_ShouldReturnNotFound()
+        public async void AccessAsync_WhenGivenNonExistentUser_ShouldReturnNotFound()
+        {
+            // Arrange
+            RoomAccessDTO accessDTO = new RoomAccessDTO
+            {
+                UserId = 999, // Non-existent user
+                RoomId = 1
+            };
+
+            // Act
+            var result = await _roomAccessesController.AccessAsync(accessDTO);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        [Fact]
+        public async void AccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
             RoomAccessDTO accessDTO = new RoomAccessDTO

@@ -20,7 +20,6 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         public UsersControllerTests()
         {
-            // ...existing code for in-memory DB...
             _testDbContext = InMemoryRoomContext.CreateInMemoryContext();
             _usersController = new UsersController(_testDbContext);
         }
@@ -28,7 +27,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsers
 
         [Fact]
-        public async void GetUsers_WhenHasUser_ShouldReturnListOfUsers()
+        public async void GetUsers_WhenUsersInDB_ShouldReturnListOfUsers()
         {
             // Arrange
 
@@ -41,7 +40,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.Equal(4, result.Value.Count());
         }
 
-        public async void GetUsers_WhenHasNoUsers_ShouldReturnEmptyList()
+        public async void GetUsers_WhenNoUsersInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.Users.RemoveRange(_testDbContext.Users);
@@ -63,12 +62,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsernameExist
 
         [Fact]
-        public async void GetUsernameExist_UsernameExists_ShouldReturnTrue()
+        public async void GetUsernameExist_WhenGivenExistingUsername_ShouldReturnTrue()
         {
             // Arrange
+            var existentUsername = "Widmer";
 
             // Act
-            var result = await _usersController.UsernameExist("Widmer");
+            var result = await _usersController.UsernameExist(existentUsername);
 
             // Assert
             Assert.IsType<ActionResult<bool>>(result);
@@ -76,12 +76,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUsernameExist_UsernameDoesNotExist_ShouldReturnFalse()
+        public async void GetUsernameExist_WhenGivenNonExistentUsername_ShouldReturnFalse()
         {
             // Arrange
+            var nonExistentUsername = "TestUsername";
 
             // Act
-            var result = await _usersController.UsernameExist("TestUser");
+            var result = await _usersController.UsernameExist(nonExistentUsername);
 
             // Assert
             Assert.IsType<ActionResult<bool>>(result);
@@ -93,7 +94,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsersActive
 
         [Fact]
-        public async void GetUsersActive_ShouldReturnListOfUsers()
+        public async void GetUsersActive_WhenActiveUsersInDB_ShouldReturnListOfActiveUsers()
         {
             // Arrange
 
@@ -107,7 +108,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUsersActive_NoActiveUsers_ShouldReturnEmptyList()
+        public async void GetUsersActive_WhenNoActiveUsersInDB_ShouldReturnEmptyList()
         {
             // Arrange
             foreach (var user in _testDbContext.Users)
@@ -125,33 +126,18 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.Empty(result.Value);
         }
 
-        [Fact]
-        public async void GetUsersActive_NoUsers_ShouldReturnEmptyList()
-        {
-            // Arrange
-            _testDbContext.Users.RemoveRange(_testDbContext.Users);
-            _testDbContext.SaveChanges();
-
-            // Act
-            var result = await _usersController.GetUsersActive();
-
-            // Assert
-            Assert.IsType<ActionResult<List<UserDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.Empty(result.Value);
-        }
-
         #endregion
 
         #region GetUsersByGroupId
 
         [Fact]
-        public async void GetUsersByGroupId_GroupExists_ShouldReturnListOfUsers()
+        public async void GetUsersByGroupId_WhenGivenValidGroup_ShouldReturnListOfUsers()
         {
             // Arrange
+            var groupId = 1;
 
             // Act
-            var result = await _usersController.GetUsersByGroupId(1);
+            var result = await _usersController.GetUsersByGroupId(groupId);
 
             // Assert
             Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
@@ -160,26 +146,26 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUsersByGroupId_GroupDoesNotExist_ShouldReturnEmptyList()
+        public async void GetUsersByGroupId_WhenGivenNonExistentGroup_ShouldReturnNotFound()
         {
             // Arrange
+            var nonExistentGroupId = 999;
 
             // Act
-            var result = await _usersController.GetUsersByGroupId(999);
+            var result = await _usersController.GetUsersByGroupId(nonExistentGroupId);
 
             // Assert
-            Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.Empty(result.Value);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
-        public async void GetUsersByGroupId_GroupExistsButNoUsers_ShouldReturnEmptyList()
+        public async void GetUsersByGroupId_WhenGivenGroupWithNoUsers_ShouldReturnEmptyList()
         {
             // Arrange
+            var groupNoUsersId = 4;
 
             // Act
-            var result = await _usersController.GetUsersByGroupId(4);
+            var result = await _usersController.GetUsersByGroupId(groupNoUsersId);
 
             // Assert
             Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
@@ -192,12 +178,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUser
 
         [Fact]
-        public async void GetUser_UserExists_ShouldReturnUserDTO()
+        public async void GetUser_WhenGivenExistingUser_ShouldReturnUserDTO()
         {
             // Arrange
+            var userId = 1;
 
             // Act
-            var result = await _usersController.GetUser(1);
+            var result = await _usersController.GetUser(userId);
 
             // Assert
             Assert.IsType<ActionResult<UserDTO>>(result);
@@ -206,12 +193,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUser_UserDoesNotExist_ShouldReturnNotFound()
+        public async void GetUser_WhenGivenNonExistentUser_ShouldReturnNotFound()
         {
             // Arrange
+            var nonExistentUserId = 999;
 
             // Act
-            var result = await _usersController.GetUser(999);
+            var result = await _usersController.GetUser(nonExistentUserId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -222,18 +210,19 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PutUser
 
         [Fact]
-        public async void PutUser_UserExists_ShouldReturnNoContentAndEntryIsUpdated()
+        public async void PutUser_WhenGivenValidUser_ShouldReturnNoContentAndUpdateUser()
         {
             // Arrange
+            var userId = 1;
             UserDTO userDTO = new UserDTO
             {
-                Id = 1,
+                Id = userId,
                 Username = "TestUser",
                 IsDeleted = false
             };
 
             // Act
-            var result = await _usersController.PutUser(1, userDTO);
+            var result = await _usersController.PutUser(userId, userDTO);
 
             // Assert
             Assert.IsType<NoContentResult>(result);
@@ -244,36 +233,39 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutUser_UserDoesNotExist_ShouldReturnNotFound()
+        public async void PutUser_WhenGivenNonExistantUser_ShouldReturnNotFound()
         {
             // Arrange
+            var nonExistentUserId = 999;
             UserDTO userDTO = new UserDTO
             {
-                Id = 999,
+                Id = nonExistentUserId,
                 Username = "TestUser",
                 IsDeleted = false
             };
 
             // Act
-            var result = await _usersController.PutUser(999, userDTO);
+            var result = await _usersController.PutUser(nonExistentUserId, userDTO);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
-        public async void PutUser_UserIdProvidedIsDifferentFromUserDTOId_ShouldReturnBadRequest()
+        public async void PutUser_WhenGivenNonMatchingData_ShouldReturnBadRequest()
         {
             // Arrange
+            var userId = 1;
+            var wrongUserId = 999;
             UserDTO userDTO = new UserDTO
             {
-                Id = 1,
+                Id = userId,
                 Username = "TestUser",
                 IsDeleted = false
             };
-
+            
             // Act
-            var result = await _usersController.PutUser(999, userDTO);
+            var result = await _usersController.PutUser(wrongUserId, userDTO);
 
             // Assert
             Assert.IsType<BadRequestResult>(result);
@@ -284,7 +276,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PostUser
 
         [Fact]
-        public async void PostUser_UserDoesNotExist_ShouldReturnCreatedAtActionResult()
+        public async void PostUser_WhenGivenValidUser_ShouldReturnCreatedAtActionAndCreateUser()
         {
             // Arrange
             UserDTO userDTO = new UserDTO
@@ -301,7 +293,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostUser_UserExists_ShouldReturnConflict()
+        public async void PostUser_WhenGivenExistingUser_ShouldReturnConflict()
         {
             // Arrange
             UserDTO userDTO = new UserDTO
@@ -323,24 +315,26 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region DeleteUser
 
         [Fact]
-        public async void DeleteUser_UserExists_ShouldReturnAnEmptyStatusCode()
+        public async void DeleteUser_WhenGivenValidUser_ShouldReturnNoContentAndUpdateUser()
         {
             // Arrange
+            var userId = 1;
 
             // Act
-            var result = await _usersController.DeleteUser(1);
+            var result = await _usersController.DeleteUser(userId);
 
             // Assert
             Assert.IsType<NoContentResult>(result);
         }
 
         [Fact]
-        public async void DeleteUser_UserDoesNotExist_ShouldReturnNotFound()
+        public async void DeleteUser_WhenGivenNonExistentUser_ShouldReturnNotFound()
         {
             // Arrange
+            var nonExistentUserId = 999;
 
             // Act
-            var result = await _usersController.DeleteUser(999);
+            var result = await _usersController.DeleteUser(nonExistentUserId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);

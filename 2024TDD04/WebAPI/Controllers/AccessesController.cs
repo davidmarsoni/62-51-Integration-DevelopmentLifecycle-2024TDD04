@@ -18,7 +18,7 @@ namespace WebAPI.Controllers
             _context = context;
         }
     
-        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateGroupExists(int groupId)
+        private async Task<(bool exists, ActionResult? errorResponse)> ValidateGroupExists(int groupId)
         {
             var groupExists = await _context.Groups.AnyAsync(group => group.Id == groupId);
             if (!groupExists)
@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             return (true, null);
         }
     
-        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateRoomExists(int roomId)
+        private async Task<(bool exists, ActionResult? errorResponse)> ValidateRoomExists(int roomId)
         {
             var roomExists = await _context.Rooms.AnyAsync(room => room.Id == roomId && !room.IsDeleted);
             if (!roomExists)
@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             return (true, null);
         }
 
-        private async Task<(bool isValid, ActionResult? errorResponse)> ValidateUserExists(int userId)
+        private async Task<(bool exists, ActionResult? errorResponse)> ValidateUserExists(int userId)
         {
             var userExists = await _context.Users.AnyAsync(user => user.Id == userId);
             if (!userExists)

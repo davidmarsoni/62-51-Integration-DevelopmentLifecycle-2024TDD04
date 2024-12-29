@@ -20,6 +20,29 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
+        private async Task<(Room? room, ActionResult? error)> ValidateRoomAsync(int id)
+        {
+            var room = await _context.Rooms.FindAsync(id);
+            if (room == null) return (null, NotFound());
+            if (room.IsDeleted) return (null, Forbid());
+            return (room, null);
+        }
+
+        private async Task<ActionResult?> ValidateRoomDTOAsync(RoomDTO roomDTO)
+        {
+            if (string.IsNullOrEmpty(roomDTO.RoomAbreviation))
+            {
+                roomDTO.RoomAbreviation = null;
+            }
+            if (await _context.Rooms.AnyAsync(room =>
+                room.Name == roomDTO.Name || room.RoomAbreviation == roomDTO.RoomAbreviation)
+                )
+            {
+                return Conflict();
+            }
+            return null;
+        }
+
         // GET: api/Room
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms()
@@ -52,14 +75,6 @@ namespace WebAPI.Controllers
             return result;
         }
 
-        private async Task<(Room? room, ActionResult? error)> ValidateRoomAsync(int id)
-        {
-            var room = await _context.Rooms.FindAsync(id);
-            if (room == null) return (null, NotFound());
-            if (room.IsDeleted) return (null, Forbid());
-            return (room, null);
-        }
-
         // GET: api/Room/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDTO>> GetRoom(int id)
@@ -81,6 +96,9 @@ namespace WebAPI.Controllers
 
             var (existingRoom, error) = await ValidateRoomAsync(id);
             if (error != null) return error;
+
+            var validateResult = await ValidateRoomDTOAsync(roomDTO);
+            if (validateResult != null) return validateResult;
 
             _context.Entry(existingRoom).CurrentValues.SetValues(RoomMapper.toDAL(roomDTO));
 
@@ -108,16 +126,8 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomDTO)
         {
-            
-            if (roomDTO == null)
-            {
-                return BadRequest();
-            }
-
-            //check if the room is already in the DB
-            if (await _context.Rooms.AnyAsync(room => room.Name == roomDTO.Name)){
-                return Conflict();
-            }
+            var validateResult = await ValidateRoomDTOAsync(roomDTO);
+            if (validateResult != null) return validateResult;
 
             Room room = RoomMapper.toDAL(roomDTO);
 

@@ -25,12 +25,13 @@ namespace WebAPI.Controllers
         // GET: api/RoomAccessLogs?logNumber=10&offset=0&order=desc
                [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomAccessLogDTO>>> GetRoomAccessLogs(
-            [FromQuery] int? logNumber = 10, 
-            [FromQuery] int? offset = 0, 
-            [FromQuery] string? order = "desc")
+            int? logNumber = 10, 
+            int? offset = 0, 
+            string? order = "desc")
         {
             // Validate and normalize parameters
             logNumber = Math.Max(0, logNumber ?? 10);
+            logNumber = logNumber == 0 ? 10 : logNumber;
             offset = Math.Max(0, offset ?? 0);
             order = (order?.ToLower() == "asc") ? "asc" : "desc";
         
@@ -44,7 +45,7 @@ namespace WebAPI.Controllers
             query = order == "asc" 
                 ? query.OrderBy(log => log.Timestamp)
                 : query.OrderByDescending(log => log.Timestamp);
-        
+
             // Apply pagination and execute query
             var logs = await query
                 .Skip(offset.Value)

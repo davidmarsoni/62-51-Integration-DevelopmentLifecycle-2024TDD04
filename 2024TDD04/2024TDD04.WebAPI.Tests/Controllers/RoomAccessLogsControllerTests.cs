@@ -23,8 +23,10 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         #region GetRoomAccessLogs
         [Fact]
-        public async void GetRoomAccessLogs_WhenAllParametersNull_ReturnsAllRoomAccessLogsUsingDefaultValues()
+        public async void GetRoomAccessLogs_WhenGivenAllParametersNull_ShouldReturnRooms()
         {
+            // Arrange
+
             // Act
             var result = await roomAccessLogsController.GetRoomAccessLogs(null, null, null);
 
@@ -34,14 +36,14 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_NoLogsInTheDatabase_ReturnsEmptyList()
+        public async void GetRoomAccessLogs_WhenNoLogsInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.RoomAccessLogs.RemoveRange(_testDbContext.RoomAccessLogs);
             _testDbContext.SaveChanges();
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(null, null, null);
+            var result = await roomAccessLogsController.GetRoomAccessLogs();
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
@@ -49,11 +51,12 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenSingleLogsAsked_ReturnsRoomAccessLogsSingle(){
+        public async void GetRoomAccessLogs_WhenGivenSingleLog_ShouldReturnSingleRoomAccessLog(){
             // Arrange
+            var logNumber = 1;
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(1, null, null);
+            var result = await roomAccessLogsController.GetRoomAccessLogs(logNumber);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
@@ -61,11 +64,12 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenThreeLogsAsked_ReturnsAllRoomAccessLogs(){
+        public async void GetRoomAccessLogs_WhenGivenThreeLog_ShouldReturnThreeOrAllRoomAccessLogs(){
             // Arrange
+            var logNumber = 3;
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(3, null, null);
+            var result = await roomAccessLogsController.GetRoomAccessLogs(logNumber);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
@@ -73,20 +77,35 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenOffsetIsGiven_ReturnsRoomAccessLogsSingleOffset(){
+        public async void GetRoomAccessLogs_WhenGivenOffset_ShouldReturnRoomAccessLogOffsetByOne(){
             // Arrange
+            var offset = 1;
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(null, 1, null);
+            var result = await roomAccessLogsController.GetRoomAccessLogs(null, offset);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
             Assert.Single(roomAccessLogs);
-            Assert.Equal(2, roomAccessLogs[0].Id);
+            Assert.Equal(1, roomAccessLogs[0].Id);
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenInvalidParameter_ReturnsDefaultAmmountOfLogs(){
+        public async void GetRoomAccessLogs_WhenGivenAscendingOrder_ShouldReturnRoomAccessLogsInAscendingOrder(){
+            // Arrange
+
+            // Act
+            var result = await roomAccessLogsController.GetRoomAccessLogs(null, null, "asc");
+
+            // Assert
+            var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
+            Assert.Equal(2, roomAccessLogs.Count);
+            Assert.Equal(1, roomAccessLogs[0].Id);
+            Assert.Equal(2, roomAccessLogs[1].Id);
+        }
+
+        [Fact]
+        public async void GetRoomAccessLogs_WhenGivenInvalidParameter_ShouldReturnDefaultAmountOfLogsInDescendingOrder(){
             // Arrange
 
             // Act
@@ -95,6 +114,8 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
             Assert.Equal(2, roomAccessLogs.Count);
+            Assert.Equal(2, roomAccessLogs[0].Id);
+            Assert.Equal(1, roomAccessLogs[1].Id);
         }
 
         #endregion

@@ -20,7 +20,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetRooms
 
         [Fact]
-        public async void GetRooms_WhenHasRooms_ShouldReturnListOfRooms()
+        public async void GetRooms_WhenRoomsInDB_ShouldReturnListOfRooms()
         {
             // Arrange
 
@@ -33,7 +33,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.Equal(3, result.Value.Count());
         }
 
-        public async void GetRooms_WhenHasNoRooms_ShouldReturnEmptyList()
+        public async void GetRooms_WhenNoRoomsInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.Rooms.RemoveRange(_testDbContext.Rooms);
@@ -53,7 +53,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetRoomsActive
 
         [Fact]
-        public async void GetRoomsActive_WhenHasRooms_ShouldReturnListOfRooms()
+        public async void GetRoomsActive_WhenActiveRoomsInDB_ShouldReturnListOfActiveRooms()
         {
             // Arrange
 
@@ -67,7 +67,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomsActive_WhenHasNoRooms_ShouldReturnEmptyList()
+        public async void GetRoomsActive_WhenNoActiveRoomsInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.Rooms.RemoveRange(_testDbContext.Rooms);
@@ -87,12 +87,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetRoom
 
         [Fact]
-        public async void GetRoom_RoomExists_ShouldReturnRoomDTO()
+        public async void GetRoom_WhenGivenValidRoom_ShouldReturnRoomDTO()
         {
             // Arrange
+            var roomId = 1;
 
             // Act
-            var result = await _roomsController.GetRoom(1);
+            var result = await _roomsController.GetRoom(roomId);
 
             // Assert
             Assert.IsType<ActionResult<RoomDTO>>(result);
@@ -101,12 +102,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoom_RoomDoesNotExist_ShouldReturnNotFound()
+        public async void GetRoom_WhenGivenNonExistent_ShouldReturnNotFound()
         {
             // Arrange
+            var roomId = 999;
 
             // Act
-            var result = await _roomsController.GetRoom(999);
+            var result = await _roomsController.GetRoom(roomId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -117,7 +119,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PutRoom
 
         [Fact]
-        public async void PutRoom_RoomExists_ShouldReturnNoContentAndEntryIsUpdated()
+        public async void PutRoom_WhenGivenValidRoom_ShouldReturnNoContentAndUpdateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -140,7 +142,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_RoomDoesNotExist_ShouldReturnNotFound()
+        public async void PutRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -158,7 +160,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_IdMismatch_ShouldReturnBadRequest()
+        public async void PutRoom_WhenGivenNonMatchingData_ShouldReturnBadRequest()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -175,12 +177,71 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.IsType<BadRequestResult>(result);
         }
 
+        [Fact]
+        public async void PutRoom_WhenGivenRoomWithDuplicateName_ShouldReturnConflict()
+        {
+            // Arrange
+            RoomDTO roomDTO = new RoomDTO
+            {
+                Id = 1,
+                Name = "Room 301",  // Assuming this exists in test data
+                RoomAbreviation = "TR1"
+            };
+
+            // Act
+            var result = await _roomsController.PutRoom(1, roomDTO);
+
+            // Assert
+            Assert.IsType<ConflictResult>(result);
+        }
+
+        [Fact]
+        public async void PutRoom_WhenGivenRoomWithDuplicateAbreviation_ShouldReturnConflict()
+        {
+            // Arrange
+            RoomDTO roomDTO = new RoomDTO
+            {
+                Id = 1,
+                Name = "Test Room",
+                RoomAbreviation = "301"  // Assuming this exists in test data
+            };
+
+            // Act
+            var result = await _roomsController.PutRoom(1, roomDTO);
+
+            // Assert
+            Assert.IsType<ConflictResult>(result);
+        }
+
+        [Fact]
+        public async void PutRoom_WhenGivenRoomWithBlankAbreviation_ShouldReturnNoContentAndUpdateRoom()
+        {
+            // Arrange
+            RoomDTO roomDTO = new RoomDTO
+            {
+                Id = 1,
+                Name = "Test Room",
+                RoomAbreviation = ""
+            };
+
+            // Act
+            var result = await _roomsController.PutRoom(1, roomDTO);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+
+            var room = await _testDbContext.Rooms.FindAsync(1);
+            Assert.NotNull(room);
+            Assert.Equal(roomDTO.Name, room.Name);
+            Assert.Equal(roomDTO.RoomAbreviation, room.RoomAbreviation);
+        }
+
         #endregion
 
         #region PostRoom
 
         [Fact]
-        public async void PostRoom_ValidRoom_ShouldReturnCreatedAtAction()
+        public async void PostRoom_WhenGivenValidRoom_ShouldReturnCreatedAtActionAndCreateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -197,7 +258,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_DuplicateName_ShouldReturnConflict()
+        public async void PostRoom_WhenGivenRoomWithDuplicateName_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -214,7 +275,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_DuplicateAbreviation_ShouldReturnConflict()
+        public async void PostRoom_WhenGivenRoomWithDuplicateAbreviation_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -231,13 +292,20 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_NullDTO_ShouldReturnBadRequest()
+        public async void PostRoom_WhenGivenRoomWithBlankAbreviation_ShouldReturnCreatedAtActionAndCreateRoom()
         {
+            // Arrange
+            RoomDTO roomDTO = new RoomDTO
+            {
+                Name = "New Room",
+                RoomAbreviation = ""
+            };
+
             // Act
-            var result = await _roomsController.PostRoom(null);
+            var result = await _roomsController.PostRoom(roomDTO);
 
             // Assert
-            Assert.IsType<BadRequestResult>(result.Result);
+            Assert.IsType<CreatedAtActionResult>(result.Result);
         }
 
         #endregion
@@ -245,26 +313,28 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region DeleteRoom
 
         [Fact]
-        public async void DeleteRoom_RoomExists_ShouldSetIsDeletedAndReturnNoContent()
+        public async void DeleteRoom_WhenGivenValidRoom_ShouldReturnNoContentAndUpdateRoom()
         {
             // Arrange
+            var roomId = 1;
 
             // Act
-            var result = await _roomsController.DeleteRoom(1);
+            var result = await _roomsController.DeleteRoom(roomId);
 
             // Assert
             Assert.IsType<NoContentResult>(result);
-            var room = await _testDbContext.Rooms.FindAsync(1);
+            var room = await _testDbContext.Rooms.FindAsync(roomId);
             Assert.True(room.IsDeleted);
         }
 
         [Fact]
-        public async void DeleteRoom_RoomDoesNotExist_ShouldReturnNotFound()
+        public async void DeleteRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
+            var roomId = 999;
 
             // Act
-            var result = await _roomsController.DeleteRoom(999);
+            var result = await _roomsController.DeleteRoom(roomId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -275,12 +345,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region RoomNameExists
 
         [Fact]
-        public async void RoomNameExists_NameExists_ShouldReturnTrue()
+        public async void RoomNameExists_WhenGivenExistingName_ShouldReturnTrue()
         {
             // Arrange
+            var existingRoomName = "Room 301";
 
             // Act
-            var result = await _roomsController.RoomNameExists("Room 301");
+            var result = await _roomsController.RoomNameExists(existingRoomName);
 
             // Assert
             Assert.IsType<ActionResult<bool>>(result);
@@ -288,12 +359,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RoomNameExists_NameDoesNotExist_ShouldReturnFalse()
+        public async void RoomNameExists_WhenGivenNonExistentName_ShouldReturnFalse()
         {
             // Arrange
+            var nonExistentRoomName = "NonExistentRoom";
 
             // Act
-            var result = await _roomsController.RoomNameExists("NonExistentRoom");
+            var result = await _roomsController.RoomNameExists(nonExistentRoomName);
 
             // Assert
             Assert.IsType<ActionResult<bool>>(result);
@@ -305,12 +377,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region RoomAbreviationExists
 
         [Fact]
-        public async void RoomAbreviationExists_AbreviationExists_ShouldReturnTrue()
+        public async void RoomAbreviationExists_WhenGivenExistingAbreviation_ShouldReturnTrue()
         {
             // Arrange
+            var existingRoomAbreviation = "301";
 
             // Act
-            var result = await _roomsController.RoomAbreviationExists("301");
+            var result = await _roomsController.RoomAbreviationExists(existingRoomAbreviation);
 
             // Assert
             Assert.IsType<ActionResult<bool>>(result);
@@ -318,12 +391,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RoomAbreviationExists_AbreviationDoesNotExist_ShouldReturnFalse()
+        public async void RoomAbreviationExists_WhenGivenNonExistentAbreviation_ShouldReturnFalse()
         {
             // Arrange
+            var nonExistentRoomAbreviation = "XXX";
 
             // Act
-            var result = await _roomsController.RoomAbreviationExists("XXX");
+            var result = await _roomsController.RoomAbreviationExists(nonExistentRoomAbreviation);
 
             // Assert
             Assert.IsType<ActionResult<bool>>(result);

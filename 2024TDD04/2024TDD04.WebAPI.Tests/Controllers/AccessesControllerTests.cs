@@ -54,7 +54,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessGroupAsync_WhenGivenNonExistantRoom_ShouldReturnNotFound(){
+        public async void HasAccessGroupAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             // Room Id 100 does not exist
             var room = 100;
@@ -68,7 +68,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessGroupAsync_WhenGivenNonExistantGroup_ShouldReturnNotFound(){
+        public async void HasAccessGroupAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
             // Group Id 100 does not exist
             var room = 1;
@@ -128,7 +128,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessUserAsync_WhenGivenNonExistantUser_ShouldReturnNotFound(){
+        public async void HasAccessUserAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
             // Arrange
             // User Id 100 does not exist
             var room = 1;
@@ -142,7 +142,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
          [Fact]
-        public async void HasAccessUserAsync_WhenGivenNonExistantRoom_ShouldReturnNotFound(){
+        public async void HasAccessUserAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             // Room Id 100 does not exist
             var room = 100;
@@ -173,7 +173,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenNonExistantRoom_ShouldReturnNotFound(){
+        public async void GrantAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             // Room Id 100 does not exist
             AccessDTO accessDTO = new AccessDTO { RoomId = 100, GroupId = 1 };
@@ -186,7 +186,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenNonExistantGroup_ShouldReturnNotFound(){
+        public async void GrantAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
             // Group Id 100 does not exist
             AccessDTO accessDTO = new AccessDTO { RoomId = 3, GroupId = 100 };
@@ -241,7 +241,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RevokeAccessAsync_WhenGivenNonExistantRoom_ShouldReturnNotFound(){
+        public async void RevokeAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             var dto = new AccessDTO { RoomId = 999, GroupId = 1 };
 
@@ -253,7 +253,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RevokeAccessAsync_WhenGivenNonExistantGroup_ShouldReturnNotFound(){
+        public async void RevokeAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
             var dto = new AccessDTO { RoomId = 1, GroupId = 999 };
 
@@ -304,7 +304,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetAccessesByUserIdAsync_WhenGivenNonExistantUser_ShouldReturnNotFound(){
+        public async void GetAccessesByUserIdAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
             // Arrange
 
             // Act
