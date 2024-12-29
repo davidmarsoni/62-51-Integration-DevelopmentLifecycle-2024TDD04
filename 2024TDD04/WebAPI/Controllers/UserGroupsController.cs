@@ -24,6 +24,24 @@ namespace WebApi.Controllers
             _context = context;
         }
 
+        private async Task<(User? user, ActionResult? error)> ValidateUserExists(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return (null, BadRequest("User does not exist."));
+            if (user.IsDeleted) return (null, Forbid());
+            return (user, null);
+        }
+
+        private async Task<(Group? group, ActionResult? error)> ValidateGroupExists(int groupId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group == null) return (null, BadRequest("Group does not exist."));
+            if (group.IsDeleted) return (null, Forbid());
+            return (group, null);
+        }
+
+
+
         // GET: api/UserGroup
 
         [HttpGet("{id}")]
@@ -70,22 +88,6 @@ namespace WebApi.Controllers
             return users;
         }
 
-        private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int userId)
-        {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null) return (null, BadRequest("User does not exist."));
-            if (user.IsDeleted) return (null, Forbid());
-            return (user, null);
-        }
-
-        private async Task<(Group? group, ActionResult? error)> ValidateGroupAsync(int groupId)
-        {
-            var group = await _context.Groups.FindAsync(groupId);
-            if (group == null) return (null, BadRequest("Group does not exist."));
-            if (group.IsDeleted) return (null, Forbid());
-            return (group, null);
-        }
-
         // POST: api/UserGroup
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -93,10 +95,10 @@ namespace WebApi.Controllers
         {
             if (userGroupDTO == null) return BadRequest();
 
-            var (user, userError) = await ValidateUserAsync(userGroupDTO.UserId);
+            var (user, userError) = await ValidateUserExists(userGroupDTO.UserId);
             if (userError != null) return userError;
 
-            var (group, groupError) = await ValidateGroupAsync(userGroupDTO.GroupId);
+            var (group, groupError) = await ValidateGroupExists(userGroupDTO.GroupId);
             if (groupError != null) return groupError; 
 
             //check if the user is already in the group
