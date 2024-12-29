@@ -4,6 +4,7 @@ using DAL.Models;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Mapper;
+using WebApi.Mapper;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -100,25 +101,18 @@ namespace WebAPI.Controllers
             var validateResult = await ValidateRoomDTOAsync(roomDTO);
             if (validateResult != null) return validateResult;
 
-            _context.Entry(existingRoom).CurrentValues.SetValues(RoomMapper.toDAL(roomDTO));
-
             try
             {
+                Room room = RoomMapper.toDAL(roomDTO);
+                _context.Entry(existingRoom).CurrentValues.SetValues(room);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RoomExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Invalid group data : " + ex.Message);
+            }
         }
 
         // POST: api/Room
@@ -164,11 +158,6 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<bool>> RoomAbreviationExists(string abreviation)
         {
             return await _context.Rooms.AnyAsync(room => room.RoomAbreviation == abreviation);
-        }
-
-        private bool RoomExists(int id)
-        {
-            return _context.Rooms.Any(e => e.Id == id);
         }
     }
 }

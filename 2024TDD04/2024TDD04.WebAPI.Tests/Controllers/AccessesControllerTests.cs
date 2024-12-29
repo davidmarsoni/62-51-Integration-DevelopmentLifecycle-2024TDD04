@@ -317,6 +317,50 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         #endregion
 
+        #region GetAccessesByGroupId
+
+        [Fact]
+        public async void GetAccessesByGroupIdAsync_WhenGivenGroupWithAccess_ShouldReturnRooms()
+        {
+            // Arrange
+            var groupId = 1;
+
+            // Act
+            var result = await _accessesController.GetAccessesByGroupId(groupId);
+            
+            // Assert
+            Assert.NotNull(result.Value);
+            Assert.NotEmpty(result.Value);
+        }
+
+        [Fact]
+        public async void GetAccessesByGroupIdAsync_WhenGivenGroupWithoutAccess_ShouldReturnEmpty()
+        {
+            // Arrange
+            var groupId = 4;
+
+            // Act
+            var result = await _accessesController.GetAccessesByGroupId(groupId);
+
+            // Assert
+            Assert.Empty(result.Value);
+        }
+
+        [Fact]
+        public async void GetAccessesByGroupIdAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound()
+        {
+            // Arrange
+            var groupId = 999;
+
+            // Act
+            var result = await _accessesController.GetAccessesByGroupId(groupId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        #endregion
+
         
     }
 }

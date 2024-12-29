@@ -126,34 +126,31 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, UserDTO userDTO)
         {
-            if (id != userDTO.Id)
+            if (userDTO == null || id != userDTO.Id)
             {
-                return BadRequest();
+                return BadRequest("Invalid group data or ID mismatch");
             }
-
-            var (existingUser, error) = await ValidateUserAsync(id);
-            if (error != null) return error;
-
-            _context.Entry(existingUser).State = EntityState.Detached;
-            _context.Entry(UserMapper.toDAL(userDTO)).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(user => user.Id == id);
+
+                if (existingUser == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    return StatusCode(500);
-                }
-            }
 
-            return NoContent();
+                User user = UserMapper.toDAL(userDTO);
+                _context.Entry(existingUser).CurrentValues.SetValues(user);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Invalid group data : " + ex.Message);
+            }
         }
 
         // POST: api/Users

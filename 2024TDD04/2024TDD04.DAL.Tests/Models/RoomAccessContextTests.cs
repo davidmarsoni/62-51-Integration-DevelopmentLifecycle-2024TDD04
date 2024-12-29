@@ -1,7 +1,7 @@
 using DAL;
 using Microsoft.EntityFrameworkCore;
 
-namespace _2024TDD04.DAL.Tests
+namespace _2024TDD04.DAL.Tests.Models
 {
     public class RoomAccessContextTests
     {

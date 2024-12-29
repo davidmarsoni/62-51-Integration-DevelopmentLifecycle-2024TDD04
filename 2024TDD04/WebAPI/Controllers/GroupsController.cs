@@ -57,10 +57,6 @@ namespace WebApi.Controllers
         {
             var (group, error) = await ValidateGroup(id);
             if (error != null) return error;
-            if (group == null)
-            {
-                return NotFound();
-            }
             return GroupMapper.toDTO(group);
         }
 
@@ -132,16 +128,7 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<GroupDTO>> PostGroup(GroupDTO groupDTO)
         {
-            Group group;
-
-            try
-            {
-                group = GroupMapper.toDAL(groupDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
+            Group group = GroupMapper.toDAL(groupDTO);
 
             if (await _context.Groups.AnyAsync(groups => groups.Name == group.Name))
             {

@@ -40,6 +40,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.Equal(4, result.Value.Count());
         }
 
+        [Fact]
         public async void GetUsers_WhenNoUsersInDB_ShouldReturnEmptyList()
         {
             // Arrange
@@ -50,7 +51,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var result = await _usersController.GetUsers();
 
             // Assert
-            Assert.IsType<ActionResult<List<UserDTO>>>(result);
+            Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
             Assert.NotNull(result.Value);
             Assert.Empty(result.Value);
         }
@@ -268,7 +269,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var result = await _usersController.PutUser(wrongUserId, userDTO);
 
             // Assert
-            Assert.IsType<BadRequestResult>(result);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
         #endregion

@@ -33,6 +33,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.Equal(3, result.Value.Count());
         }
 
+        [Fact]
         public async void GetRooms_WhenNoRoomsInDB_ShouldReturnEmptyList()
         {
             // Arrange

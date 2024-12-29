@@ -107,15 +107,7 @@ namespace WebApi.Controllers
                 return Conflict("User is already in the group.");
             }
 
-            UserGroup userGroup;
-            try
-            {
-                userGroup = UserGroupMapper.toDAL(userGroupDTO);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }   
+            UserGroup userGroup = UserGroupMapper.toDAL(userGroupDTO);
             
             _context.UserGroups.Add(userGroup);
             await _context.SaveChangesAsync();
@@ -141,11 +133,6 @@ namespace WebApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool UserGroupExists(int id)
-        {
-            return _context.UserGroups.Any(userGroup => userGroup.GroupId == id);
         }
     }
 }
