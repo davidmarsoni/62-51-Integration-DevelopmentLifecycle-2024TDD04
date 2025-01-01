@@ -1,31 +1,34 @@
 using DAL.Models;
 using Xunit;
 
-public class UserTests
+namespace _2024TDD04.DAL.Tests.Models
 {
-    [Fact]
-    public void User_WhenGivenValues_ShouldReturnInstantiatedUser()
+    public class UserTests
     {
-        // Arrange
-        var expectedId = 1;
-        var expectedUsername = "Test User";
-        var expectedIsDeleted = false;
-        
-        // Act
-        var user = new User
+        [Fact]
+        public void User_WhenGivenValues_ShouldReturnInstantiatedUser()
         {
-            Id = expectedId,
-            Username = expectedUsername,
-            IsDeleted = expectedIsDeleted
-        };
+            // Arrange
+            var expectedId = 1;
+            var expectedUsername = "Test User";
+            var expectedIsDeleted = false;
 
-        // Assert
-        Assert.Equal(expectedId, user.Id);
-        Assert.Equal(expectedUsername, user.Username);
-        Assert.Equal(expectedIsDeleted, user.IsDeleted);
-        Assert.NotNull(user.Groups);
-        Assert.Empty(user.Groups);
-        Assert.NotNull(user.User_Groups);
-        Assert.Empty(user.User_Groups);
+            // Act
+            var user = new User
+            {
+                Id = expectedId,
+                Username = expectedUsername,
+                IsDeleted = expectedIsDeleted
+            };
+
+            // Assert
+            Assert.Equal(expectedId, user.Id);
+            Assert.Equal(expectedUsername, user.Username);
+            Assert.Equal(expectedIsDeleted, user.IsDeleted);
+            Assert.NotNull(user.Groups);
+            Assert.Empty(user.Groups);
+            Assert.NotNull(user.User_Groups);
+            Assert.Empty(user.User_Groups);
+        }
     }
 }
