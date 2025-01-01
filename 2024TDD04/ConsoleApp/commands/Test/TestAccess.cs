@@ -27,13 +27,11 @@ namespace ConsoleApp.commands.Test
         
             int userId = InputUtils.PromptForInt("User Id", "To test access, input the User Id (or type 'exit')");
             if (userId == -1) return;
-        
-            var dto = new RoomAccessDTO { RoomId = roomId, UserId = userId };
                     
             Console.WriteLine("Trying to access the room...");
-            bool result = testService.TestAccessAsync(dto).Result;
+            RoomAccessDTO? result = testService.TestAccessRoom(roomId, userId).Result;
         
-            if (result)
+            if (result != null)
                 Success("Access successful.");
             else
                 Error("Access denied.");

@@ -5,6 +5,6 @@ namespace MVC.Services.Interfaces
 {
     public interface ITestService
     {
-        Task<bool> TestAccessAsync(RoomAccessDTO roomAccessDTO);
+        Task<RoomAccessDTO> TestAccessRoom(int roomId, int userId);
     }
 }

@@ -26,9 +26,9 @@ namespace WebAPI.Controllers
             return (user, null);
         }
 
-        // POST: api/RoomAccesses/Access
-        [HttpPost("Access")]
-        public async Task<ActionResult<RoomAccessDTO>> AccessAsync(RoomAccessDTO roomAccessDTO)
+        // POST: api/RoomAccesses/Access/{roomId}/{userId}
+        [HttpGet("Access/{roomId}/{userId}")]
+        public async Task<ActionResult<RoomAccessDTO>> AccessRoom(int roomId, int userId)
         {
             // The goal of this method is to simulate the access to a room by a user
             // * The user is granted access if he is in a group that has access to the room
@@ -37,25 +37,25 @@ namespace WebAPI.Controllers
             // All is written in the logs, and the result is returned if the user has access or not
 
             // Check if the room exists and retrieve it
-            var room = await _context.Rooms.FindAsync(roomAccessDTO.RoomId);
+            var room = await _context.Rooms.FindAsync(roomId);
             if (room == null)
             {
                 return NotFound();
             }
 
-            var (user, error) = await ValidateUserAsync(roomAccessDTO.UserId);
+            var (user, error) = await ValidateUserAsync(userId);
             if (error != null) return error;
 
             // Get all the groups of the user
-            var userGroups = await _context.UserGroups.Where(userGroup => userGroup.UserId == roomAccessDTO.UserId).ToListAsync();
+            var userGroups = await _context.UserGroups.Where(userGroup => userGroup.UserId == userId).ToListAsync();
 
             // If the user is not in any group, he doesn't have access
             if (userGroups.Count() == 0)
             {
                 RoomAccessLog logNoGroup = new RoomAccessLog
                 {
-                    RoomId = roomAccessDTO.RoomId,
-                    UserId = roomAccessDTO.UserId,
+                    RoomId = roomId,
+                    UserId = userId,
                     Timestamp = DateTime.Now,
                     Info = "User is not in any group, access denied.",
                 };
@@ -68,7 +68,7 @@ namespace WebAPI.Controllers
             bool? hasAccess = null;
             foreach (var userGroup in userGroups)
             {
-                hasAccess = _context.Accesses.Any(access => access.RoomId == roomAccessDTO.RoomId && access.GroupId == userGroup.GroupId);
+                hasAccess = _context.Accesses.Any(access => access.RoomId == roomId && access.GroupId == userGroup.GroupId);
                 if (hasAccess == true)
                 {
                     break;
@@ -77,15 +77,15 @@ namespace WebAPI.Controllers
 
             RoomAccessLog log = new RoomAccessLog
             {
-                RoomId = roomAccessDTO.RoomId,
-                UserId = roomAccessDTO.UserId,
+                RoomId = roomId,
+                UserId = userId,
                 Timestamp = DateTime.Now,
                 Info = hasAccess != null ? "User was granted access." : "User was denied access, unsufficient rights.",
             };
             _context.RoomAccessLogs.Add(log);
             _context.SaveChanges();
 
-            return hasAccess != null ? roomAccessDTO : NoContent();
+            return hasAccess != null ? new RoomAccessDTO { RoomId = roomId, UserId = userId } : NoContent();
         }
     }
 }

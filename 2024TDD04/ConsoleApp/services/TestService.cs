@@ -16,10 +16,9 @@ namespace MVC.Services
             SQS.Debug = debug;
         }
 
-        public async Task<bool> TestAccessAsync(RoomAccessDTO roomAccessDTO)
+        public async Task<RoomAccessDTO?> TestAccessRoom(int roomId, int userId)
         {
-            var result = await SQS.Post<RoomAccessDTO>(_client, $"{_baseUrl}/Access", roomAccessDTO);
-            return result != null;
+            return await SQS.Get<RoomAccessDTO>(_client, $"{_baseUrl}/Access/{roomId}/{userId}");
         }
     }
 }
