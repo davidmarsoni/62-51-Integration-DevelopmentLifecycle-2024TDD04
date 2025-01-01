@@ -129,53 +129,6 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         #endregion
 
-        #region GetUsersByGroupId
-
-        [Fact]
-        public async void GetUsersByGroupId_WhenGivenValidGroup_ShouldReturnListOfUsers()
-        {
-            // Arrange
-            var groupId = 1;
-
-            // Act
-            var result = await _usersController.GetUsersByGroupId(groupId);
-
-            // Assert
-            Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.NotEmpty(result.Value);
-        }
-
-        [Fact]
-        public async void GetUsersByGroupId_WhenGivenNonExistentGroup_ShouldReturnNotFound()
-        {
-            // Arrange
-            var nonExistentGroupId = 999;
-
-            // Act
-            var result = await _usersController.GetUsersByGroupId(nonExistentGroupId);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-        }
-
-        [Fact]
-        public async void GetUsersByGroupId_WhenGivenGroupWithNoUsers_ShouldReturnEmptyList()
-        {
-            // Arrange
-            var groupNoUsersId = 4;
-
-            // Act
-            var result = await _usersController.GetUsersByGroupId(groupNoUsersId);
-
-            // Assert
-            Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.Empty(result.Value);
-        }
-
-        #endregion
-
         #region GetUser
 
         [Fact]

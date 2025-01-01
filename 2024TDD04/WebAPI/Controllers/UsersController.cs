@@ -73,37 +73,6 @@ namespace WebApi.Controllers
             }
             return result;
         }
-
-        // GET: api/Users/Group/5
-        [HttpGet("Group/{groupId}")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersByGroupId(int groupId)
-        {
-            // check if group exists
-            if (!_context.Groups.Any(group => group.Id == groupId))
-            {
-                return NotFound();
-            }
-
-            // get all active users that are in the group
-            var users = await _context.UserGroups
-                .Where(userGroup => userGroup.GroupId == groupId && userGroup.User != null && !userGroup.User.IsDeleted)
-                .Select(userGroup => userGroup.User)
-                .ToListAsync();
-
-            List<UserDTO> result = new List<UserDTO>();
-            if (users != null && users.Count > 0)
-            {
-                foreach (User? user in users)
-                {
-                    if(user != null)
-                    {
-                        result.Add(UserMapper.toDTO(user));
-                    }
-                }
-            }
-            return result;
-        }
-
         private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);

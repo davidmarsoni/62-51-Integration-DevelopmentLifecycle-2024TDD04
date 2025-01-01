@@ -30,5 +30,10 @@ namespace MVC.Services
         {
             return await SQS.GetAll<UserDTO>(_client, $"{_baseUrl}/{groupId}/users");
         }
+
+        public async Task<IEnumerable<GroupDTO>?> GetGroupsForUser(int userId)
+        {
+            return await SQS.GetAll<GroupDTO>(_client, $"{_baseUrl}/{userId}/groups");
+        }
     }
 }

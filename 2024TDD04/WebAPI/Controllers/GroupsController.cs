@@ -60,23 +60,6 @@ namespace WebApi.Controllers
             return GroupMapper.toDTO(group);
         }
 
-        // GET: api/Groups/User/5
-        [HttpGet("User/{userId}")]
-        public async Task<ActionResult<IEnumerable<GroupDTO>>> GetGroupsByUserId(int userId)
-        {
-            // get all groups that the user is in
-            IEnumerable<Group> groups = await _context.Groups.Where(group => group.Users.Any(user => user.Id == userId)).ToListAsync();
-            List<GroupDTO> result = new List<GroupDTO>();
-            if (groups != null && groups.Any())
-            {
-                foreach (Group group in groups)
-                {
-                    result.Add(GroupMapper.toDTO(group));
-                }
-            }
-            return result;
-        }
-
         // GET: api/Groups/Name/{name}
         [HttpGet("Name/{name}")]
         public async Task<ActionResult<bool>> GroupNameExists(string name)

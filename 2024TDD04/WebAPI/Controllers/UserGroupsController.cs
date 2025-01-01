@@ -9,7 +9,6 @@ using DAL;
 using DAL.Models;
 using DTO;
 using WebApi.Mapper;
-using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Controllers
 {
@@ -86,6 +85,32 @@ namespace WebApi.Controllers
             }
 
             return users;
+        }
+
+        // GET: api/UserGroup/{userId}/groups
+        [HttpGet("{userId}/groups")]
+        public async Task<ActionResult<IEnumerable<GroupDTO>>> GetGroupsForUser(int userId)
+        {
+            var userGroups = await _context.UserGroups
+                .Where(ug => ug.UserId == userId)
+                .ToListAsync();
+
+            if (userGroups == null || userGroups.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var groups = new List<GroupDTO>();
+            foreach (var userGroup in userGroups)
+            {
+                var group = await _context.Groups.FindAsync(userGroup.GroupId);
+                if (group != null)
+                {
+                    groups.Add(GroupMapper.toDTO(group));
+                }
+            }
+
+            return groups;
         }
 
         // POST: api/UserGroup

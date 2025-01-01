@@ -6,7 +6,6 @@ namespace MVC.Services.Interfaces
     {
         public Task<UserDTO?> GetUserById(int id);
         public Task<IEnumerable<UserDTO>?> GetAllUsers();
-        public Task<IEnumerable<UserDTO>?> GetUsersByGroupId(int groupId);
         public Task<UserDTO?> CreateUser(UserDTO accountDTO);
         public Task<Boolean> UpdateUser(UserDTO accountDTO);
         public Task<Boolean> DeleteUser(int id);

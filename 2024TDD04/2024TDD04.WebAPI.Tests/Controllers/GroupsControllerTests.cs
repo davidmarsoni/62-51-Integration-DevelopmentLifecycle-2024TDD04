@@ -143,55 +143,6 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         #endregion
 
-        #region GetGroupsByUserId
-
-        [Fact]
-        public async Task GetGroupsByUserId_WhenGivenValidUser_ShouldReturnListOfGroups()
-        {
-            // Arrange
-            var userId = 1;
-        
-            // Act
-            var result = await _groupsController.GetGroupsByUserId(userId);
-        
-            // Then
-            Assert.IsType<ActionResult<IEnumerable<GroupDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.Equal(1, result.Value.Count());
-        }
-
-        [Fact]
-        public async Task GetGroupsByUserId_WhenGivenUserWithoutGroup_ShouldReturnEmptyList()
-        {
-            // Arrange
-            var userId = 4;
-        
-            // Act
-            var result = await _groupsController.GetGroupsByUserId(userId);
-        
-            // Then
-            Assert.IsType<ActionResult<IEnumerable<GroupDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.Empty(result.Value);
-        }
-
-        [Fact]
-        public async Task GetGroupsByUserId_WhenGivenNonExistentUser_ShouldReturnEmptyListAsync()
-        {
-            // Arrange
-            var userId = 99;
-        
-            // Act
-            var result = await _groupsController.GetGroupsByUserId(userId);
-        
-            // Then
-            Assert.IsType<ActionResult<IEnumerable<GroupDTO>>>(result);
-            Assert.NotNull(result.Value);
-            Assert.Empty(result.Value);
-        }
-
-        #endregion
-
         #region PostGroup
 
         [Fact]

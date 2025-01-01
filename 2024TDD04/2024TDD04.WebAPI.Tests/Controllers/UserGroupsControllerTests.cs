@@ -71,6 +71,57 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         #endregion
 
+        #region GetGroupsForUser
+        [Fact]
+        public async Task GetGroupsForUser_WhenGivenValidUser_ReturnsListOfGroups()
+        {
+            // Arrange
+            var userId = 1;
+
+            // Act
+            var result = await _userGroupsController.GetGroupsForUser(userId);
+
+            // Assert
+            Assert.IsType<ActionResult<IEnumerable<GroupDTO>>>(result);
+            Assert.NotEmpty(result.Value);
+            Assert.Equal(1, result.Value.Count());
+        }
+
+        [Fact]
+        public async Task GetGroupsForUser_WhenGivenNonExistingUser_ReturnsNotFound()
+        {
+            // Arrange
+            var nonExistentGroupId = 999;
+
+            // Act
+            var result = await _userGroupsController.GetGroupsForUser(nonExistentGroupId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetGroupsForUser_WhenGivenDeletedUser_ReturnsNotFound()
+        {
+            // Arrange
+            var userId = 4;
+            // Adding a usergroup to the database
+            _testDbContext.UserGroups.Add(new UserGroup { Id = 4, UserId = userId, GroupId = 4 });
+            _testDbContext.SaveChanges();
+            // Deleting the group
+            var group = _testDbContext.UserGroups.Find(userId);
+            _testDbContext.UserGroups.Remove(group);
+            _testDbContext.SaveChanges();
+
+            // Act
+            var result = await _userGroupsController.GetGroupsForUser(userId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        #endregion
+
         #region GetUserGroup
         [Fact]
         public async Task GetUserGroup_WhenGivenExistingUserGroup_ShouldReturnUserGroupDTO()
