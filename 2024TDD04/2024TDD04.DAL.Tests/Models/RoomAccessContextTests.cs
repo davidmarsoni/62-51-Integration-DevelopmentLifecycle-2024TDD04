@@ -6,7 +6,7 @@ namespace _2024TDD04.DAL.Tests.Models
     public class RoomAccessContextTests
     {
         [Fact]
-        public void CanCreateRoomAccessContext()
+        public void Context_WhenGivenInMemoryCreation_ShouldBuildContext()
         {
             var options = new DbContextOptionsBuilder<RoomAccessContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
