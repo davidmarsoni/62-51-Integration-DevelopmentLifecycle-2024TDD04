@@ -168,7 +168,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         public async Task PostGroup_WhenGivenExistingGroup_ShouldReturnConflict()
         {
             // Arrange
-            var group = new GroupDTO { Name = "Teachers", Acronym = "TCH" };
+            var group = new GroupDTO { Id = 1, Name = "Teachers", Acronym = "TCH" };
         
             // Act
             var result = await _groupsController.PostGroup(group);

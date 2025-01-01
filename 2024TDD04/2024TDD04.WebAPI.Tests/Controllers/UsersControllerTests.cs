@@ -261,7 +261,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var result = await _usersController.PostUser(userDTO);
 
             // Assert
-            Assert.IsType<ConflictResult>(result.Result);
+            Assert.IsType<ConflictObjectResult>(result.Result);
         }
 
         #endregion

@@ -5,6 +5,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Mapper;
 using WebApi.Mapper;
+using Microsoft.IdentityModel.Tokens;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,22 +30,22 @@ namespace WebAPI.Controllers
             return (room, null);
         }
 
-        private async Task<ActionResult?> ValidateRoomDTOAsync(RoomDTO roomDTO)
+        private async Task<(bool exists, ActionResult? errorResponse)> ValidateRoomNameAsync(string name, int? roomId)
         {
-            if (string.IsNullOrEmpty(roomDTO.RoomAbreviation))
-            {
-                roomDTO.RoomAbreviation = null;
-            }
-            if (await _context.Rooms.AnyAsync(room =>
-                room.Name == roomDTO.Name || room.RoomAbreviation == roomDTO.RoomAbreviation)
-                )
-            {
-                return Conflict();
-            }
-            return null;
+            bool exists = await _context.Rooms.AnyAsync(room => room.Name == name && room.Id != roomId);
+            if (exists) return (true, Conflict());
+            return (false, null);
         }
 
-        // GET: api/Room
+        private async Task<(bool exists, ActionResult? errorResponse)> ValidateRoomAbreviationAsync(string abreviation, int? roomId)
+        {
+            if (abreviation.IsNullOrEmpty()) return (false, null);
+            bool exists = await _context.Rooms.AnyAsync(room => room.RoomAbreviation == abreviation && room.Id != roomId);
+            if (exists) return (true, Conflict());
+            return (false, null);
+        }
+
+        // GET: api/Rooms
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms()
         {
@@ -59,7 +60,7 @@ namespace WebAPI.Controllers
             return result;
         }
 
-        // GET: api/Room/Active
+        // GET: api/Rooms/Active
         [HttpGet("Active")]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRoomsActive()
         {
@@ -76,7 +77,7 @@ namespace WebAPI.Controllers
             return result;
         }
 
-        // GET: api/Room/5
+        // GET: api/Rooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDTO>> GetRoom(int id)
         {
@@ -85,7 +86,7 @@ namespace WebAPI.Controllers
             return RoomMapper.toDTO(room);
         }
 
-        // PUT: api/Room/5
+        // PUT: api/Rooms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(int id, RoomDTO roomDTO)
@@ -98,8 +99,11 @@ namespace WebAPI.Controllers
             var (existingRoom, error) = await ValidateRoomAsync(id);
             if (error != null) return error;
 
-            var validateResult = await ValidateRoomDTOAsync(roomDTO);
-            if (validateResult != null) return validateResult;
+            var (_, errorName) = await ValidateRoomNameAsync(roomDTO.Name, id);
+            if (errorName != null) return errorName;
+
+            var (_, errorAbreviation) = await ValidateRoomAbreviationAsync(roomDTO.RoomAbreviation, id);
+            if (errorAbreviation != null) return errorAbreviation;
 
             try
             {
@@ -115,24 +119,31 @@ namespace WebAPI.Controllers
             }
         }
 
-        // POST: api/Room
+        // POST: api/Rooms
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomDTO)
         {
-            var validateResult = await ValidateRoomDTOAsync(roomDTO);
-            if (validateResult != null) return validateResult;
+            // check if the room already exists
+            if (await _context.Rooms.AnyAsync(room => room.Id == roomDTO.Id))
+            {
+                return Conflict("Room already exists.");
+            }
+
+            var (_, errorName) = await ValidateRoomNameAsync(roomDTO.Name, null);
+            if (errorName != null) return errorName;
+
+            var (_, errorAbreviation) = await ValidateRoomAbreviationAsync(roomDTO.RoomAbreviation, null);
+            if (errorAbreviation != null) return errorAbreviation;
 
             Room room = RoomMapper.toDAL(roomDTO);
 
             _context.Rooms.Add(room);
-
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetRoom", new { id = room.Id }, room);
         }
 
-        // DELETE: api/Room/5
+        // DELETE: api/Rooms/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
@@ -146,18 +157,20 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        // GET: api/Room/Name/{name}
+        // GET: api/Rooms/Name/{name}
         [HttpGet("Name/{name}")]
         public async Task<ActionResult<bool>> RoomNameExists(string name)
         {
-            return await _context.Rooms.AnyAsync(room => room.Name == name);
+            var (exists, _) = await ValidateRoomNameAsync(name, null);
+            return exists;
         }
 
-        // GET: api/Room/Abreviation/{abreviation}
+        // GET: api/Rooms/Abreviation/{abreviation}
         [HttpGet("Abreviation/{abreviation}")]
         public async Task<ActionResult<bool>> RoomAbreviationExists(string abreviation)
         {
-            return await _context.Rooms.AnyAsync(room => room.RoomAbreviation == abreviation);
+            var (exists, _) = await ValidateRoomAbreviationAsync(abreviation, null);
+            return exists;
         }
     }
 }

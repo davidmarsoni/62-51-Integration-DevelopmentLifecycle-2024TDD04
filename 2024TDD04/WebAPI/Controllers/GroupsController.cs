@@ -18,6 +18,28 @@ namespace WebApi.Controllers
             _context = context;
         }
 
+        private async Task<(Group? group, ActionResult? error)> ValidateGroupAsync(int id)
+        {
+            var group = await _context.Groups.FindAsync(id);
+            if (group == null) return (null, NotFound());
+            if (group.IsDeleted) return (null, Forbid());
+            return (group, null);
+        }
+
+        private async Task<(bool? valid, ActionResult? error)> ValidateGroupnameAsync(string name, int? groupId)
+        {
+            bool exists = await _context.Groups.AnyAsync(group => group.Name == name && group.Id != groupId);
+            if (exists) return (true, Conflict());
+            return (false, null);
+        }
+
+        private async Task<(bool? valid, ActionResult? error)> ValidateGroupAcronymAsync(string acronym, int? groupId)
+        {
+            bool exists = await _context.Groups.AnyAsync(group => group.Acronym == acronym && group.Id != groupId);
+            if (exists) return (true, Conflict());
+            return (false, null);
+        }
+
         // GET: api/Groups
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GroupDTO>>> GetGroups()
@@ -55,7 +77,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupDTO>> GetGroup(int id)
         {
-            var (group, error) = await ValidateGroup(id);
+            var (group, error) = await ValidateGroupAsync(id);
             if (error != null) return error;
             return GroupMapper.toDTO(group);
         }
@@ -64,7 +86,7 @@ namespace WebApi.Controllers
         [HttpGet("Name/{name}")]
         public async Task<ActionResult<bool>> GroupNameExists(string name)
         {
-            bool exists = await _context.Groups.AnyAsync(group => group.Name == name);
+            var (exists, _) = await ValidateGroupnameAsync(name, null);
             return exists;
         }
 
@@ -72,7 +94,7 @@ namespace WebApi.Controllers
         [HttpGet("Acronym/{acronym}")]
         public async Task<ActionResult<bool>> GroupAcronymExists(string acronym)
         {
-            bool exists = await _context.Groups.AnyAsync(group => group.Acronym == acronym);
+            var (exists, _) = await ValidateGroupAcronymAsync(acronym, null);
             return exists;
         }
 
@@ -87,13 +109,14 @@ namespace WebApi.Controllers
         
             try
             {
-                var existingGroup = await _context.Groups
-                    .FirstOrDefaultAsync(group => group.Id == id);
-        
-                if (existingGroup == null)
-                {
-                    return NotFound();
-                }
+                var (existingGroup, error) = await ValidateGroupAsync(id);
+                if (error != null) return error;
+
+                var (validName, errorName) = await ValidateGroupnameAsync(groupDTO.Name, id);
+                if (errorName != null) return errorName;
+
+                var (validAcronym, errorAcronym) = await ValidateGroupAcronymAsync(groupDTO.Acronym, id);
+                if (errorAcronym != null) return errorAcronym;
 
                 Group group = GroupMapper.toDAL(groupDTO);
                 _context.Entry(existingGroup).CurrentValues.SetValues(group);
@@ -113,10 +136,17 @@ namespace WebApi.Controllers
         {
             Group group = GroupMapper.toDAL(groupDTO);
 
-            if (await _context.Groups.AnyAsync(groups => groups.Name == group.Name))
+            // check if group already exists
+            if (_context.Groups.Any(group => group.Id == groupDTO.Id))
             {
-                return Conflict("A group with the same name " + group.Name + " already exists.");
+                return Conflict("Group with the same ID already exists.");
             }
+
+            var (_, errorName) = await ValidateGroupnameAsync(group.Name, null);
+            if (errorName != null) return errorName;
+
+            var (_, errorAcronym) = await ValidateGroupAcronymAsync(group.Acronym, null);
+            if (errorAcronym != null) return errorAcronym;
 
             _context.Groups.Add(group);
             await _context.SaveChangesAsync();
@@ -128,7 +158,7 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGroup(int id)
         {
-            var (group, error) = await ValidateGroup(id);
+            var (group, error) = await ValidateGroupAsync(id);
             if (error != null) return error;
 
             group.IsDeleted = true;
@@ -137,14 +167,5 @@ namespace WebApi.Controllers
 
             return NoContent();
         }
-
-        private async Task<(Group? group, ActionResult? error)> ValidateGroup(int id)
-        {
-            var group = await _context.Groups.FindAsync(id);
-            if (group == null) return (null, NotFound());
-            if (group.IsDeleted) return (null, Forbid());
-            return (group, null);
-        }
-
     }
 }

@@ -18,6 +18,21 @@ namespace WebApi.Controllers
             _context = context;
         }
 
+        private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return (null, NotFound());
+            if (user.IsDeleted) return (null, Forbid());
+            return (user, null);
+        }
+
+        private async Task<(bool? valid, ActionResult? error)> ValidateUsernameAsync(string username, int? userId)
+        {
+            bool exists = await _context.Users.AnyAsync(user => user.Username == username && user.Id != userId);
+            if (exists) return (true, Conflict());
+            return (false, null);
+        }
+
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
@@ -40,21 +55,8 @@ namespace WebApi.Controllers
         [HttpGet("Username/{username}")]
         public async Task<ActionResult<Boolean>> UsernameExist(string username)
         {
-            IEnumerable<User> users = await _context.Users.ToListAsync();
-            List<UserDTO> result = new List<UserDTO>();
-            Boolean usernameExist = false;
-            if (users != null && users.Count() > 0)
-            {
-                foreach (User user in users)
-                {
-                    if (user.Username == username)
-                    {
-                        usernameExist = true;
-                        break;
-                    }
-                }
-            }
-            return usernameExist;
+            var (exists, _) = await ValidateUsernameAsync(username, null);
+            return exists;
         }
 
         // GET: api/Users/Active
@@ -72,13 +74,6 @@ namespace WebApi.Controllers
                 }
             }
             return result;
-        }
-        private async Task<(User? user, ActionResult? error)> ValidateUserAsync(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return (null, NotFound());
-            if (user.IsDeleted) return (null, Forbid());
-            return (user, null);
         }
 
         // GET: api/Users/5
@@ -102,13 +97,11 @@ namespace WebApi.Controllers
 
             try
             {
-                var existingUser = await _context.Users
-                    .FirstOrDefaultAsync(user => user.Id == id);
+                var (existingUser, error) = await ValidateUserAsync(id);
+                if (error != null) return error;
 
-                if (existingUser == null)
-                {
-                    return NotFound();
-                }
+                var (validUsername, errorUsername) = await ValidateUsernameAsync(userDTO.Username, id);
+                if (errorUsername != null) return errorUsername;
 
                 User user = UserMapper.toDAL(userDTO);
                 _context.Entry(existingUser).CurrentValues.SetValues(user);
@@ -130,10 +123,13 @@ namespace WebApi.Controllers
             User user = UserMapper.toDAL(userDTO);
 
             // check if user already exists
-            if (UserExists(user.Id))
+            if (_context.Users.Any(user => user.Id == userDTO.Id))
             {
-                return Conflict();
+                return Conflict("User with the same ID already exists.");
             }
+
+            var (validUsername, errorUsername) = await ValidateUsernameAsync(user.Username, null);
+            if (errorUsername != null) return errorUsername;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -152,10 +148,6 @@ namespace WebApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool UserExists(int id) { 
-            return _context.Users.Any(user => user.Id == id); 
         }
     }
 }

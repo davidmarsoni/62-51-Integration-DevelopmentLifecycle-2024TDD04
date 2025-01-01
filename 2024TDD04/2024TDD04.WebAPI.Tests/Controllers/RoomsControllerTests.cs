@@ -143,6 +143,29 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
+        public async void PutRoom_WhenGivenValidDuplicatedRoom_ShouldReturnNoContentAndUpdateRoom()
+        {
+            // Arrange
+            RoomDTO roomDTO = new RoomDTO
+            {
+                Id = 1,
+                Name = "Room 301",
+                RoomAbreviation = "301"
+            };
+
+            // Act
+            var result = await _roomsController.PutRoom(1, roomDTO);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+
+            var room = await _testDbContext.Rooms.FindAsync(1);
+            Assert.NotNull(room);
+            Assert.Equal(roomDTO.Name, room.Name);
+            Assert.Equal(roomDTO.RoomAbreviation, room.RoomAbreviation);
+        }
+
+        [Fact]
         public async void PutRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
@@ -184,13 +207,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             // Arrange
             RoomDTO roomDTO = new RoomDTO
             {
-                Id = 1,
+                Id = 2, // Id of another object with not the existing name
                 Name = "Room 301",  // Assuming this exists in test data
                 RoomAbreviation = "TR1"
             };
 
             // Act
-            var result = await _roomsController.PutRoom(1, roomDTO);
+            var result = await _roomsController.PutRoom(roomDTO.Id, roomDTO);
 
             // Assert
             Assert.IsType<ConflictResult>(result);
@@ -202,13 +225,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             // Arrange
             RoomDTO roomDTO = new RoomDTO
             {
-                Id = 1,
+                Id = 2, // Id of another object with not the existing name
                 Name = "Test Room",
                 RoomAbreviation = "301"  // Assuming this exists in test data
             };
 
             // Act
-            var result = await _roomsController.PutRoom(1, roomDTO);
+            var result = await _roomsController.PutRoom(roomDTO.Id, roomDTO);
 
             // Assert
             Assert.IsType<ConflictResult>(result);
@@ -256,6 +279,23 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
             // Assert
             Assert.IsType<CreatedAtActionResult>(result.Result);
+        }
+
+        public async void PostRoom_WhenGivenExistingRoom_ShouldReturnConflict()
+        {
+            // Arrange
+            RoomDTO roomDTO = new RoomDTO
+            {
+                Id = 1,
+                Name = "Room 301",
+                RoomAbreviation = "301"
+            };
+
+            // Act
+            var result = await _roomsController.PostRoom(roomDTO);
+
+            // Assert
+            Assert.IsType<ConflictObjectResult>(result.Result);
         }
 
         [Fact]
