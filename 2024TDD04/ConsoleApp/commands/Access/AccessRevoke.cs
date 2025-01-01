@@ -45,13 +45,7 @@ namespace ConsoleApp.commands.Access
                 return;
             }
 
-            AccessDTO accessDTO = new AccessDTO
-            {
-                RoomId = roomId,
-                GroupId = groupId
-            };
-
-            if (accessService.RevokeAccessAsync(accessDTO).Result)
+            if (accessService.RevokeAccessAsync(roomId, groupId).Result)
                 Success("Successfully revoked access.");
             else
                 Error("An error occurred while revoking access.");

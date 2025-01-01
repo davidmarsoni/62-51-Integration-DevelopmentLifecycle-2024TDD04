@@ -128,14 +128,17 @@ namespace WebAPI.Controllers
             return true;
         }
     
-        [HttpPost("RevokeAccess")]
-        public async Task<ActionResult<bool>> RevokeAccessAsync(AccessDTO accessDTO)
+        [HttpDelete("RevokeAccess/{roomId}/{groupId}")]
+        public async Task<ActionResult<bool>> RevokeAccessAsync(int roomId, int groupId)
         {
-            var (isValid, errorResponse) = await ValidateGroupExists(accessDTO.GroupId);
+            var (isValid, errorResponse) = await ValidateGroupExists(groupId);
             if (!isValid) return errorResponse!;
+
+            var (isValidRoom, errorResponseRoom) = await ValidateRoomExists(roomId);
+            if (!isValidRoom) return errorResponseRoom!;
     
             var access = await _context.Accesses.FirstOrDefaultAsync(access => 
-                access.RoomId == accessDTO.RoomId && access.GroupId == accessDTO.GroupId);
+                access.RoomId == roomId && access.GroupId == groupId);
             
             if (access == null) return NotFound();
     

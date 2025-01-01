@@ -20,9 +20,9 @@ namespace MVC.Services
             return await SQS.PostNoReturn(_client, $"{_baseUrl}/GrantAccess", accessDTO);
         }
 
-        public async Task<bool> RevokeAccessAsync(AccessDTO accessDTO)
+        public async Task<bool> RevokeAccessAsync(int roomId, int groupId)
         {
-            return await SQS.PostNoReturn(_client, $"{_baseUrl}/RevokeAccess", accessDTO);
+            return await SQS.Delete(_client, $"{_baseUrl}/RevokeAccess/{roomId}/{groupId}");
         }
 
         public async Task<bool> HasAccessGroupAsync(int roomId, int groupId)

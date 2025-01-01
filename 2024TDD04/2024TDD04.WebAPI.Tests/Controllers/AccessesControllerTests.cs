@@ -231,10 +231,11 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void RevokeAccessAsync_WhenGivenValidEntry_ShouldReturnTrueAndRevokeAccess(){
             // Arrange
-            var dto = new AccessDTO { RoomId = 1, GroupId = 1 };
+            var roomId = 1;
+            var groupId = 1;
 
             // Act
-            var result = await _accessesController.RevokeAccessAsync(dto);
+            var result = await _accessesController.RevokeAccessAsync(roomId, groupId);
 
             // Assert
             Assert.True(result.Value);
@@ -243,10 +244,11 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void RevokeAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
-            var dto = new AccessDTO { RoomId = 999, GroupId = 1 };
+            var roomId = 999;
+            var groupId = 1;
 
             // Act
-            var result = await _accessesController.RevokeAccessAsync(dto);
+            var result = await _accessesController.RevokeAccessAsync(roomId, groupId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -255,10 +257,11 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void RevokeAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
-            var dto = new AccessDTO { RoomId = 1, GroupId = 999 };
+            var roomId = 1;
+            var groupId = 999;
 
             // Act
-            var result = await _accessesController.RevokeAccessAsync(dto);
+            var result = await _accessesController.RevokeAccessAsync(roomId, groupId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -267,10 +270,11 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void RevokeAccessAsync_WhenGivenDeletedRoom_ShouldReturnNotFound(){
             // Arrange
-            var dto = new AccessDTO { RoomId = 3, GroupId = 1 };
+            var roomId = 3;
+            var groupId = 1;
 
             // Act
-            var result = await _accessesController.RevokeAccessAsync(dto);
+            var result = await _accessesController.RevokeAccessAsync(roomId, groupId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -283,9 +287,10 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void GetAccessesByUserIdAsync_WhenGivenUserWithAccess_ShouldReturnListOfRooms(){
             // Arrange
+            var userId = 1;
 
             // Act
-            var result = await _accessesController.GetAccessesByUserId(1);
+            var result = await _accessesController.GetAccessesByUserId(userId);
 
             // Assert
             Assert.NotNull(result.Value);
@@ -295,9 +300,10 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void GetAccessesByUserIdAsync_WhenGivenUserWithoutAccess_ShouldReturnNoContent(){
             // Arrange
+            var userId = 4;
 
             // Act
-            var result = await _accessesController.GetAccessesByUserId(4);
+            var result = await _accessesController.GetAccessesByUserId(userId);
 
             // Assert
             Assert.IsType<NoContentResult>(result.Result);
@@ -306,13 +312,13 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         [Fact]
         public async void GetAccessesByUserIdAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
             // Arrange
+            var userId = 999;
 
             // Act
-            var result = await _accessesController.GetAccessesByUserId(1);
+            var result = await _accessesController.GetAccessesByUserId(userId);
 
             // Assert
-            Assert.NotNull(result.Value);
-            Assert.NotEmpty(result.Value);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         #endregion
