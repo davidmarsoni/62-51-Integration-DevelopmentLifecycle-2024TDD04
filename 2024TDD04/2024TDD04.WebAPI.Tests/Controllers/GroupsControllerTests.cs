@@ -7,11 +7,13 @@ using Xunit;
 using WebApi.Mapper;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
 using DAL.Models;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
-    public class GroupsControllerTests {
-        private readonly GroupsController _groupsController;
+    public class GroupsControllerTests 
+    {
+        private readonly IGroupsController _groupsController;
         private readonly RoomAccessContext _testDbContext;
 
         public GroupsControllerTests()

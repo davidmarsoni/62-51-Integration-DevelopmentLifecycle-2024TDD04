@@ -9,12 +9,13 @@ using System.Linq;
 using WebAPI.Controllers;
 using Xunit;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class AccessesControllerTests
     {
-        private readonly AccessesController _accessesController;
+        private readonly IAccessesController _accessesController;
         private readonly RoomAccessContext _testDbContext;
 
         public AccessesControllerTests()

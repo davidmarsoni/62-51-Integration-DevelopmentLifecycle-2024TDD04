@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Controllers;
 using Xunit;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class RoomAccessesControllerTests
     {
-        private readonly RoomAccessesController _roomAccessesController;
+        private readonly IRoomAccessesController _roomAccessesController;
         private readonly RoomAccessContext _testDbContext;
 
         public RoomAccessesControllerTests()

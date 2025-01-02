@@ -6,11 +6,13 @@ using Xunit;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
-    public class UserGroupsControllerTests {
-        private readonly UserGroupsController _userGroupsController;
+    public class UserGroupsControllerTests 
+    {
+        private readonly IUserGroupsController _userGroupsController;
         private readonly RoomAccessContext _testDbContext;
 
         public UserGroupsControllerTests()

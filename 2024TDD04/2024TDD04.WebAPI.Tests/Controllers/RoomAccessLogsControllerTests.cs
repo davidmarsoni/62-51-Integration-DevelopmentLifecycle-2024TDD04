@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Controllers;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class RoomAccessLogsControllerTests
     {
-        private readonly RoomAccessLogsController roomAccessLogsController;
+        private readonly IRoomAccessLogsController roomAccessLogsController;
         private readonly RoomAccessContext _testDbContext;
 
         public RoomAccessLogsControllerTests()
@@ -43,7 +44,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             _testDbContext.SaveChanges();
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs();
+            var result = await roomAccessLogsController.GetRoomAccessLogs(null, null, null);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
@@ -56,7 +57,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var logNumber = 1;
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(logNumber);
+            var result = await roomAccessLogsController.GetRoomAccessLogs(logNumber, null, null);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
@@ -69,7 +70,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var logNumber = 3;
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(logNumber);
+            var result = await roomAccessLogsController.GetRoomAccessLogs(logNumber, null, null);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);
@@ -82,7 +83,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var offset = 1;
 
             // Act
-            var result = await roomAccessLogsController.GetRoomAccessLogs(null, offset);
+            var result = await roomAccessLogsController.GetRoomAccessLogs(null, offset, null);
 
             // Assert
             var roomAccessLogs = Assert.IsType<List<RoomAccessLogDTO>>(result.Value);

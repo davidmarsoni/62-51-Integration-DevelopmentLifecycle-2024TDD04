@@ -3,12 +3,13 @@ using DTO;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Controllers;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class RoomsControllerTests
     {
-        private readonly RoomsController _roomsController;
+        private readonly IRoomsController _roomsController;
         private readonly RoomAccessContext _testDbContext;
 
         public RoomsControllerTests()

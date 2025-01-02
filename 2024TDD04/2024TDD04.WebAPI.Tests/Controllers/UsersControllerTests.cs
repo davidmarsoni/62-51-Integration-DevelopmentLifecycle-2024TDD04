@@ -10,12 +10,13 @@ using WebApi.Controllers;
 using WebAPI.Controllers;
 using Xunit;
 using _2024TDD04.WebAPI.Tests.GeneralSetup;
+using WebApi.Controllers.Interfaces;
 
 namespace _2024TDD04.WebAPI.Tests.Controllers
 {
     public class UsersControllerTests
     {
-        private readonly UsersController _usersController;
+        private readonly IUsersController _usersController;
         private readonly RoomAccessContext _testDbContext;
 
         public UsersControllerTests()
