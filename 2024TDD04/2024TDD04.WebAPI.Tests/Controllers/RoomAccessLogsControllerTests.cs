@@ -23,7 +23,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
 
         #region GetRoomAccessLogs
         [Fact]
-        public async void GetRoomAccessLogs_WhenGivenAllParametersNull_ShouldReturnRooms()
+        public async Task GetRoomAccessLogs_WhenGivenAllParametersNull_ShouldReturnRooms()
         {
             // Arrange
 
@@ -36,7 +36,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenNoLogsInDB_ShouldReturnEmptyList()
+        public async Task GetRoomAccessLogs_WhenNoLogsInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.RoomAccessLogs.RemoveRange(_testDbContext.RoomAccessLogs);
@@ -51,7 +51,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenGivenSingleLog_ShouldReturnSingleRoomAccessLog(){
+        public async Task GetRoomAccessLogs_WhenGivenSingleLog_ShouldReturnSingleRoomAccessLog(){
             // Arrange
             var logNumber = 1;
 
@@ -64,7 +64,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenGivenThreeLog_ShouldReturnThreeOrAllRoomAccessLogs(){
+        public async Task GetRoomAccessLogs_WhenGivenThreeLog_ShouldReturnThreeOrAllRoomAccessLogs(){
             // Arrange
             var logNumber = 3;
 
@@ -77,7 +77,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenGivenOffset_ShouldReturnRoomAccessLogOffsetByOne(){
+        public async Task GetRoomAccessLogs_WhenGivenOffset_ShouldReturnRoomAccessLogOffsetByOne(){
             // Arrange
             var offset = 1;
 
@@ -91,7 +91,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenGivenAscendingOrder_ShouldReturnRoomAccessLogsInAscendingOrder(){
+        public async Task GetRoomAccessLogs_WhenGivenAscendingOrder_ShouldReturnRoomAccessLogsInAscendingOrder(){
             // Arrange
 
             // Act
@@ -105,7 +105,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomAccessLogs_WhenGivenInvalidParameter_ShouldReturnDefaultAmountOfLogsInDescendingOrder(){
+        public async Task GetRoomAccessLogs_WhenGivenInvalidParameter_ShouldReturnDefaultAmountOfLogsInDescendingOrder(){
             // Arrange
 
             // Act

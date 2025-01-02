@@ -11,7 +11,7 @@ namespace _2024TDD04.WebAPI.Tests.Mappers
         #region ToDTO
 
         [Fact]
-        public static void ToDTO_WhenGivenRoom_ShouldReturnRoomDTO()
+        public void ToDTO_WhenGivenRoom_ShouldReturnRoomDTO()
         {
             // Arrange
             Room room = new Room
@@ -38,7 +38,7 @@ namespace _2024TDD04.WebAPI.Tests.Mappers
         #region ToDAL
 
         [Fact]
-        public static void ToDAL_WhenGivenRoomDTO_ShouldReturnRoom()
+        public void ToDAL_WhenGivenRoomDTO_ShouldReturnRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO

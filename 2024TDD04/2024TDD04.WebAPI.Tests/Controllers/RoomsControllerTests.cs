@@ -20,7 +20,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetRooms
 
         [Fact]
-        public async void GetRooms_WhenRoomsInDB_ShouldReturnListOfRooms()
+        public async Task GetRooms_WhenRoomsInDB_ShouldReturnListOfRooms()
         {
             // Arrange
 
@@ -34,7 +34,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRooms_WhenNoRoomsInDB_ShouldReturnEmptyList()
+        public async Task GetRooms_WhenNoRoomsInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.Rooms.RemoveRange(_testDbContext.Rooms);
@@ -54,7 +54,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetRoomsActive
 
         [Fact]
-        public async void GetRoomsActive_WhenActiveRoomsInDB_ShouldReturnListOfActiveRooms()
+        public async Task GetRoomsActive_WhenActiveRoomsInDB_ShouldReturnListOfActiveRooms()
         {
             // Arrange
 
@@ -68,7 +68,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoomsActive_WhenNoActiveRoomsInDB_ShouldReturnEmptyList()
+        public async Task GetRoomsActive_WhenNoActiveRoomsInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.Rooms.RemoveRange(_testDbContext.Rooms);
@@ -88,7 +88,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetRoom
 
         [Fact]
-        public async void GetRoom_WhenGivenValidRoom_ShouldReturnRoomDTO()
+        public async Task GetRoom_WhenGivenValidRoom_ShouldReturnRoomDTO()
         {
             // Arrange
             var roomId = 1;
@@ -103,7 +103,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetRoom_WhenGivenNonExistent_ShouldReturnNotFound()
+        public async Task GetRoom_WhenGivenNonExistent_ShouldReturnNotFound()
         {
             // Arrange
             var roomId = 999;
@@ -120,7 +120,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PutRoom
 
         [Fact]
-        public async void PutRoom_WhenGivenValidRoom_ShouldReturnNoContentAndUpdateRoom()
+        public async Task PutRoom_WhenGivenValidRoom_ShouldReturnNoContentAndUpdateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -143,7 +143,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_WhenGivenValidDuplicatedRoom_ShouldReturnNoContentAndUpdateRoom()
+        public async Task PutRoom_WhenGivenValidDuplicatedRoom_ShouldReturnNoContentAndUpdateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -166,7 +166,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
+        public async Task PutRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -184,7 +184,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_WhenGivenNonMatchingData_ShouldReturnBadRequest()
+        public async Task PutRoom_WhenGivenNonMatchingData_ShouldReturnBadRequest()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -202,7 +202,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_WhenGivenRoomWithDuplicateName_ShouldReturnConflict()
+        public async Task PutRoom_WhenGivenRoomWithDuplicateName_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -220,7 +220,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_WhenGivenRoomWithDuplicateAbreviation_ShouldReturnConflict()
+        public async Task PutRoom_WhenGivenRoomWithDuplicateAbreviation_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -238,7 +238,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutRoom_WhenGivenRoomWithBlankAbreviation_ShouldReturnNoContentAndUpdateRoom()
+        public async Task PutRoom_WhenGivenRoomWithBlankAbreviation_ShouldReturnNoContentAndUpdateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -265,7 +265,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PostRoom
 
         [Fact]
-        public async void PostRoom_WhenGivenValidRoom_ShouldReturnCreatedAtActionAndCreateRoom()
+        public async Task PostRoom_WhenGivenValidRoom_ShouldReturnCreatedAtActionAndCreateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -282,7 +282,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_WhenGivenExistingRoom_ShouldReturnConflict()
+        public async Task PostRoom_WhenGivenExistingRoom_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -300,7 +300,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_WhenGivenRoomWithDuplicateName_ShouldReturnConflict()
+        public async Task PostRoom_WhenGivenRoomWithDuplicateName_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -317,7 +317,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_WhenGivenRoomWithDuplicateAbreviation_ShouldReturnConflict()
+        public async Task PostRoom_WhenGivenRoomWithDuplicateAbreviation_ShouldReturnConflict()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -334,7 +334,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostRoom_WhenGivenRoomWithBlankAbreviation_ShouldReturnCreatedAtActionAndCreateRoom()
+        public async Task PostRoom_WhenGivenRoomWithBlankAbreviation_ShouldReturnCreatedAtActionAndCreateRoom()
         {
             // Arrange
             RoomDTO roomDTO = new RoomDTO
@@ -355,7 +355,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region DeleteRoom
 
         [Fact]
-        public async void DeleteRoom_WhenGivenValidRoom_ShouldReturnNoContentAndUpdateRoom()
+        public async Task DeleteRoom_WhenGivenValidRoom_ShouldReturnNoContentAndUpdateRoom()
         {
             // Arrange
             var roomId = 1;
@@ -370,7 +370,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void DeleteRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
+        public async Task DeleteRoom_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
             var roomId = 999;
@@ -387,7 +387,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region RoomNameExists
 
         [Fact]
-        public async void RoomNameExists_WhenGivenExistingName_ShouldReturnTrue()
+        public async Task RoomNameExists_WhenGivenExistingName_ShouldReturnTrue()
         {
             // Arrange
             var existingRoomName = "Room 301";
@@ -401,7 +401,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RoomNameExists_WhenGivenNonExistentName_ShouldReturnFalse()
+        public async Task RoomNameExists_WhenGivenNonExistentName_ShouldReturnFalse()
         {
             // Arrange
             var nonExistentRoomName = "NonExistentRoom";
@@ -419,7 +419,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region RoomAbreviationExists
 
         [Fact]
-        public async void RoomAbreviationExists_WhenGivenExistingAbreviation_ShouldReturnTrue()
+        public async Task RoomAbreviationExists_WhenGivenExistingAbreviation_ShouldReturnTrue()
         {
             // Arrange
             var existingRoomAbreviation = "301";
@@ -433,7 +433,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RoomAbreviationExists_WhenGivenNonExistentAbreviation_ShouldReturnFalse()
+        public async Task RoomAbreviationExists_WhenGivenNonExistentAbreviation_ShouldReturnFalse()
         {
             // Arrange
             var nonExistentRoomAbreviation = "XXX";

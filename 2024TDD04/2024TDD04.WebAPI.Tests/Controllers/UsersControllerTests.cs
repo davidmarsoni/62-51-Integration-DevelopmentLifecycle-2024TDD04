@@ -27,7 +27,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsers
 
         [Fact]
-        public async void GetUsers_WhenUsersInDB_ShouldReturnListOfUsers()
+        public async Task GetUsers_WhenUsersInDB_ShouldReturnListOfUsers()
         {
             // Arrange
 
@@ -41,7 +41,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUsers_WhenNoUsersInDB_ShouldReturnEmptyList()
+        public async Task GetUsers_WhenNoUsersInDB_ShouldReturnEmptyList()
         {
             // Arrange
             _testDbContext.Users.RemoveRange(_testDbContext.Users);
@@ -63,7 +63,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsernameExist
 
         [Fact]
-        public async void UsernameExist_WhenGivenExistingUsername_ShouldReturnTrue()
+        public async Task UsernameExist_WhenGivenExistingUsername_ShouldReturnTrue()
         {
             // Arrange
             var existentUsername = "Widmer";
@@ -77,7 +77,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void UsernameExist_WhenGivenNonExistentUsername_ShouldReturnFalse()
+        public async Task UsernameExist_WhenGivenNonExistentUsername_ShouldReturnFalse()
         {
             // Arrange
             var nonExistentUsername = "TestUsername";
@@ -95,7 +95,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsersActive
 
         [Fact]
-        public async void GetUsersActive_WhenActiveUsersInDB_ShouldReturnListOfActiveUsers()
+        public async Task GetUsersActive_WhenActiveUsersInDB_ShouldReturnListOfActiveUsers()
         {
             // Arrange
 
@@ -109,7 +109,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUsersActive_WhenNoActiveUsersInDB_ShouldReturnEmptyList()
+        public async Task GetUsersActive_WhenNoActiveUsersInDB_ShouldReturnEmptyList()
         {
             // Arrange
             foreach (var user in _testDbContext.Users)
@@ -132,7 +132,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUser
 
         [Fact]
-        public async void GetUser_WhenGivenExistingUser_ShouldReturnUserDTO()
+        public async Task GetUser_WhenGivenExistingUser_ShouldReturnUserDTO()
         {
             // Arrange
             var userId = 1;
@@ -147,7 +147,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUser_WhenGivenNonExistentUser_ShouldReturnNotFound()
+        public async Task GetUser_WhenGivenNonExistentUser_ShouldReturnNotFound()
         {
             // Arrange
             var nonExistentUserId = 999;
@@ -164,7 +164,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PutUser
 
         [Fact]
-        public async void PutUser_WhenGivenValidUser_ShouldReturnNoContentAndUpdateUser()
+        public async Task PutUser_WhenGivenValidUser_ShouldReturnNoContentAndUpdateUser()
         {
             // Arrange
             var userId = 1;
@@ -187,7 +187,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutUser_WhenGivenNonExistantUser_ShouldReturnNotFound()
+        public async Task PutUser_WhenGivenNonExistantUser_ShouldReturnNotFound()
         {
             // Arrange
             var nonExistentUserId = 999;
@@ -206,7 +206,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PutUser_WhenGivenNonMatchingData_ShouldReturnBadRequest()
+        public async Task PutUser_WhenGivenNonMatchingData_ShouldReturnBadRequest()
         {
             // Arrange
             var userId = 1;
@@ -230,7 +230,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region PostUser
 
         [Fact]
-        public async void PostUser_WhenGivenValidUser_ShouldReturnCreatedAtActionAndCreateUser()
+        public async Task PostUser_WhenGivenValidUser_ShouldReturnCreatedAtActionAndCreateUser()
         {
             // Arrange
             UserDTO userDTO = new UserDTO
@@ -247,7 +247,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void PostUser_WhenGivenExistingUser_ShouldReturnConflict()
+        public async Task PostUser_WhenGivenExistingUser_ShouldReturnConflict()
         {
             // Arrange
             UserDTO userDTO = new UserDTO
@@ -269,7 +269,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region DeleteUser
 
         [Fact]
-        public async void DeleteUser_WhenGivenValidUser_ShouldReturnNoContentAndUpdateUser()
+        public async Task DeleteUser_WhenGivenValidUser_ShouldReturnNoContentAndUpdateUser()
         {
             // Arrange
             var userId = 1;
@@ -282,7 +282,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void DeleteUser_WhenGivenNonExistentUser_ShouldReturnNotFound()
+        public async Task DeleteUser_WhenGivenNonExistentUser_ShouldReturnNotFound()
         {
             // Arrange
             var nonExistentUserId = 999;

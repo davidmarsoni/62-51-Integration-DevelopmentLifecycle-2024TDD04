@@ -26,7 +26,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region HasAccessGroupAsync
 
         [Fact]
-        public async void HasAccessGroupAsync_WhenGivenGroupWithAccess_ShouldReturnTrue(){
+        public async Task HasAccessGroupAsync_WhenGivenGroupWithAccess_ShouldReturnTrue(){
             // Arrange
             // Teachers group has access to Room 301
             var room = 1;
@@ -40,7 +40,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessGroupAsync_WhenGivenGroupWithoutAccess_ShouldReturnFalse(){
+        public async Task HasAccessGroupAsync_WhenGivenGroupWithoutAccess_ShouldReturnFalse(){
             // Arrange
             // Students group does not have access to Room 301
             var room = 1;
@@ -54,7 +54,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessGroupAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
+        public async Task HasAccessGroupAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             // Room Id 100 does not exist
             var room = 100;
@@ -68,7 +68,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessGroupAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
+        public async Task HasAccessGroupAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
             // Group Id 100 does not exist
             var room = 1;
@@ -86,7 +86,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region HasAccessUserAsync
 
         [Fact]     
-        public async void HasAccessUserAsync_WhenGivenUserWithAccess_ShouldReturnTrue(){
+        public async Task HasAccessUserAsync_WhenGivenUserWithAccess_ShouldReturnTrue(){
             // Arrange
             // Mathias is in the Teachers group, which has access to Room 301
             var room = 1;
@@ -100,7 +100,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }  
 
         [Fact]
-        public async void HasAccessUserAsync_WhenGivenUserWithoutAccess_ShouldReturnFalse(){
+        public async Task HasAccessUserAsync_WhenGivenUserWithoutAccess_ShouldReturnFalse(){
             // Arrange
             // David is in the Students group, which does not have access to Room 301
             var room = 1;
@@ -114,7 +114,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessUserAsync_WhenGivenUserWithoutGroup_ShouldReturnFalse(){
+        public async Task HasAccessUserAsync_WhenGivenUserWithoutGroup_ShouldReturnFalse(){
             // Arrange
             // User Id 4 is not in any group
             var room = 1;
@@ -128,7 +128,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void HasAccessUserAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
+        public async Task HasAccessUserAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
             // Arrange
             // User Id 100 does not exist
             var room = 1;
@@ -142,7 +142,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
          [Fact]
-        public async void HasAccessUserAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
+        public async Task HasAccessUserAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             // Room Id 100 does not exist
             var room = 100;
@@ -160,7 +160,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GrantAccessAsync
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenValidData_ShouldReturnTrueAndGrantAccess(){
+        public async Task GrantAccessAsync_WhenGivenValidData_ShouldReturnTrueAndGrantAccess(){
             // Arrange
             // Students group will be granted access to Classroom 301
             AccessDTO accessDTO = new AccessDTO { RoomId = 1, GroupId = 2 };
@@ -173,7 +173,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
+        public async Task GrantAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             // Room Id 100 does not exist
             AccessDTO accessDTO = new AccessDTO { RoomId = 100, GroupId = 1 };
@@ -186,7 +186,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
+        public async Task GrantAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
             // Group Id 100 does not exist
             AccessDTO accessDTO = new AccessDTO { RoomId = 3, GroupId = 100 };
@@ -199,7 +199,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenExistingGrantedAccess_ShouldReturnConflict(){
+        public async Task GrantAccessAsync_WhenGivenExistingGrantedAccess_ShouldReturnConflict(){
             // Arrange
             // Teachers group already has already access to Room 301
             AccessDTO accessDTO = new AccessDTO { RoomId = 1, GroupId = 1 };
@@ -212,7 +212,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GrantAccessAsync_WhenGivenDeletedRoom_ShouldReturnNotFound(){
+        public async Task GrantAccessAsync_WhenGivenDeletedRoom_ShouldReturnNotFound(){
             // Arrange
             // Room 303 is deleted
             AccessDTO accessDTO = new AccessDTO { RoomId = 3, GroupId = 1 };
@@ -229,7 +229,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region RevokeAccessAsync
 
         [Fact]
-        public async void RevokeAccessAsync_WhenGivenValidEntry_ShouldReturnTrueAndRevokeAccess(){
+        public async Task RevokeAccessAsync_WhenGivenValidEntry_ShouldReturnTrueAndRevokeAccess(){
             // Arrange
             var roomId = 1;
             var groupId = 1;
@@ -242,7 +242,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RevokeAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
+        public async Task RevokeAccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound(){
             // Arrange
             var roomId = 999;
             var groupId = 1;
@@ -255,7 +255,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RevokeAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
+        public async Task RevokeAccessAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound(){
             // Arrange
             var roomId = 1;
             var groupId = 999;
@@ -268,7 +268,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void RevokeAccessAsync_WhenGivenDeletedRoom_ShouldReturnNotFound(){
+        public async Task RevokeAccessAsync_WhenGivenDeletedRoom_ShouldReturnNotFound(){
             // Arrange
             var roomId = 3;
             var groupId = 1;
@@ -285,7 +285,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetAccessesByUserId
 
         [Fact]
-        public async void GetAccessesByUserIdAsync_WhenGivenUserWithAccess_ShouldReturnListOfRooms(){
+        public async Task GetAccessesByUserIdAsync_WhenGivenUserWithAccess_ShouldReturnListOfRooms(){
             // Arrange
             var userId = 1;
 
@@ -298,7 +298,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetAccessesByUserIdAsync_WhenGivenUserWithoutAccess_ShouldReturnNoContent(){
+        public async Task GetAccessesByUserIdAsync_WhenGivenUserWithoutAccess_ShouldReturnNoContent(){
             // Arrange
             var userId = 4;
 
@@ -310,7 +310,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetAccessesByUserIdAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
+        public async Task GetAccessesByUserIdAsync_WhenGivenNonExistentUser_ShouldReturnNotFound(){
             // Arrange
             var userId = 999;
 
@@ -326,7 +326,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetAccessesByGroupId
 
         [Fact]
-        public async void GetAccessesByGroupIdAsync_WhenGivenGroupWithAccess_ShouldReturnRooms()
+        public async Task GetAccessesByGroupIdAsync_WhenGivenGroupWithAccess_ShouldReturnRooms()
         {
             // Arrange
             var groupId = 1;
@@ -340,7 +340,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetAccessesByGroupIdAsync_WhenGivenGroupWithoutAccess_ShouldReturnEmpty()
+        public async Task GetAccessesByGroupIdAsync_WhenGivenGroupWithoutAccess_ShouldReturnEmpty()
         {
             // Arrange
             var groupId = 4;
@@ -353,7 +353,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetAccessesByGroupIdAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound()
+        public async Task GetAccessesByGroupIdAsync_WhenGivenNonExistentGroup_ShouldReturnNotFound()
         {
             // Arrange
             var groupId = 999;

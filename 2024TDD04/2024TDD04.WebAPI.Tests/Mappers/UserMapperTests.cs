@@ -10,7 +10,7 @@ namespace _2024TDD04.WebAPI.Tests.Mappers
         #region ToDTO
 
         [Fact]
-        public static void ToDTO_WhenGivenUser_ShouldReturnUserDTO()
+        public void ToDTO_WhenGivenUser_ShouldReturnUserDTO()
         {
             // Arrange
             User user = new User
@@ -36,7 +36,7 @@ namespace _2024TDD04.WebAPI.Tests.Mappers
         #region ToDAL
 
         [Fact]
-        public static void ToDAL_WhenGivenUserDTO_ShouldReturnUser()
+        public void ToDAL_WhenGivenUserDTO_ShouldReturnUser()
         {
             // Arrange
             UserDTO userDTO = new UserDTO

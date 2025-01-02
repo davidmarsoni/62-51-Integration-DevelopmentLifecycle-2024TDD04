@@ -22,7 +22,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region AccessAsync
 
         [Fact]
-        public async void AccessAsync_WhenGivenUserWithAccess_ShouldReturnRoomAccessDTO()
+        public async Task AccessAsync_WhenGivenUserWithAccess_ShouldReturnRoomAccessDTO()
         {
             // Arrange
             var roomId = 1; // Room that the group has access to
@@ -39,7 +39,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_WhenGivenUserWithoutAccess_ShouldReturnNull()
+        public async Task AccessAsync_WhenGivenUserWithoutAccess_ShouldReturnNull()
         {
             // Arrange
             var roomId = 2; // Room that the group doesn't have access to
@@ -54,7 +54,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_WhenGivenUserWithoutGroup_ShouldReturnNullAction()
+        public async Task AccessAsync_WhenGivenUserWithoutGroup_ShouldReturnNullAction()
         {
             // Arrange
             var roomId = 1;
@@ -68,7 +68,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_WhenGivenDeletedUser_ShouldReturnForbid()
+        public async Task AccessAsync_WhenGivenDeletedUser_ShouldReturnForbid()
         {
             // Arrange
             var roomId = 1;
@@ -82,7 +82,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_WhenGivenNonExistentUser_ShouldReturnNotFound()
+        public async Task AccessAsync_WhenGivenNonExistentUser_ShouldReturnNotFound()
         {
             // Arrange
             var roomId = 1;
@@ -96,7 +96,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void AccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound()
+        public async Task AccessAsync_WhenGivenNonExistentRoom_ShouldReturnNotFound()
         {
             // Arrange
             var roomId = 999; // Non-existent room

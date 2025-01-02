@@ -11,7 +11,7 @@ namespace _2024TDD04.WebAPI.Tests.Mappers
         #region ToDTO
 
         [Fact]
-        public static void ToDTO_WhenGivenUserGroup_ShouldReturnUserGroupDTO()
+        public void ToDTO_WhenGivenUserGroup_ShouldReturnUserGroupDTO()
         {
             // Arrange
             UserGroup userGroup = new UserGroup
@@ -48,7 +48,7 @@ namespace _2024TDD04.WebAPI.Tests.Mappers
         #region ToDAL
 
         [Fact]
-        public static void ToDAL_WhenGivenUserGroupDTO_ShouldReturnUserGroup()
+        public void ToDAL_WhenGivenUserGroupDTO_ShouldReturnUserGroup()
         {
             // Arrange
             UserGroupDTO userGroupDTO = new UserGroupDTO
