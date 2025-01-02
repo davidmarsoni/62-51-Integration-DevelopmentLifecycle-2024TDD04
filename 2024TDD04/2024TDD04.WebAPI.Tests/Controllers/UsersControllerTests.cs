@@ -63,7 +63,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         #region GetUsernameExist
 
         [Fact]
-        public async void GetUsernameExist_WhenGivenExistingUsername_ShouldReturnTrue()
+        public async void UsernameExist_WhenGivenExistingUsername_ShouldReturnTrue()
         {
             // Arrange
             var existentUsername = "Widmer";
@@ -77,7 +77,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
         }
 
         [Fact]
-        public async void GetUsernameExist_WhenGivenNonExistentUsername_ShouldReturnFalse()
+        public async void UsernameExist_WhenGivenNonExistentUsername_ShouldReturnFalse()
         {
             // Arrange
             var nonExistentUsername = "TestUsername";
