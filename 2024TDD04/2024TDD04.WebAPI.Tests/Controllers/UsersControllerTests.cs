@@ -103,9 +103,9 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var result = await _usersController.GetUsersActive();
 
             // Assert
-            Assert.IsType<ActionResult<List<UserDTO>>>(result);
+            Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
             Assert.NotNull(result.Value);
-            Assert.Equal(3, result.Value.Count);
+            Assert.Equal(3, result.Value.Count());
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             var result = await _usersController.GetUsersActive();
 
             // Assert
-            Assert.IsType<ActionResult<List<UserDTO>>>(result);
+            Assert.IsType<ActionResult<IEnumerable<UserDTO>>>(result);
             Assert.NotNull(result.Value);
             Assert.Empty(result.Value);
         }

@@ -3,13 +3,14 @@ using DAL.Models;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Controllers.Interfaces;
 using WebAPI.Mapper;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccessesController : ControllerBase
+    public class AccessesController : ControllerBase, IAccessesController
     {
         private readonly RoomAccessContext _context;
     
@@ -88,6 +89,16 @@ namespace WebAPI.Controllers
             return await accessQuery.AnyAsync(access => access.RoomId == roomId);
         }
     
+        [HttpGet("GetAccessesByGroupId/{groupId}")]
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByGroupId(int groupId)
+        {
+            if (!await _context.Groups.AnyAsync(group => group.Id == groupId))
+                return NotFound();
+    
+            var accessQuery = _context.Accesses.Where(access => access.GroupId == groupId);
+            return await GetRoomsByAccessesQuery(accessQuery);
+        }
+
         [HttpGet("GetAccessesByUserId/{userId}")]
         public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByUserId(int userId)
         {
@@ -98,16 +109,6 @@ namespace WebAPI.Controllers
             var rooms = await GetRoomsByAccessesQuery(accessQuery);
             
             return rooms.Any() ? rooms : NoContent();
-        }
-    
-        [HttpGet("GetAccessesByGroupId/{groupId}")]
-        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetAccessesByGroupId(int groupId)
-        {
-            if (!await _context.Groups.AnyAsync(group => group.Id == groupId))
-                return NotFound();
-    
-            var accessQuery = _context.Accesses.Where(access => access.GroupId == groupId);
-            return await GetRoomsByAccessesQuery(accessQuery);
         }
     
         [HttpPost("GrantAccess")]

@@ -281,6 +281,7 @@ namespace _2024TDD04.WebAPI.Tests.Controllers
             Assert.IsType<CreatedAtActionResult>(result.Result);
         }
 
+        [Fact]
         public async void PostRoom_WhenGivenExistingRoom_ShouldReturnConflict()
         {
             // Arrange

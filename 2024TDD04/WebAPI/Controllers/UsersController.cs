@@ -4,12 +4,13 @@ using DAL;
 using DAL.Models;
 using DTO;
 using WebApi.Mapper;
+using WebApi.Controllers.Interfaces;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : ControllerBase, IUsersController
     {
         private readonly RoomAccessContext _context;
 
@@ -51,17 +52,9 @@ namespace WebApi.Controllers
             return result;
         }
 
-        // GET: api/Users/Username
-        [HttpGet("Username/{username}")]
-        public async Task<ActionResult<Boolean>> UsernameExist(string username)
-        {
-            var (exists, _) = await ValidateUsernameAsync(username, null);
-            return exists;
-        }
-
         // GET: api/Users/Active
         [HttpGet("Active")]
-        public async Task<ActionResult<List<UserDTO>>> GetUsersActive()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsersActive()
         {
             // get all users that are active
             IEnumerable<User> users = await _context.Users.Where(user => !user.IsDeleted).ToListAsync();
@@ -148,6 +141,14 @@ namespace WebApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/Users/Username
+        [HttpGet("Username/{username}")]
+        public async Task<ActionResult<Boolean>> UsernameExist(string username)
+        {
+            var (exists, _) = await ValidateUsernameAsync(username, null);
+            return exists;
         }
     }
 }

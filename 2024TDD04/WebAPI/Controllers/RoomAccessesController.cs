@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Mapper;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Controllers.Interfaces;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomAccessesController : ControllerBase
+    public class RoomAccessesController : ControllerBase, IRoomAccessesController
     {
         private readonly RoomAccessContext _context;
         public RoomAccessesController(RoomAccessContext context)

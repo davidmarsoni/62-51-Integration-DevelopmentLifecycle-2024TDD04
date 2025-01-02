@@ -5,6 +5,6 @@ namespace WebApi.Controllers.Interfaces
 {
     public interface IRoomAccessesController
     {
-        Task<ActionResult<RoomAccessDTO>> AccessAsync(RoomAccessDTO roomAccessDTO);
+        Task<ActionResult<RoomAccessDTO>> AccessRoom(int roomId, int userId);
     }
 }

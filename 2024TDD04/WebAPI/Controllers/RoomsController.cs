@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WebAPI.Mapper;
 using WebApi.Mapper;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.Controllers.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,7 +14,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomsController : ControllerBase
+    public class RoomsController : ControllerBase, IRoomsController
     {
         private readonly RoomAccessContext _context;
 

@@ -4,12 +4,13 @@ using DAL;
 using DAL.Models;
 using DTO;
 using WebApi.Mapper;
+using WebApi.Controllers.Interfaces;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GroupsController : ControllerBase
+    public class GroupsController : ControllerBase, IGroupsController
     {
         private readonly RoomAccessContext _context;
 
@@ -82,22 +83,6 @@ namespace WebApi.Controllers
             return GroupMapper.toDTO(group);
         }
 
-        // GET: api/Groups/Name/{name}
-        [HttpGet("Name/{name}")]
-        public async Task<ActionResult<bool>> GroupNameExists(string name)
-        {
-            var (exists, _) = await ValidateGroupnameAsync(name, null);
-            return exists;
-        }
-
-        // GET: api/Groups/Acronym/{acronym}
-        [HttpGet("Acronym/{acronym}")]
-        public async Task<ActionResult<bool>> GroupAcronymExists(string acronym)
-        {
-            var (exists, _) = await ValidateGroupAcronymAsync(acronym, null);
-            return exists;
-        }
-
         // PUT: api/Groups/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGroup(int id, GroupDTO groupDTO)
@@ -166,6 +151,22 @@ namespace WebApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/Groups/Name/{name}
+        [HttpGet("Name/{name}")]
+        public async Task<ActionResult<bool>> GroupNameExists(string name)
+        {
+            var (exists, _) = await ValidateGroupnameAsync(name, null);
+            return exists;
+        }
+
+        // GET: api/Groups/Acronym/{acronym}
+        [HttpGet("Acronym/{acronym}")]
+        public async Task<ActionResult<bool>> GroupAcronymExists(string acronym)
+        {
+            var (exists, _) = await ValidateGroupAcronymAsync(acronym, null);
+            return exists;
         }
     }
 }

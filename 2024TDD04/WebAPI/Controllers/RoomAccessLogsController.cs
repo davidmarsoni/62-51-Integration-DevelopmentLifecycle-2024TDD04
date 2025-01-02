@@ -4,6 +4,7 @@ using DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Controllers.Interfaces;
 using WebAPI.Mapper;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,7 +13,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoomAccessLogsController : ControllerBase
+    public class RoomAccessLogsController : ControllerBase, IRoomAccessLogsController
     {
         private readonly RoomAccessContext _context;
 

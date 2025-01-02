@@ -9,12 +9,13 @@ using DAL;
 using DAL.Models;
 using DTO;
 using WebApi.Mapper;
+using WebApi.Controllers.Interfaces;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserGroupsController : ControllerBase
+    public class UserGroupsController : ControllerBase, IUserGroupsController
     {
         private readonly RoomAccessContext _context;
 
